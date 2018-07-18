@@ -1,0 +1,45 @@
+app:
+  db:
+    host: 127.0.01
+    port: 3306
+    dbname: xwj
+    
+server:
+  port: 18082
+    
+spring:
+  application:
+    name: service-consumer #应用程序名称
+  #durid 数据库连接池
+  datasource: 
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://${app.db.host}:${app.db.port}/${app.db.dbname}?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 123456
+    filters: stat
+    maxActive: 100
+    initialSize: 100
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+      
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://admin:admin@localhost:8761/eureka
+  instance:
+    prefer-ip-address: true #当猜测主机名时，服务器的IP地址应该在操作系统报告的主机名中使用
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}} #更改Eureka实例ID
+   
