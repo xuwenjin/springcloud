@@ -24,6 +24,7 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
+			<!-- feign -->
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-feign</artifactId>
 		</dependency>

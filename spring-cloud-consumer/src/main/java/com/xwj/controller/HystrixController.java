@@ -11,15 +11,10 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.xwj.entity.UserEntity;
 
 @RestController
-public class IndexController {
+public class HystrixController {
 
 	@Autowired
 	private RestTemplate restTemplate;
-
-	@GetMapping("/find/{id}")
-	public UserEntity findById(@PathVariable Long id) {
-		return restTemplate.getForObject("http://service-provider/find/" + id, UserEntity.class);
-	}
 
 	/**
 	 * 测试hystrix

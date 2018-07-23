@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import com.xwj.entity.UserEntity;
 
 /**
- * 错误回调类
+ * 降级回调类
  */
 @Component
 public class UserFallback implements UserFeignClient {
@@ -16,6 +16,11 @@ public class UserFallback implements UserFeignClient {
 		user.setId("1000");
 		user.setAge(12);
 		return user;
+	}
+
+	@Override
+	public UserEntity findUser(UserEntity user) {
+		return null;
 	}
 
 }
