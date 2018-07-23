@@ -18,6 +18,7 @@
 		<module>spring-cloud-server</module>
 		<module>spring-cloud-zuul</module>
 		<module>spring-cloud-zuul-filter</module>
+		<module>spring-cloud-core</module>
 	</modules>
 
 	<properties>

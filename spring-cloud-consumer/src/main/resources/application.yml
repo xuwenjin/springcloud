@@ -42,4 +42,19 @@ eureka:
   instance:
     prefer-ip-address: true #当猜测主机名时，服务器的IP地址应该在操作系统报告的主机名中使用
     instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}} #更改Eureka实例ID
+
+#断路器    
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false #是否开启超时(默认开启)
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000 #超时时间(默认1000毫秒)
+            
+feign:
+  hystrix:
+    enabled: true #打开feign对hystrix的支持
    
