@@ -14,8 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * UserDetailsService用于返回用户相关数据
  */
-@Service
 @Slf4j
+@Service
 public class MyUserDetailServiceImpl implements UserDetailsService {
 
 	@Autowired
@@ -28,6 +28,7 @@ public class MyUserDetailServiceImpl implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		log.info("进来了~");
 		
+		//密码加密(这里是将密码写死的，真实情况应该是查询数据库)
 		String dbPassword = passwordEncoder.encode("1234");
 		log.info("数据库密码：{}", dbPassword);
 		MyUser user = new MyUser(username, dbPassword);

@@ -3,6 +3,8 @@ package com.xwj.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,11 +26,16 @@ public class IndexController {
 		return userService.findById(id);
 	}
 	
+	@PostMapping("post")
+	public String post(@RequestBody User user) {
+		return user.getId() + "";
+	}
+	
 	@GetMapping("/findName")
 	public String findName(@RequestParam String name) {
 		return name;
 	}
-
+	
 	/**
 	 * 生成表备注
 	 * 

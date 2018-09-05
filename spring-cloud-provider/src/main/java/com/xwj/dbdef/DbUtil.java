@@ -2,8 +2,6 @@ package com.xwj.dbdef;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Spliterator;
-import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang.StringUtils;
 

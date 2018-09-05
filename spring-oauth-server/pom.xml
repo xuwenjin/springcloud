@@ -14,11 +14,6 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<!-- eureka客户端 -->
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-eureka</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.xwj</groupId>
 			<artifactId>spring-cloud-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>

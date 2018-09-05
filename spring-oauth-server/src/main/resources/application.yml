@@ -31,12 +31,4 @@ spring:
     poolPreparedStatements: true
     maxOpenPreparedStatements: 20
     
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://admin:admin@localhost:8761/eureka
-  instance:
-    prefer-ip-address: true #当猜测主机名时，服务器的IP地址应该在操作系统报告的主机名中使用
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}} #更改Eureka实例ID
-
 
