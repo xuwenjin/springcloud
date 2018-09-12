@@ -1,29 +1,38 @@
 package com.xwj.redis;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 
-import lombok.Getter;
-import lombok.Setter;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
-@Getter
-@Setter
-@Component
-@ConfigurationProperties(prefix = "redis") // 将配置文件中以redis开头的配置项赋值到该类的属性
+/**
+ * redis配置
+ * 
+ * @author xuwenjin
+ */
+@Configuration
 public class RedisConfig {
 
-	private String host;
+	@Autowired
+	private RedisProperties redisProperties;
 
-	private int port;
+	@Bean
+	public JedisPool jedisPoolFactory() {
+		JedisPoolConfig poolConfig = new JedisPoolConfig();
+		poolConfig.setMaxIdle(redisProperties.getPoolMaxIdle());
+		poolConfig.setMaxTotal(redisProperties.getPoolMaxTotal());
+		poolConfig.setMaxWaitMillis(redisProperties.getPoolMaxWait() * 1000);
+		JedisPool jp = new JedisPool(poolConfig, redisProperties.getHost(), redisProperties.getPort(),
+				redisProperties.getTimeout() * 1000);
+		return jp;
+	}
 
-	private int timeout; // 秒
-
-	private String password;
-
-	private int poolMaxTotal; //最大连接数
-
-	private int poolMaxIdle; //最大空闲数
-	
-	private int poolMaxWait; // 秒
+	@Bean
+	public JsonRedisTemplate jsonRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+		return new JsonRedisTemplate(redisConnectionFactory);
+	}
 
 }
