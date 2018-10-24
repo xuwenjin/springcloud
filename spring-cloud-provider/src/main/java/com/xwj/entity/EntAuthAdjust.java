@@ -52,5 +52,17 @@ public class EntAuthAdjust {
 
 	@ColumnDef("调整次数")
 	private int adjustCount; // 调整次数
+	
+	@ColumnDef("settID")
+	private int settID;
+	
+	@ColumnDef("settIDE")
+	private int settIDE;
+	
+	@ColumnDef("UUserName")
+	private int UUserName;
+	
+	@ColumnDef("aUserName")
+	private int aUserName;
 
 }

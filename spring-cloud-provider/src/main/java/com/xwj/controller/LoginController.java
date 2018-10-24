@@ -39,9 +39,9 @@ public class LoginController {
 		return "index";
 	}
 	
-	@RequestMapping("/plogin")
-	public String plogin() {
-		return "plogin";
-	}
+//	@RequestMapping("/plogin")
+//	public String plogin() {
+//		return "plogin";
+//	}
 
 }

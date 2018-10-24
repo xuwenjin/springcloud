@@ -11,6 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.xwj.consts.SecurityConst;
+import com.xwj.handler.LoginFailureHandler;
+import com.xwj.handler.LoginSuccessHandler;
 import com.xwj.properties.SecurityProperty;
 
 @Configuration
@@ -20,6 +22,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private SecurityProperty securityProperty;
+	
+	@Autowired
+	private LoginSuccessHandler loginSuccessHandler; //登录成功处理
+	
+	@Autowired
+	private LoginFailureHandler loginFailureHandler; //登录失败处理
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -28,6 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.formLogin() // 表单登录
 			.loginPage(SecurityConst.AUTH_REQUIRE) 
 			.loginProcessingUrl(SecurityConst.AUTH_FORM) // 登录请求拦截的url,也就是form表单提交时指定的action
+			.successHandler(loginSuccessHandler)
+			.failureHandler(loginFailureHandler)
 			.and()
 			.authorizeRequests() // 对请求授权
 			.antMatchers(SecurityConst.AUTH_REQUIRE, securityProperty.getBrowser().getLoginPage()).permitAll() // 允许所有人访问login.html和自定义的登录页
