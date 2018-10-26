@@ -9,12 +9,10 @@ import org.springframework.aop.support.AopUtils;
 public class AopTargetUtils {
 
 	/**
-	 * 获取 目标对象
+	 * 从代理对象中获取目标对象
 	 * 
 	 * @param proxy
 	 *            代理对象
-	 * @return
-	 * @throws Exception
 	 */
 	public static Object getTarget(Object proxy) throws Exception {
 		if (!AopUtils.isAopProxy(proxy)) {
@@ -27,6 +25,9 @@ public class AopTargetUtils {
 		}
 	}
 
+	/**
+	 * 从cglib代理中获取目标对象
+	 */
 	private static Object getCglibProxyTargetObject(Object proxy) throws Exception {
 		Field h = proxy.getClass().getDeclaredField("CGLIB$CALLBACK_0");
 		h.setAccessible(true);
@@ -40,6 +41,9 @@ public class AopTargetUtils {
 		return target;
 	}
 
+	/**
+	 * 从jdk代理中获取目标对象
+	 */
 	private static Object getJdkDynamicProxyTargetObject(Object proxy) throws Exception {
 		Field h = proxy.getClass().getSuperclass().getDeclaredField("h");
 		h.setAccessible(true);

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xwj.dbdef.CommentService;
 import com.xwj.entity.User;
 import com.xwj.service.IUserService;
 
@@ -20,33 +19,19 @@ public class IndexController {
 	@Autowired
 	private IUserService userService;
 
-	@Autowired
-	private CommentService service;
-
 	@GetMapping("/find/{id}")
 	public User findById(@PathVariable Long id) {
 		return userService.findById(id);
 	}
-	
+
 	@PostMapping("post")
 	public String post(@RequestBody User user) {
 		return user.getId() + "";
 	}
-	
+
 	@GetMapping("/findName")
 	public String findName(@RequestParam String name) {
 		return name;
-	}
-	
-	/**
-	 * 生成表备注
-	 * 
-	 * @return
-	 */
-	@GetMapping("/comment")
-	public String createComment() {
-		service.createComment();
-		return "ok";
 	}
 
 }

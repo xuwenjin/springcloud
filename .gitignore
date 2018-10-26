@@ -1,4 +1,3 @@
-application-dev.yml
 
 
 # Created by .ignore support plugin (hsz.mobi)
@@ -34,14 +33,15 @@ tmp/
 *.bak
 *.swp
 *~.nib
+*.class
 local.properties
 .settings/
 .loadpath
 .recommenders
 .classpath
 .project
+
 hsf.lock
-*.class
 
 # External tool builders
 .externalToolBuilders/

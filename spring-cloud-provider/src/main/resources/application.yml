@@ -31,9 +31,12 @@ spring:
     poolPreparedStatements: true
     maxOpenPreparedStatements: 20
   jpa:
+    open-in-view: true
     hibernate:
       ddl-auto: update
-      show-sql: true
+      #show-sql: true
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL57InnoDBDialect
   #redis:
    # database: 0 #Redis数据库索引（默认为0）
     #host: localhost #Redis服务器地址
@@ -54,12 +57,13 @@ eureka:
     
 logging:
   level:
-    root: INFO
-    org.hibernate: INFO
+    #root: INFO
+    #org.hibernate: INFO
     jdbc: off
     jdbc.sqltiming: debug
-    com.xwj: DEBUG
-
+    com:
+      xwj: debug
+    
 security:
   browser: 
     #loginPage: /plogin.html
