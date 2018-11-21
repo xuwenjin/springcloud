@@ -53,7 +53,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.xwj</groupId>
-			<artifactId>spring-oauth-server</artifactId>
+			<artifactId>spring-security</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>

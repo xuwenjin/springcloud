@@ -14,5 +14,7 @@ import lombok.Setter;
 public class SecurityProperty {
 
 	private BrowserProperty browser = new BrowserProperty();
+	
+	private SocialProperty social = new SocialProperty();
 
 }
