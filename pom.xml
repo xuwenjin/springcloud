@@ -19,7 +19,6 @@
 		<module>spring-cloud-zuul</module>
 		<module>spring-cloud-zuul-filter</module>
 		<module>spring-cloud-core</module>
-		<module>spring-oauth-server</module>
 	</modules>
 
 	<properties>
@@ -47,7 +46,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<build>
 		<plugins>
 			<plugin>

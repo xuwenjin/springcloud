@@ -63,15 +63,5 @@ logging:
     jdbc.sqltiming: debug
     com:
       xwj: debug
-    
-security:
-  browser: 
-    #loginPage: /plogin.html
-    loginType: REDIRECT
-  social:
-    filterProcessesUrl: /login
-    qq:
-      app-id: 101386962
-      app-secret: 2a0f820407df400b84a854d054be8b6a
-    
+   
       
