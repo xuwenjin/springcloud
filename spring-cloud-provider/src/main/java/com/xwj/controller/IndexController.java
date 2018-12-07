@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xwj.entity.User;
+import com.xwj.operlog.MyLog;
 import com.xwj.service.IUserService;
 
 @RestController
@@ -19,6 +20,7 @@ public class IndexController {
 	@Autowired
 	private IUserService userService;
 
+	@MyLog("查询")
 	@GetMapping("/find/{id}")
 	public User findById(@PathVariable Long id) {
 		return userService.findById(id);
