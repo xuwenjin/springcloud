@@ -36,7 +36,9 @@ public class OperLog implements Serializable {
 
 	private String method; // 方法名
 
-	private String params; // 参数
+	private String paramsCls; // 入参类型，多个以逗号分割
+
+	private String resultCls; // 出参类型
 
 	private String ip; // ip地址
 

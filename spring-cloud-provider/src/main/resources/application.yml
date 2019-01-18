@@ -3,9 +3,12 @@ app:
     host: 127.0.01
     port: 3306
     dbname: xwj
+    dbname2: e_travel
     
 server:
   port: 18081
+  
+log-init: Y
     
 spring:
   application:
@@ -15,6 +18,25 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://${app.db.host}:${app.db.port}/${app.db.dbname}?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 123456
+    filters: stat
+    maxActive: 100
+    initialSize: 100
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+  datasource2: 
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://${app.db.host}:${app.db.port}/${app.db.dbname2}?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8
     username: root
     password: 123456
     filters: stat
