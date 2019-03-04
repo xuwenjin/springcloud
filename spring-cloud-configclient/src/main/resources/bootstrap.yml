@@ -1,0 +1,17 @@
+#spring cloud配置加载顺序：
+#1、加载bootstrap.* 配置文件
+#2、连接config-server，加载远程配置
+#3、加载application.* 配置文件
+
+#远程配置优先级高于本地配置
+
+#如果config-server找不到远程配置文件，则找远程默认的(即application.yml)
+#如果不配置spring.application.name，会把environment中的name默认设置为application，即找远程的application.yml文件
+
+spring:
+  application:    name: config-client #应用程序名称
+  cloud:
+    config:
+      uri: http://localhost:18083
+#      profile: test   #对应spring.profiles.active
+      label: master  #分支名。当使用configserver是git时，默认是master
