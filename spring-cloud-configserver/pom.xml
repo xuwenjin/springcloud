@@ -15,7 +15,12 @@
 			<artifactId>spring-cloud-config-server</artifactId>
 		</dependency>
 		<dependency>
-		<!-- 解决启动报Caused by: java.lang.ClassNotFoundException: org.eclipse.jgit.api.TransportConfigCallback -->
+			<!-- spring security 安全认证 -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<!-- 解决启动报Caused by: java.lang.ClassNotFoundException: org.eclipse.jgit.api.TransportConfigCallback -->
 			<groupId>org.eclipse.jgit</groupId>
 			<artifactId>org.eclipse.jgit</artifactId>
 			<version>4.9.0.201710071750-r</version>

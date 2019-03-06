@@ -1,6 +1,10 @@
 server:
   port: 18083
   
+security:  basic:    enabled: true  #启用基本认证(默认)
+  user:   #配置security用户名密码    name: user
+    password: password123
+  
 spring:
   application:
     name: config-server #应用程序名称
@@ -8,7 +12,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/xuwenjin/config-repo-xwj #git上，配置文件地址
+          uri: https://github.com/xuwenjin/config-repo-xwj #git上配置中心地址
   
       
    
