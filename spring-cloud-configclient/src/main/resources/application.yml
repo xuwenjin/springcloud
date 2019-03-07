@@ -1,8 +1,8 @@
 server:
   port: 18084
-
-    
-profile: xwj
+  
+management:  security:    enabled: false  #关闭actuator安全
+  
 
 
   
