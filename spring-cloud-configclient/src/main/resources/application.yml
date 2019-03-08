@@ -1,7 +1,7 @@
 server:
   port: 18084
   
-management:  security:    enabled: false  #关闭actuator安全
+management:  security:    enabled: false  #关闭actuator安全(默认为true)
   
 
 
