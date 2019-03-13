@@ -7,10 +7,10 @@ import com.xwj.operlog.MyLog;
 
 @Controller
 public class IndexController {
-	
+
 	@MyLog("登录")
 	@GetMapping("/login")
-	public void login(){
+	public void login() {
 	}
 
 }

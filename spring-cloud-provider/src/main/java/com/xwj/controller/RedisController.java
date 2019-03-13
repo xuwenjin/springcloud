@@ -19,6 +19,9 @@ import com.xwj.redis.JsonRedisTemplate;
 import com.xwj.service.IUserService;
 import com.xwj.service.RedisService;
 
+/**
+ * 测试redis
+ */
 @RestController
 @RequestMapping("redis")
 public class RedisController {
@@ -28,7 +31,7 @@ public class RedisController {
 
 	@Autowired
 	private IUserService userService;
-	
+
 	@Autowired
 	private JsonRedisTemplate redisTemplate;
 
@@ -54,15 +57,6 @@ public class RedisController {
 		});
 	}
 
-	@GetMapping("test2")
-	public void testExecute2() {
-		// service.setNumber(500);
-		for (int i = 0; i < 500; i++) {
-			ThreadA threadA = new ThreadA(service);
-			threadA.start();
-		}
-	}
-
 	@GetMapping("test1")
 	public void testExecute1() {
 		service.seckill();
@@ -75,7 +69,7 @@ public class RedisController {
 	public User findById() {
 		return userService.findById(10L);
 	}
-	
+
 	/**
 	 * 缓存击穿
 	 */
@@ -83,5 +77,5 @@ public class RedisController {
 	public void testSubscribe(@PathVariable String key) {
 		redisTemplate.opsForValue().set(key, key, 60, TimeUnit.SECONDS);
 	}
-	
+
 }
