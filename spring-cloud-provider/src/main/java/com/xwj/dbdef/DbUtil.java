@@ -3,7 +3,7 @@ package com.xwj.dbdef;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 数据库相关工具类

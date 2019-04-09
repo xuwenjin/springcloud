@@ -8,8 +8,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.common.hash.BloomFilter;
-import com.google.common.hash.Funnels;
 import com.xwj.entity.User;
 import com.xwj.redis.JsonRedisTemplate;
 import com.xwj.repository.UserRepository;
@@ -25,7 +23,7 @@ public class UserServiceImpl implements IUserService, InitializingBean {
 
 	private Map<Long, Long> idMap = new ConcurrentHashMap<Long, Long>();
 
-	private static BloomFilter<Long> bf = BloomFilter.create(Funnels.longFunnel(), 1000000);
+//	private static BloomFilter<Long> bf = BloomFilter.create(Funnels.longFunnel(), 1000000);
 
 	/**
 	 * 测试布隆过滤器
@@ -35,9 +33,8 @@ public class UserServiceImpl implements IUserService, InitializingBean {
 		List<User> userList = userRepository.findAll();
 		for (User user : userList) {
 			idMap.put(user.getId(), user.getId());
-			bf.put(user.getId());
+//			bf.put(user.getId());
 		}
-		System.out.println(idMap);
 	}
 
 	@Override
@@ -45,9 +42,9 @@ public class UserServiceImpl implements IUserService, InitializingBean {
 		// if (idMap.get(id) == null) {
 		// return null;
 		// }
-		if (!bf.mightContain(id)) {
-			return null;
-		}
+//		if (!bf.mightContain(id)) {
+//			return null;
+//		}
 
 		// 先从缓存中查询，查不到读数据库
 		User user = (User) redisTemplate.opsForValue().get("" + id);

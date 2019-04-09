@@ -3,8 +3,8 @@ package com.xwj.dbdef;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.CharUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.CharUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 实体与数据库字段转换工具类
