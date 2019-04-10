@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * redis配置
@@ -21,12 +20,7 @@ public class RedisConfig {
 
 	@Bean
 	public JedisPool jedisPoolFactory() {
-		JedisPoolConfig poolConfig = new JedisPoolConfig();
-		poolConfig.setMaxIdle(redisProperties.getPoolMaxIdle());
-		poolConfig.setMaxTotal(redisProperties.getPoolMaxTotal());
-		poolConfig.setMaxWaitMillis(redisProperties.getPoolMaxWait() * 1000);
-		JedisPool jp = new JedisPool(poolConfig, redisProperties.getHost(), redisProperties.getPort(),
-				redisProperties.getTimeout() * 1000);
+		JedisPool jp = new JedisPool(redisProperties.getHost(), redisProperties.getPort());
 		return jp;
 	}
 

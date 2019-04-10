@@ -14,11 +14,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<dependency>
-			<!-- eureka客户端 -->
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-eureka</artifactId>
-		</dependency>
+		<!-- <dependency> eureka客户端 <groupId>org.springframework.cloud</groupId> 
+			<artifactId>spring-cloud-starter-eureka</artifactId> </dependency> -->
 		<dependency>
 			<!-- 监控管理(如：状态页和健康指标) -->
 			<groupId>org.springframework.boot</groupId>
@@ -29,10 +26,11 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
-			<!-- redis -->
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -52,6 +50,15 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+		<!-- redis -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+		</dependency>
 		<!--spring切面aop依赖 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -62,6 +69,21 @@
 			<groupId>com.alibaba.csp</groupId>
 			<artifactId>sentinel-annotation-aspectj</artifactId>
 			<version>1.4.1</version>
+		</dependency>
+		<dependency>
+			<!-- spring integration -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-integration</artifactId>
+		</dependency>
+		<dependency>
+			<!-- spring integration与redis结合，实现redis分布式锁 -->
+			<groupId>org.springframework.integration</groupId>
+			<artifactId>spring-integration-redis</artifactId>
+		</dependency>
+		<dependency>
+			<!-- redis -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 	</dependencies>
 

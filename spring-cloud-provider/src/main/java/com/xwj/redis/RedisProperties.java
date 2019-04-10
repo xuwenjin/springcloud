@@ -1,15 +1,15 @@
 package com.xwj.redis;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Component
-@ConfigurationProperties(prefix = "redis") // 将配置文件中以redis开头的配置项赋值到该类的属性
+@Configuration
+@ConfigurationProperties(prefix = "spring.redis") 
 public class RedisProperties {
 
 	private String host;

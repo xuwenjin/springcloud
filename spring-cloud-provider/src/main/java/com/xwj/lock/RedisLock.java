@@ -31,12 +31,6 @@ public class RedisLock {
 	@Autowired
 	private JedisPool jedisPool;
 
-	// private final JedisPool jedisPool;
-	//
-	// public RedisLock(JedisPool jedisPool) {
-	// this.jedisPool = jedisPool;
-	// }
-
 	private final static ThreadLocal<String> idStore = new ThreadLocal<String>();
 
 	/**
@@ -57,8 +51,7 @@ public class RedisLock {
 			long end = System.currentTimeMillis() + ACQUIRE_TIMEOUT;
 			while (System.currentTimeMillis() < end) {
 				/*
-				 * 1.当前没有锁（key不存在），那么就进行加锁操作，并对锁设置个有效期，同时value表示加锁的客户端。
-				 * 2.已有锁存在，不做任何操作，返回null
+				 * 1.当前没有锁（key不存在），那么就进行加锁操作，并对锁设置个有效期，同时value表示加锁的客户端。 2.已有锁存在，不做任何操作，返回null
 				 */
 				String result = jedis.set(lockKey, identifier, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, TIMEOUT);
 				if (LOCK_SUCCESS.equals(result)) {
@@ -66,7 +59,7 @@ public class RedisLock {
 					log.info("lockTime:" + (System.currentTimeMillis() - start));
 					return true;
 				}
-				System.out.println("waiting...");
+//				System.out.println("waiting...");
 				try {
 					Thread.sleep(20);
 				} catch (InterruptedException e) {
