@@ -1,13 +1,7 @@
 package com.xwj.controller;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
-import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.redis.util.RedisLockRegistry;
@@ -20,7 +14,6 @@ import com.xwj.entity.User;
 import com.xwj.lock.RedisLock;
 import com.xwj.redis.JsonRedisTemplate;
 import com.xwj.service.IUserService;
-import com.xwj.service.RedisService;
 
 /**
  * 测试redis
@@ -28,9 +21,6 @@ import com.xwj.service.RedisService;
 @RestController
 @RequestMapping("redis")
 public class RedisController {
-
-	@Autowired
-	private RedisService service;
 
 	@Autowired
 	private IUserService userService;
@@ -44,33 +34,7 @@ public class RedisController {
 	private int num = 20;
 
 	@Autowired
-	private RedisLock lock;
-
-	@GetMapping("test")
-	public void testExecute() {
-		ExecutorService executor = Executors.newFixedThreadPool(10);
-		IntStream.range(0, 500).forEach(index -> {
-			Future<?> future = executor.submit(new Callable<Object>() {
-				@Override
-				public Object call() throws Exception {
-					service.seckill();
-					return null;
-				}
-			});
-			try {
-				future.get();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
-		});
-	}
-
-	@GetMapping("test1")
-	public void testExecute1() {
-		service.seckill();
-	}
+	private RedisLock lock; // 手写的redis锁
 
 	/**
 	 * 缓存击穿
@@ -120,7 +84,7 @@ public class RedisController {
 	}
 
 	/**
-	 * 测试redis分布式锁(有锁)
+	 * 测试redis分布式锁(有锁)-手写锁
 	 */
 	@GetMapping("testLock2")
 	public void testLock2() throws InterruptedException {
