@@ -51,7 +51,8 @@ public class UserServiceImpl implements IUserService, InitializingBean {
 		// 先从缓存中查询，查不到读数据库
 		User user = (User) redisTemplate.opsForValue().get("" + id);
 		if (user == null) {
-			user = userRepository.findOne(id);
+			user = userRepository.getOne(id);
+			user = userRepository.findById(id).get();
 		}
 		return user;
 	}
