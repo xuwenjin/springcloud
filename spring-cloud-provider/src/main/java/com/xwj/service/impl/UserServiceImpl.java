@@ -52,7 +52,6 @@ public class UserServiceImpl implements IUserService, InitializingBean {
 		User user = (User) redisTemplate.opsForValue().get("" + id);
 		if (user == null) {
 			user = userRepository.getOne(id);
-			user = userRepository.findById(id).get();
 		}
 		return user;
 	}
