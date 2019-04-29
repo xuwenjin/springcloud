@@ -1,0 +1,4 @@
+spring:
+  application:
+        # 注册到Nacos上的服务名称
+    name: nacos-client-provider
