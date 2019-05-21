@@ -24,6 +24,7 @@ public class UserController {
 	@Autowired
 	private IUserService userService;
 
+	@MyLog("查询")
 	@GetMapping("/findAll")
 	public List<User> findAll() {
 		return userService.findAll();

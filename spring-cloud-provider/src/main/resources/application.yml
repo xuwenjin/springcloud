@@ -7,7 +7,7 @@ app:
 jasypt:
   encryptor:
         #加密秘钥
-#    password: EbfYkitulv73I2p0mXI50JMXoaxZTKJ7
+#    password: EbfYkitulv73I2p0mXI50JMXoaxZTKJ
         #设置前缀后缀
     property:
       prefix: "ENC@["
@@ -18,14 +18,14 @@ server:
   
 spring:
   application:
-    name: service-provider #应用程序名称
-  #durid 数据库连接池
+    name: service-provider
   datasource: 
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://${app.db.host}:${app.db.port}/${app.db.dbname}?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8
     username: root
-    password: ENC@[XOH7Zk19KsQGYmNrTCm7tw==]
+#    password: ENC@[stqvirrvG8TcLz9mqflBDQ==]
+    password: 123456
   jpa:
     open-in-view: true
     hibernate:
