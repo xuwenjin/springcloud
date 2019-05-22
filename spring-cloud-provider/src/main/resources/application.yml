@@ -13,6 +13,7 @@ jasypt:
       prefix: "ENC@["
       suffix: "]"
     
+    
 server:
   port: 18081
   
@@ -38,6 +39,7 @@ spring:
     host: localhost #Redis服务器地址
     port: 6379 
     password: ## 密码（默认为空）
+  cloud:    sentinel:      transport:        dashboard: localhost:8888        
      
 #eureka:
 #  client:

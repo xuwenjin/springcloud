@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.TableGenerator;
 
-import com.xwj.dbdef.ColumnDef;
+import com.xwj.annotations.ColumnDef;
 
 import lombok.Getter;
 import lombok.Setter;

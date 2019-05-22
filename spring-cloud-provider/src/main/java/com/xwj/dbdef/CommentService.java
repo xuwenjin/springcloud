@@ -14,6 +14,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import com.xwj.annotations.ColumnDef;
+import com.xwj.annotations.TableDef;
+
 /**
  * 生成表备注服务
  */
