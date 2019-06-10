@@ -44,7 +44,7 @@ public @interface Limit {
 	int count();
 
 	/**
-	 * 类型
+	 * 限流类型
 	 */
 	LimitType limitType() default LimitType.CUSTOMER;
 

@@ -23,10 +23,13 @@ import com.xwj.redis.JsonRedisTemplate;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 限流-切面
+ */
 @Slf4j
 @Aspect
 @Configuration
-public class LimitInterceptor {
+public class LimitAspect {
 
 	@Autowired
 	private JsonRedisTemplate redisTemplate;
@@ -53,7 +56,7 @@ public class LimitInterceptor {
 		default:
 			key = StringUtils.upperCase(method.getName());
 		}
-		// 合并前缀和key，生成redis中的key
+		// 合并prefix和key，生成redis中的key
 		String sKey = StringUtils.join(limitAnnotation.prefix(), key);
 		ImmutableList<String> keys = ImmutableList.of(sKey);
 		try {
