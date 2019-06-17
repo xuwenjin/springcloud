@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
- * Spring Cloud Alibaba系列-nacos使用
+ * Spring Cloud Alibaba系列-nacos使用(提供者)
  */
 @SpringBootApplication
 @EnableDiscoveryClient

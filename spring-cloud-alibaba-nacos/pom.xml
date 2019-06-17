@@ -20,8 +20,15 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
+			<!-- nacos服务发现 -->
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+			<version>${spring-cloud-alibaba.version}</version>
+		</dependency>
+		<dependency>
+			<!-- nacos注册中心 -->
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
 			<version>${spring-cloud-alibaba.version}</version>
 		</dependency>
 	</dependencies>

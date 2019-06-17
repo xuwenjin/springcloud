@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * 使用feign
  */
 @FeignClient(name = "nacos-client-provider")
-public interface Client {
+public interface MyFeignClient {
 
 	/**
 	 * get请求

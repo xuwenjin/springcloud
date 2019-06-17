@@ -1,4 +1,20 @@
+server:
+  port: 18087
+  
 spring:
   application:
-        # 注册到Nacos上的服务名称
+    # 注册到Nacos上的服务名称
     name: nacos-client-provider
+#  profiles:#    active:#    - TEST
+  cloud:    nacos:
+    #nacos注册中心地址      config:        server-addr: 127.0.0.1:8848
+        #Nacos配置中心的Data ID对应：{prefix}.{file-extension}
+        prefix: example           #默认值为${spring.application.name}
+        file-extension: yml       #默认值为properties
+        #Nacos配置中心的Group对应：{group}
+#        group: DEV_GROUP          #默认值为DEFAULT_GROUP
+        #命名空间id
+        namespace: 40b3ec05-5fce-430d-b8a6-f0121e3cc5bb    #默认值是Public
+      #nacos服务发现地址
+      discovery:
+        server-addr: 127.0.0.1:8848

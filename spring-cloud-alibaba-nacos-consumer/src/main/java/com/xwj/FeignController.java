@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FeignController {
 
 	@Autowired
-	private Client feignClient;
+	private MyFeignClient feignClient;
 
 	@GetMapping("/test")
 	public String test() {
