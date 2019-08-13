@@ -137,7 +137,7 @@ public class TransactionRequiredService {
 
 		User2 user2 = new User2();
 		user2.setName("李四");
-		user2Service.addRequiredException(user2);
+		user2Service.addRequiredNoTransactionException(user2);
 	}
 
 	/**

@@ -23,7 +23,7 @@ public class TestTransactionController {
 	private TransactionRequiredNewService requiredNewService;
 
 	/**
-	 * 外围方法未开启事物-PROPAGATION_REQUIRED
+	 * 外围方法未开启事物-内部事物PROPAGATION_REQUIRED
 	 * 
 	 * 在外围方法未开启事务的情况下，Propagation.REQUIRED修饰的内部方法会新开启自己的事务，且开启的事务相互独立，互不干扰。
 	 * 
@@ -37,12 +37,12 @@ public class TestTransactionController {
 	}
 
 	/**
-	 * 外围方法开启事物-PROPAGATION_REQUIRED
+	 * 外围方法开启事物-内部事物PROPAGATION_REQUIRED
 	 * 
 	 * 在外围方法开启事务的情况下，Propagation.REQUIRED修饰的内部方法会加入到外围方法的事务中，所有Propagation.REQUIRED修饰
 	 * 的内部方法和外围方法均属于同一事务，只要一个方法回滚，整个事务均回滚
 	 * 
-	 * 在外围方法开启事务的情况下，如果内部方法也未开启事物，则内部方法相当于写在外围方法中一样
+	 * 在外围方法开启事务的情况下，如果内部方法也未开启事物，则内部方法相当于写在外围方法中一样，即内外所有方法是同一事物
 	 */
 	@GetMapping("test2")
 	public void test2() {
@@ -54,7 +54,7 @@ public class TestTransactionController {
 	}
 
 	/**
-	 * 外围方法未开启事物-PROPAGATION_REQUIRES_NEW
+	 * 外围方法未开启事物-内部事物PROPAGATION_REQUIRES_NEW
 	 * 
 	 * 在外围方法未开启事务的情况下，Propagation.REQUIRES_NEW修饰的内部方法会新开启自己的事务，且开启的事务相互独立，互不干扰。
 	 */
@@ -65,7 +65,7 @@ public class TestTransactionController {
 	}
 
 	/**
-	 * 外围方法开启事物-PROPAGATION_REQUIRES_NEW
+	 * 外围方法开启事物-内部事物PROPAGATION_REQUIRES_NEW
 	 * 
 	 * 在外围方法开启事务的情况下，Propagation.REQUIRES_NEW修饰的内部方法依然会单独开启独立事务，且与外部方法事务也独立，内部方法
 	 * 之间、内部方法和外部方法事务均相互独立，互不干扰。
@@ -74,7 +74,17 @@ public class TestTransactionController {
 	public void test4() {
 //		requiredNewService.transaction_exception_required_requiresNew_requiresNew();
 //		requiredNewService.transaction_required_requiresNew_requiresNew_exception();
-//		requiredNewService.transaction_required_requiresNew_requiresNew_exception_try();
+		requiredNewService.transaction_required_requiresNew_requiresNew_exception_try();
+	}
+
+	/**
+	 * 外围方法开启事物
+	 * 
+	 * 当@Transactional作用于非public方法时，@Transactional不生效
+	 * 
+	 */
+	@GetMapping("test5")
+	public void test5() {
 		requiredNewService.transaction_required_requiresNew_exception_protected();
 	}
 

@@ -24,5 +24,10 @@ public class User1Service {
 	public void addRequiresNew(User1 user) {
 		user1Repository.save(user);
 	}
+	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	protected void addRequiresNewProtected(User1 user) {
+		user1Repository.save(user);
+	}
 
 }

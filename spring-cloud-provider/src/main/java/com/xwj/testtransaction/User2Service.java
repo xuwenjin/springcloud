@@ -20,6 +20,11 @@ public class User2Service {
 		user2Repository.save(user);
 	}
 
+	public void addRequiredNoTransactionException(User2 user) {
+		user2Repository.save(user);
+		throw new RuntimeException();
+	}
+
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void addRequiredException(User2 user) {
 		user2Repository.save(user);
@@ -35,11 +40,6 @@ public class User2Service {
 	public void addRequiresNewException(User2 user) {
 		user2Repository.save(user);
 		throw new RuntimeException();
-	}
-
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	protected void addRequiresNewProtected(User2 user) {
-		user2Repository.save(user);
 	}
 
 }

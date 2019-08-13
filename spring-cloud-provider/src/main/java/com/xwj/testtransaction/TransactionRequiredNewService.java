@@ -91,19 +91,18 @@ public class TransactionRequiredNewService {
 	}
 
 	/**
-	 * 外围方法开启事物-测试将@Transactional作用于私有方法
-	 * 
-	 * 内部方法抛异常，外围方法捕获
+	 * 外围方法开启事物-测试将@Transactional作用于非public方法
 	 */
 	@Transactional
 	public void transaction_required_requiresNew_exception_protected() {
 		User1 user1 = new User1();
 		user1.setName("张三");
+//		user1Service.addRequiresNewProtected(user1);
 		user1Service.addRequiresNew(user1);
 
 		User2 user2 = new User2();
 		user2.setName("李四");
-		user2Service.addRequiresNewProtected(user2);
+		user2Service.addRequiresNewException(user2);
 	}
 
 }
