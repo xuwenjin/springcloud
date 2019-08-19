@@ -18,12 +18,18 @@ public class RedisConfig {
 	@Autowired
 	private RedisProperties redisProperties;
 
+	/**
+	 * 手写redis锁的配置类
+	 */
 	@Bean
 	public JedisPool jedisPoolFactory() {
 		JedisPool jp = new JedisPool(redisProperties.getHost(), redisProperties.getPort());
 		return jp;
 	}
 
+	/**
+	 * JsonRedisTemplate配置
+	 */
 	@Bean
 	public JsonRedisTemplate jsonRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
 		return new JsonRedisTemplate(redisConnectionFactory);

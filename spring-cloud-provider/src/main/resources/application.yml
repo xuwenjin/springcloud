@@ -21,12 +21,17 @@ spring:
   application:
     name: service-provider
   datasource: 
-    driver-class-name: com.mysql.jdbc.Driver
+    #log4jdbc
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://${app.db.host}:${app.db.port}/${app.db.dbname}?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8
+    driver-class-name: net.sf.log4jdbc.DriverSpy
+    url: jdbc:log4jdbc:mysql://${app.db.host}:${app.db.port}/${app.db.dbname}?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8
     username: root
-#    password: ENC@[stqvirrvG8TcLz9mqflBDQ==]
     password: 123456
+#    driver-class-name: com.mysql.jdbc.Driver
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    url: jdbc:mysql://${app.db.host}:${app.db.port}/${app.db.dbname}?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8
+#    username: root
+#    password: 123456
   jpa:
     open-in-view: true
     hibernate:
@@ -49,13 +54,14 @@ spring:
 #    prefer-ip-address: true #当猜测主机名时，服务器的IP地址应该在操作系统报告的主机名中使用
 #    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}} #更改Eureka实例ID
     
+    
+#spring boot默认日志
 logging:
-  level:
-    #root: INFO
-    #org.hibernate: INFO
-    jdbc: off
-    jdbc.sqltiming: debug
-    com:
-      xwj: debug
+  file: my.log   #日志文件名称(也可以带路径)
+  level:  #日志级别控制
+    jdbc: off  #日志最高级别，只打印sql及参数
+    jdbc.sqltiming: debug  #记录sql执行的时间
+    com:  #包名
+      xwj: info
    
       
