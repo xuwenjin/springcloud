@@ -2,6 +2,7 @@ D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\init\MyCommandLineRunner1.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\controller\ParallelController.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\entity\User.java
+D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\controller\RetryController.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\operlog\OperLogService.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\controller\LimiterController.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\entity\BaseEntity.java
@@ -13,6 +14,7 @@ D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\annotations\TableDef.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\redis\JsonRedisTemplate.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\operlog\OperLogRepository.java
+D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\service\MyRetryListener.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\testtransaction\User1.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\dbdef\DbUtil.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\dbdef\CommentService.java
@@ -25,11 +27,13 @@ D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\aspct\LimitAspect.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\operlog\MyLog.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\config\MyConfig.java
+D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\exception\HelloRetryException.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\repository\UserRepository.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\service\ParallelService.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\dbdef\ContextUtils.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\testtransaction\User2Repository.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\operlog\OperLogAspect.java
+D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\service\RetryService.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\testtransaction\User2Service.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\controller\RedisController.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\config\AopConfiguration.java
