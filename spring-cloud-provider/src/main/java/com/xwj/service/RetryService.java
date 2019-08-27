@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
@@ -59,12 +60,23 @@ public class RetryService {
 	@Retryable(value = HelloRetryException.class, maxAttempts = 5, backoff = @Backoff(delay = 1000, multiplier = 2))
 	public String hello2() {
 		long times = helloTimes.incrementAndGet();
-		// 此接口，每调5次才会成功
-		if (times % 5 != 0) {
+		// 此接口，每调6次才会成功
+		if (times % 6 != 0) {
 			log.warn("发生异常，time={}", LocalTime.now());
 			throw new HelloRetryException("发生hello异常");
 		}
 		return "hello";
+	}
+
+	/**
+	 * @Recover 用于@Retryable多次重试失败后处理方法，此注解注释的方法参数一定要是@Retryable抛出的异常，
+	 *          并且返回类型也要与@Retryable的一致，否则无法识别，可以在该方法中进行日志处理
+	 * 
+	 */
+	@Recover
+	public String recoverForRetry(HelloRetryException ex) {
+		log.error("重试失败");
+		return null;
 	}
 
 	/**
