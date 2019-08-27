@@ -46,7 +46,15 @@ public class RetryService {
 	/**
 	 * 自定义重试机制
 	 * 
-	 * 该方法调用将会在抛出HelloRetryException异常后进行重试，最大重试次数为5，第一次重试间隔为1s，之后以2倍大小进行递增，第二次重试间隔为2s，第三次为4s，第四次为8s。
+	 * value：指定处理的异常类
+	 * 
+	 * maxAttempts：最大重试次数。默认3次
+	 * 
+	 * backoff： 重试补偿策略。默认使用@Backoff注解
+	 * 
+	 * 
+	 * 该方法调用将会在抛出HelloRetryException异常后进行重试，最大重试次数为5，第一次重试间隔为1s，之后以2倍大小进行递增，
+	 * 第二次重试间隔为2s，第三次为4s，第四次为8s。
 	 */
 	@Retryable(value = HelloRetryException.class, maxAttempts = 5, backoff = @Backoff(delay = 1000, multiplier = 2))
 	public String hello2() {
@@ -87,8 +95,7 @@ public class RetryService {
 //				.withStopStrategy(StopStrategies.neverStop())
 
 				// 重试监听(可配置多个，顺序执行)
-				.withRetryListener(new MyRetryListener<>())
-				.withRetryListener(new RetryListener() {
+				.withRetryListener(new MyRetryListener<>()).withRetryListener(new RetryListener() {
 					@Override
 					public <V> void onRetry(Attempt<V> attempt) {
 						if (attempt.hasException()) {
