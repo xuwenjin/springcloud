@@ -1,4 +1,4 @@
-package com.xwj;
+package com.xwj.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

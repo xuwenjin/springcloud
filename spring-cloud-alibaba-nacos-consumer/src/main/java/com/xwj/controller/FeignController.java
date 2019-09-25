@@ -1,8 +1,10 @@
-package com.xwj;
+package com.xwj.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.xwj.feign.MyFeignClient;
 
 @RestController
 public class FeignController {
