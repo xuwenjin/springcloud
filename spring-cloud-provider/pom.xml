@@ -14,8 +14,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<!-- <dependency> eureka客户端 <groupId>org.springframework.cloud</groupId> 
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId> </dependency> -->
+	<!-- 	<dependency>
+			eureka客户端
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency> -->
 		<dependency>
 			<!-- 监控管理(如：状态页和健康指标) -->
 			<groupId>org.springframework.boot</groupId>
@@ -50,11 +53,8 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
-		<!-- <dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>27.1-jre</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>com.google.guava</groupId> <artifactId>guava</artifactId> 
+			<version>27.1-jre</version> </dependency> -->
 		<!-- redis -->
 		<dependency>
 			<groupId>redis.clients</groupId>

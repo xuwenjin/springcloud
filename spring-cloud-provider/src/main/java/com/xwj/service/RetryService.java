@@ -8,10 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.github.rholder.retry.Attempt;
-import com.github.rholder.retry.RetryListener;
 import com.github.rholder.retry.Retryer;
 import com.github.rholder.retry.RetryerBuilder;
 import com.github.rholder.retry.StopStrategies;
@@ -33,14 +32,17 @@ public class RetryService {
 	 * 
 	 *             只有当抛出异常才会重试
 	 */
+	@Async
 	@Retryable
 	public String hello() {
 		long times = helloTimes.incrementAndGet();
 		// 此接口，每调3次才会成功
-		if (times % 3 != 0) {
-			log.warn("发生异常，time={}", LocalTime.now());
+		if (times % 6 != 0) {
+//			log.warn("发生异常，time={}", LocalTime.now());
+			log.info("times:{}", times);
 			throw new HelloRetryException("发生hello异常");
 		}
+		log.info("times:{}, hello", times);
 		return "hello";
 	}
 
@@ -93,45 +95,54 @@ public class RetryService {
 				.retryIfResult(StringUtils::isEmpty)
 
 				// 固定等待：每次请求间隔1s
-//				.withWaitStrategy(WaitStrategies.fixedWait(1, TimeUnit.SECONDS))
+				.withWaitStrategy(WaitStrategies.fixedWait(1, TimeUnit.SECONDS))
 				// 每次等待时间递增(第一次执行等待2秒，后面每次递增1秒)
-				.withWaitStrategy(WaitStrategies.incrementingWait(2, TimeUnit.SECONDS, 1, TimeUnit.SECONDS))
+//				.withWaitStrategy(WaitStrategies.incrementingWait(2, TimeUnit.SECONDS, 1, TimeUnit.SECONDS))
 				// 随机等待(最大为5秒)
 //				.withWaitStrategy(WaitStrategies.randomWait(5, TimeUnit.SECONDS))
 
 				// 停止策略 : 尝试请求5次
-				.withStopStrategy(StopStrategies.stopAfterAttempt(5))
+				.withStopStrategy(StopStrategies.stopAfterAttempt(3))
 				// 10s后终止
 //				.withStopStrategy(StopStrategies.stopAfterDelay(10, TimeUnit.SECONDS))
 				// 不终止
 //				.withStopStrategy(StopStrategies.neverStop())
 
 				// 重试监听(可配置多个，顺序执行)
-				.withRetryListener(new MyRetryListener<>()).withRetryListener(new RetryListener() {
-					@Override
-					public <V> void onRetry(Attempt<V> attempt) {
-						if (attempt.hasException()) {
-							// 如果有异常，则打印出异常
-							attempt.getExceptionCause().printStackTrace();
-						}
-					}
-				})
+//				.withRetryListener(new MyRetryListener<>())
+//				.withRetryListener(new RetryListener() {
+//					@Override
+//					public <V> void onRetry(Attempt<V> attempt) {
+//						if (attempt.hasException()) {
+//							log.warn("重试异常");
+//							// 如果有异常，则打印出异常
+//							attempt.getExceptionCause().printStackTrace();
+//						}
+//					}
+//				})
 
 				.build();
 
 		return retryer.call(() -> {
 			long times = helloTimes.incrementAndGet();
-			log.warn("执行时间点={}", LocalTime.now());
-			// 此接口，每调5次才会成功
-			if (times % 5 == 1) {
-				throw new NullPointerException();
-			} else if (times % 5 == 2) {
-				throw new Exception();
-			} else if (times % 5 == 3) {
-				throw new HelloRetryException("重试异常");
-			} else if (times % 5 == 4) {
+//			log.warn("执行时间点={}", LocalTime.now());
+//			// 此接口，每调5次才会成功
+//			if (times % 5 == 1) {
+//				throw new NullPointerException();
+//			} else if (times % 5 == 2) {
+//				throw new Exception();
+//			} else if (times % 5 == 3) {
+//				throw new HelloRetryException("重试异常");
+//			} else if (times % 5 == 4) {
+//				return null;
+//			}
+			// 此接口，每调6次才会成功
+			if (times % 6 != 0) {
+//				log.warn("发生异常，time={}", LocalTime.now());
+				log.info("times:{}", times);
 				return null;
 			}
+			log.info("times:{},hello", times);
 			return "hello";
 		});
 

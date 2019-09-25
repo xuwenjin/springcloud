@@ -7,11 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.xwj.service.RetryService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 重试
  * 
  * @author xwj
  */
+@Slf4j
 @RestController
 @RequestMapping("retry")
 public class RetryController {
@@ -21,8 +24,11 @@ public class RetryController {
 	
 	@GetMapping("test")
 	public String testRetry() {
-//		return retryService.hello();
-		return retryService.hello2();
+		log.info("开始");
+		String hello = retryService.hello();
+		log.info("结束");
+		return hello;
+//		return retryService.hello2();
 	}
 	
 	@GetMapping("test2")
