@@ -1,5 +1,6 @@
 package com.xwj.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,19 @@ public class UserController {
 	@PostMapping("save")
 	public User save(@RequestBody User user) {
 		return userService.save(user);
+	}
+	
+	@GetMapping("saveAll")
+	public void saveAll() {
+		List<User> list = new ArrayList<>();
+		for (int i = 11; i < 10000; i++) {
+			User user = new User();
+			user.setAge(i);
+			user.setEmail(i + "@qq.com");
+			user.setLastName(i + "name");
+			list.add(user);
+		}
+		userService.saveAll(list);
 	}
 
 	@GetMapping("/findName")

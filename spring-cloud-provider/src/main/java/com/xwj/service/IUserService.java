@@ -11,5 +11,7 @@ public interface IUserService {
 	User findById(Long id);
 
 	User save(User user);
+	
+	void saveAll(List<User> userList);
 
 }
