@@ -1,5 +1,8 @@
 package com.xwj.redis;
 
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +36,17 @@ public class RedisConfig {
 	@Bean
 	public JsonRedisTemplate jsonRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
 		return new JsonRedisTemplate(redisConnectionFactory);
+	}
+
+	/**
+	 * 单机版Redisson配置
+	 */
+	@Bean
+	public RedissonClient redissonSingle() {
+		Config config = new Config();
+		config.useSingleServer().setAddress("redis://" + redisProperties.getHost() + ":" + redisProperties.getPort())
+				.setDatabase(1);
+		return Redisson.create(config);
 	}
 
 }

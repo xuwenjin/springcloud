@@ -3,6 +3,9 @@ package com.xwj.controller;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.redis.util.RedisLockRegistry;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +23,7 @@ import com.xwj.service.IUserService;
  */
 @RestController
 @RequestMapping("redis")
-public class RedisController {
+public class RedisController implements InitializingBean {
 
 	@Autowired
 	private IUserService userService;
@@ -31,10 +34,11 @@ public class RedisController {
 	@Autowired
 	private RedisLockRegistry redisLockRegistry;
 
-	private int num = 20;
-
 	@Autowired
 	private RedisLock lock; // 手写的redis锁
+
+	@Autowired
+	private RedissonClient redisson;
 
 	/**
 	 * 缓存击穿
@@ -58,9 +62,11 @@ public class RedisController {
 	@GetMapping("testUnLock")
 	public void testUnLock() throws InterruptedException {
 		String s = Thread.currentThread().getName();
+		int num = Integer.valueOf((String) redisTemplate.opsForValue().get("num"));
 		if (num > 0) {
 			System.out.println(s + "排号成功，号码是：" + num);
-			num--;
+			int remind = num - 1;
+			redisTemplate.opsForValue().set("num", remind + "");
 		} else {
 			System.out.println(s + "排号失败,号码已经被抢光");
 		}
@@ -74,9 +80,13 @@ public class RedisController {
 		Lock lock = redisLockRegistry.obtain("lock");
 		boolean isLock = lock.tryLock(1, TimeUnit.SECONDS);
 		String s = Thread.currentThread().getName();
-		if (num > 0 && isLock) {
-			System.out.println(s + "排号成功，号码是：" + num);
-			num--;
+		if (isLock) {
+			int num = Integer.valueOf((String) redisTemplate.opsForValue().get("num"));
+			if (num > 0) {
+				System.out.println(s + "排号成功，号码是：" + num);
+				int remind = num - 1;
+				redisTemplate.opsForValue().set("num", remind + "");
+			}
 		} else {
 			System.out.println(s + "排号失败,号码已经被抢光");
 		}
@@ -90,14 +100,49 @@ public class RedisController {
 	public void testLock2() throws InterruptedException {
 		if (lock.lock("xwj")) {
 			String s = Thread.currentThread().getName();
+			int num = Integer.valueOf((String) redisTemplate.opsForValue().get("num"));
 			if (num > 0) {
 				System.out.println(s + "排号成功，号码是：" + num);
-				num--;
+				int remind = num - 1;
+				redisTemplate.opsForValue().set("num", remind + "");
 			} else {
 				System.out.println(s + "排号失败,号码已经被抢光");
 			}
 		}
 		lock.unlock("xwj");
+	}
+
+	/**
+	 * 测试redis分布式锁(有锁)-redisson
+	 */
+	@GetMapping("testLock3")
+	public void testLock3() throws InterruptedException {
+		RLock disLock = redisson.getLock("DISLOCK");
+		boolean isLock;
+		try {
+			// 获取锁最多等待10秒，超时返回false
+			// 如果获取了锁，过期时间是5秒
+			isLock = disLock.tryLock(10000, 5000, TimeUnit.MILLISECONDS);
+			if (isLock) {
+				String s = Thread.currentThread().getName();
+				int num = Integer.parseInt((String) redisTemplate.opsForValue().get("num"));
+				if (num > 0) {
+					System.out.println(s + "排号成功，号码是：" + num);
+					int remind = num - 1;
+					redisTemplate.opsForValue().set("num", remind + "");
+				} else {
+					System.out.println(s + "排号失败,号码已经被抢光");
+				}
+			}
+		} finally {
+			// 无论如何, 最后都要解锁
+			disLock.unlock();
+		}
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		redisTemplate.opsForValue().set("num", "20");
 	}
 
 }

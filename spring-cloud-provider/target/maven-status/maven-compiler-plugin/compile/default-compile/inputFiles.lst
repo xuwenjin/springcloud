@@ -45,6 +45,7 @@ D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\testtransaction\User1Service.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\dbdef\TableBeanUtil.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\operlog\OperLog.java
+D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\util\TokenUtils.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\service\IUserService.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\init\MyCommandLineRunner2.java
 D:\workspace_xwj\spring-cloud-parent\spring-cloud-provider\src\main\java\com\xwj\dbdef\ColumnBean.java
