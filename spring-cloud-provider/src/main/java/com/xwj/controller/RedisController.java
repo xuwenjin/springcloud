@@ -118,12 +118,11 @@ public class RedisController implements InitializingBean {
 	@GetMapping("testLock3")
 	public void testLock3() throws InterruptedException {
 		RLock disLock = redisson.getLock("DISLOCK");
-		boolean isLock;
-		try {
-			// 获取锁最多等待10秒，超时返回false
-			// 如果获取了锁，过期时间是5秒
-			isLock = disLock.tryLock(10000, 5000, TimeUnit.MILLISECONDS);
-			if (isLock) {
+		// 获取锁最多等待10秒，超时返回false
+		// 如果获取了锁，过期时间是5秒
+		boolean isLock = disLock.tryLock(10000, 5000, TimeUnit.MILLISECONDS);
+		if (isLock) {
+			try {
 				String s = Thread.currentThread().getName();
 				int num = Integer.parseInt((String) redisTemplate.opsForValue().get("num"));
 				if (num > 0) {
@@ -133,10 +132,10 @@ public class RedisController implements InitializingBean {
 				} else {
 					System.out.println(s + "排号失败,号码已经被抢光");
 				}
+			} finally {
+				// 无论如何, 最后都要解锁
+				disLock.unlock();
 			}
-		} finally {
-			// 无论如何, 最后都要解锁
-			disLock.unlock();
 		}
 	}
 
