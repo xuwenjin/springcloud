@@ -1,5 +1,6 @@
 package com.xwj.controller;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.hash.BloomFilter;
+import com.google.common.hash.Funnels;
 import com.xwj.entity.User;
 import com.xwj.lock.RedisLock;
 import com.xwj.redis.JsonRedisTemplate;
@@ -40,6 +43,8 @@ public class RedisController implements InitializingBean {
 	@Autowired
 	private RedissonClient redisson;
 
+	private static BloomFilter<Long> bf = BloomFilter.create(Funnels.longFunnel(), 1000000);
+
 	/**
 	 * 缓存击穿
 	 */
@@ -54,6 +59,23 @@ public class RedisController implements InitializingBean {
 	@GetMapping("/subcribe/{key}")
 	public void testSubscribe(@PathVariable String key) {
 		redisTemplate.opsForValue().set(key, key, 60, TimeUnit.SECONDS);
+	}
+	
+	/**
+	 * 缓存穿透
+	 */
+	@GetMapping("/find/{id}")
+	public User findById(@PathVariable Long id) {
+		if (!bf.mightContain(id)) {
+			return null;
+		}
+
+		// 先从缓存中查询，查不到读数据库
+		User user = (User) redisTemplate.opsForValue().get("" + id);
+		if (user == null) {
+			user = userService.findById(id);
+		}
+		return user;
 	}
 
 	/**
@@ -142,6 +164,11 @@ public class RedisController implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		redisTemplate.opsForValue().set("num", "20");
+		
+		List<User> userList = userService.findAll();
+		for (User user : userList) {
+			bf.put(user.getId());
+		}
 	}
 
 }
