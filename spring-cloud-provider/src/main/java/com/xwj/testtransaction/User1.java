@@ -2,7 +2,7 @@ package com.xwj.testtransaction;
 
 import javax.persistence.Entity;
 
-import com.xwj.entity.BaseEntity;
+import com.xwj.core.domain.BaseEntity;
 
 import lombok.Getter;
 import lombok.Setter;

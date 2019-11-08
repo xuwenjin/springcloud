@@ -1,4 +1,4 @@
-package com.xwj.entity;
+package com.xwj.core.domain;
 
 import java.util.Date;
 
