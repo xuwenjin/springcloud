@@ -1,5 +1,7 @@
 package com.xwj.config;
 
+import java.time.Duration;
+
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,9 +13,9 @@ public class RestConfig {
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
 		return restTemplateBuilder
-				.setConnectTimeout(1000)
-				.setReadTimeout(1000)
-		           .build();
+				.setConnectTimeout(Duration.ofSeconds(1))
+				.setReadTimeout(Duration.ofSeconds(1))
+				.build();
 	}
 
 }
