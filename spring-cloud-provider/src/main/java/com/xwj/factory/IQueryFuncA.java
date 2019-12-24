@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
  * 
  * @author XU.WJ 2019年12月20日
  */
-@Service
+@Service("001")
 public class IQueryFuncA implements IBaseQuery {
 
 	@Override
