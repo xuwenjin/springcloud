@@ -26,11 +26,6 @@ spring:
     url: jdbc:log4jdbc:mysql://${app.db.host}:${app.db.port}/${app.db.dbname}?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
     username: root
     password: 123456
-#    driver-class-name: com.mysql.jdbc.Driver
-#    type: com.alibaba.druid.pool.DruidDataSource
-#    url: jdbc:mysql://${app.db.host}:${app.db.port}/${app.db.dbname}?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8
-#    username: root
-#    password: 123456
   jpa:
     open-in-view: true
     hibernate:
@@ -44,7 +39,7 @@ spring:
     port: 6379 
     password: ## 密码（默认为空）
   cloud:    sentinel:      transport:        dashboard: localhost:8888
-     
+   
 eureka:
   client:
     serviceUrl:
@@ -59,7 +54,7 @@ logging:
   file: my.log   #日志文件名称(也可以带路径)
   level:  #日志级别控制
     jdbc: off  #日志最高级别，只打印sql及参数
-    jdbc.sqltiming: debug  #记录sql执行的时间
+    jdbc.sqltiming: error #记录sql执行的时间
     com:  #包名
       xwj: info
    
