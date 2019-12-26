@@ -1,0 +1,50 @@
+app:
+  db:
+    host: 127.0.01
+    port: 3306
+    dbname: xwj
+
+server:
+  port: 18090
+  
+spring:
+  application:
+    name: quarts-one
+  datasource: 
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: net.sf.log4jdbc.DriverSpy
+    url: jdbc:log4jdbc:mysql://${app.db.host}:${app.db.port}/${app.db.dbname}?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+    druid:
+      initial-size: 1  #初始化时建立物理连接的个数。初始化发生在显示调用init方法
+      min-idle: 1      #最小连接池数量
+      max-active: 20   #最大连接池数量
+      max-wait: 10000  #获取连接时最大等待时间，单位毫秒
+      time-between-eviction-runs-millis: 600000   #1、Destroy线程会检测连接的间隔时间 2、testWhileIdle的判断依据
+      min-evictable-idle-time-millis: 300000
+      test-on-borrow: false   #申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。默认true
+      test-on-return: false   #归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。默认false
+      test-while-idle: true   #建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效
+      validation-query: SELECT 1  #用来检测连接是否有效的sql，要求是一个查询语句。如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会其作用。
+      keep-alive: true
+      remove-abandoned: true
+      remove-abandoned-timeout: 80
+      pool-prepared-statements: true
+      max-open-prepared-statements: 20
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL57InnoDBDialect
+
+logging:
+  level:
+    jdbc: off
+    jdbc.sqltiming: error #记录sql执行的时间
+    root: INFO
+    com.xwj: debug
+
+      
+   

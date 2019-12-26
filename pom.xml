@@ -36,6 +36,8 @@
 		<module>spring-cloud-alibaba-nacos</module>
 		<module>spring-cloud-alibaba-nacos-consumer</module>
 		<module>spring-cloud-provider-sleuth</module>
+		<module>spring-cloud-quartz-one</module>
+		<module>spring-cloud-quartz-two</module>
 	</modules>
 
 	<dependencies>
