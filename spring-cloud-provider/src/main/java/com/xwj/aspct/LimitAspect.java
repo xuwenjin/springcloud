@@ -19,6 +19,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.google.common.collect.ImmutableList;
 import com.xwj.annotations.Limit;
 import com.xwj.enums.LimitType;
+import com.xwj.exception.LimitException;
 import com.xwj.redis.JsonRedisTemplate;
 
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +68,7 @@ public class LimitAspect {
 			if (count != null && count.intValue() <= limitCount) {
 				return pjp.proceed();
 			} else {
-				throw new RuntimeException("You have been dragged into the blacklist");
+				throw new LimitException("操作太频繁");
 			}
 		} catch (Throwable e) {
 			if (e instanceof RuntimeException) {
@@ -84,8 +85,8 @@ public class LimitAspect {
 	 */
 	public String buildLuaScript() {
 		/**
-		 * KEYS[1] KEYS[2]，是要操作的键，可以指定多个，在lua脚本中通过KEYS[1], KEYS[2]获取
-		 * ARGV[1] ARGV[2]，参数，在lua脚本中通过ARGV[1], ARGV[2]获取。
+		 * KEYS[1] KEYS[2]，是要操作的键，可以指定多个，在lua脚本中通过KEYS[1], KEYS[2]获取 ARGV[1]
+		 * ARGV[2]，参数，在lua脚本中通过ARGV[1], ARGV[2]获取。
 		 * 
 		 * KEYS[1] = prefix + key = limittest
 		 * 
