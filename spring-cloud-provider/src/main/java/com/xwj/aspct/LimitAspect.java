@@ -17,10 +17,11 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.google.common.collect.ImmutableList;
-import com.xwj.annotations.Limit;
+import com.xwj.annotations.RequestLimit;
 import com.xwj.enums.LimitType;
 import com.xwj.exception.LimitException;
 import com.xwj.redis.JsonRedisTemplate;
+import com.xwj.utils.RequestUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,15 +36,12 @@ public class LimitAspect {
 	@Autowired
 	private JsonRedisTemplate redisTemplate;
 
-	private static final String UNKNOWN = "unknown";
-
-	@Around("execution(public * *(..)) && @annotation(com.xwj.annotations.Limit)")
+	@Around("execution(public * *(..)) && @annotation(com.xwj.annotations.RequestLimit)")
 	public Object interceptor(ProceedingJoinPoint pjp) {
 		MethodSignature signature = (MethodSignature) pjp.getSignature();
 		Method method = signature.getMethod();
-		Limit limitAnnotation = method.getAnnotation(Limit.class);
+		RequestLimit limitAnnotation = method.getAnnotation(RequestLimit.class);
 		LimitType limitType = limitAnnotation.limitType();
-		String name = limitAnnotation.name();
 		String key;
 		int limitPeriod = limitAnnotation.period();
 		int limitCount = limitAnnotation.count();
@@ -64,7 +62,7 @@ public class LimitAspect {
 			String luaScript = buildLuaScript();
 			RedisScript<Number> redisScript = new DefaultRedisScript<>(luaScript, Number.class);
 			Number count = redisTemplate.execute(redisScript, keys, limitCount, limitPeriod);
-			log.info("Access try count is {} for name={} and key = {}", count, name, key);
+			log.info("Access try count is {} and key = {}", count, key);
 			if (count != null && count.intValue() <= limitCount) {
 				return pjp.proceed();
 			} else {
@@ -113,22 +111,10 @@ public class LimitAspect {
 
 	/**
 	 * 获取IP地址
-	 * 
-	 * @return
 	 */
 	public String getIpAddress() {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 				.getRequest();
-		String ip = request.getHeader("x-forwarded-for");
-		if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
-			ip = request.getHeader("Proxy-Client-IP");
-		}
-		if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
-			ip = request.getHeader("WL-Proxy-Client-IP");
-		}
-		if (ip == null || ip.length() == 0 || UNKNOWN.equalsIgnoreCase(ip)) {
-			ip = request.getRemoteAddr();
-		}
-		return ip;
+		return RequestUtil.getRealIpAddr(request);
 	}
 }

@@ -10,18 +10,13 @@ import java.lang.annotation.Target;
 import com.xwj.enums.LimitType;
 
 /**
- * 限流
+ * 请求限流
  */
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface Limit {
-
-	/**
-	 * 资源的名字
-	 */
-	String name() default "";
+public @interface RequestLimit {
 
 	/**
 	 * 资源的key
