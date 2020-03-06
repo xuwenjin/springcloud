@@ -13,6 +13,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * 请求参数过滤器(一次请求只通过一次filter，而不需要重复执行)
+ * 
+ * SpringBoot2.X 需要在启动类中加上@ServletComponentScan注解，@WebFilter才能被识别
  */
 @WebFilter(filterName = "paramFilter", urlPatterns = "/*") // 过滤器拦截所有请求
 @Order(100)
