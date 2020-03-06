@@ -10,10 +10,12 @@ import lombok.Data;
 @Data
 public class SecurityRequest implements Serializable {
 
-	private static final long serialVersionUID = -6282882717756071909L;
+	private static final long serialVersionUID = 1L;
 
+	/** 秘钥 */
 	private String key;
 
+	/** 数据 */
 	private String data;
 
 }

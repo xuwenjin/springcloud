@@ -4,13 +4,14 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import com.xwj.auth.AuthUtil;
+import com.xwj.common.AuthConsts;
 import com.xwj.common.RsaKey;
-import com.xwj.interceptor.AuthUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 初始化App的参数
+ * 初始化鉴权参数
  */
 @Slf4j
 @Component
@@ -18,99 +19,47 @@ public class AuthInit implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		log.info("初始化APP参数");
+		log.info("初始化鉴权参数");
 		AuthUtil.blackLimit.add("55.55.10.1");
 		AuthUtil.blackLimit.add("55.55.10.2");
 		initDefaultRSAKey();
-		initRSAKey();
+		initWxRSAKey();
 	}
-	
+
 	/**
 	 * 默认appId和Key做映射
 	 */
 	private void initDefaultRSAKey() {
 		RsaKey appkey = new RsaKey();
-		String requestPublicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC6PVGn6JsplXEJHtiLF5vM24sA\r\n"
-				+ "+oYsz8umkE28Koy9yrj0jteOWjZ3zTIJdwwtBL2YgCFWmUqBjPL33X5t83/d4XAc\r\n"
-				+ "dbrONccdLL+dUjmFZBWmHQA1AwHxbeDNMOku2rKwFY9t4Fm/5SOOrT8PAB/JycEp\r\n" + "pvuG1xUpG2JLROo0TwIDAQAB";
-		String requestPrivateKey = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBALo9UafomymVcQke\r\n"
-				+ "2IsXm8zbiwD6hizPy6aQTbwqjL3KuPSO145aNnfNMgl3DC0EvZiAIVaZSoGM8vfd\r\n"
-				+ "fm3zf93hcBx1us41xx0sv51SOYVkFaYdADUDAfFt4M0w6S7asrAVj23gWb/lI46t\r\n"
-				+ "Pw8AH8nJwSmm+4bXFSkbYktE6jRPAgMBAAECgYB5bYWR/r08Da3Xjn8NoWT52qL1\r\n"
-				+ "DmLxUMKtZSTp7Kw7CrQw7/lnXTZqQiW/uhj8OT0M823JMsU7VpUMOyQ1uC/Dc5Uw\r\n"
-				+ "sZkSBVDg76e78MlyR4fqY+KZU2IqLKnQhclogoo4dq6MxZbUQMuBxjVwuWaTJOgj\r\n"
-				+ "sFwFWfN5djMSPvKuQQJBAOyTALNX86w3hrH9LTTzaswuglvH1TWe5WWnNYLvJudV\r\n"
-				+ "Btr4hF1eDaMfyxfk9GzBeQRVNs2ZLGYm2LdOov9GQP8CQQDJiDycHcpb6k27eLCZ\r\n"
-				+ "eSE2s7Zk8HMhNJ5anV+OquYTxfvy258W26s27r5opqohKHz29d9QrkxcuVUKvwY2\r\n"
-				+ "ZLyxAkEAxgHgMzupKvqqlW0Hmmsmd1FyMGmYrbGZ5TRHmJicYkELZNleyFsBZQgm\r\n"
-				+ "T5CFeEWTCapdHUZYIAPhncOGr8zYdwJAQqyR8MxiUHp58RYCxyOt+10FcOukC05P\r\n"
-				+ "PYdnP9oGeHA95KEIRxWx1WCzGghZrNKqVUIO+bBQjzS5j+6W7ZPyYQJBAJ+dfmek\r\n"
-				+ "IINlufRXf2IPmuUT45vD5a8x8BH41Ph06kFcasnR+YVPdFtULPDYhM7fKawxd+Kp\r\n" + "msvJUTQXTtjFR9M=";
+		String requestPublicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC+A+RXQMh7nEpKaOclUyrlQr4l4sT99QnyvM2/hRotFVLyvMXsgrXweWm9N5RU4NVnergdSn143uvYp5Ec6sHTu+s/MwHGG/d7EJR8up8GJHMtHkW44sGiYerl26lZxFo3AFrmrOSLELds5MBM+5CgCHKqyiYxxmvIiEuoemB4CQIDAQAB";
+		String requestPrivateKey = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAL4D5FdAyHucSkpo5yVTKuVCviXixP31CfK8zb+FGi0VUvK8xeyCtfB5ab03lFTg1Wd6uB1KfXje69inkRzqwdO76z8zAcYb93sQlHy6nwYkcy0eRbjiwaJh6uXbqVnEWjcAWuas5IsQt2zkwEz7kKAIcqrKJjHGa8iIS6h6YHgJAgMBAAECgYB5cUdZNMBtsGAS2qUQx+zchiG9WQgKP7hR+bWOOGWYds6C8X+WP5xEy3R3SLR24xPBhT9zCQ7UV7VozQAD+U5TBuDgsSWOtg3tnBHuTtwBK890ZbEv6z2EUP2QoK7iP+v5lJI1nTJpZtZ65OVKQv9GHeQ3TJp1ae27KT2svey/WQJBAPnoY2PTAODjbdM+l8pLml0f2Vd83nzVXK8OmQbkOdUQv7B+yHxt6zjGq9UMeOudnYObPFdS/81oRN/YGaZpSm8CQQDCpbqu3KDbBVxmZchhJfYHfvCiujMHfIa81fVYTK3rdahZlDR9J4ifh2yvbYXnCh4yyDfKpCVw67hr7U49mwEHAkAGe4S4fiyzqLKcnC8LzFJAwCa/IjoTOuWglNxbVWg6oqiWR3Oj5qYHXv/uEtjAI+KGG2zBRyHjjiTbOZvQuUJ5AkEAqSfRtsjx2aUtCagGnbaZuyXsBd7/HdBwX4cpMlVhB7E2XrLXcrR6nPjZ0RLDPWejmso5AhfomdugZ9rRFeSw3QJADB2KQH5Nt7bhLedJvNthEqtqVE6zuXBraiOGWwYsFSv5h109AgeuVZQZiY7Sl2WUnYHIH//003dllZRwwdzl5A==";
 		appkey.setRequestPublicKey(requestPublicKey);
 		appkey.setRequestPrivateKey(requestPrivateKey);
-		String responsePublicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC4QEQsZ5UhHwerno7eURzdcUhA\r\n"
-				+ "LHAgyn7dMSDFCCLQbRyOSgHnYGK8XJ/4A0jF9PypBZ+4lYuF5MTgOO4dOhebTPu8\r\n"
-				+ "5JB3lokARat8xqV376KCgeeWKIPoAJjhX2mjvJNGUYhtozpEAFeP3pf40AFerixm\r\n" + "+vTO8sHeJQarCa9xfwIDAQAB";
-		String responsePrivateKey = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBALhARCxnlSEfB6ue\r\n"
-				+ "jt5RHN1xSEAscCDKft0xIMUIItBtHI5KAedgYrxcn/gDSMX0/KkFn7iVi4XkxOA4\r\n"
-				+ "7h06F5tM+7zkkHeWiQBFq3zGpXfvooKB55Yog+gAmOFfaaO8k0ZRiG2jOkQAV4/e\r\n"
-				+ "l/jQAV6uLGb69M7ywd4lBqsJr3F/AgMBAAECgYB9ZafAPOL+/rper/P2FGg7wcx1\r\n"
-				+ "eIj7mDVNXxE5Z7ch+RCVOoMfMLciETwCNGID8B9A/YXdv1GM18yx+az9ETtcnAoX\r\n"
-				+ "rGB2rX85UQqxSwBj6L3cPte49YP0PM9YZF6GPlcEDTZ8Ae4KvXlWlX1kUrbTUQ+o\r\n"
-				+ "rFXG+2aih7opEAzBsQJBAN6pw/U8rA+Xm9GOnpkCvqEK+y+aOHRtbzeitvFOXvBK\r\n"
-				+ "40SdD3sQ6XuTp1+xRv6NZxpJNgcIb2mVKlroX0DjmxkCQQDT1j3LhIR9P9vG2ROR\r\n"
-				+ "rt/8Iiww53NPuKHLlkHTd40Qqu6rN9h/ii5m09RMn4Crhn592QuWq7LK17waoOCN\r\n"
-				+ "NxxXAj8o4QIZBAqS0kLJNmXnsZlN97YmBypWNcE1daogo0LK2vTeo/czoOc8yN7x\r\n"
-				+ "sppWIZ/MM6S3pdTOjZQ5HHBgeWkCQQDQxPeptzQLa//g/Na4YKwGBHegyrlt+/wY\r\n"
-				+ "dEDzc4Lmxk7pFuSa7UfFt0YnLZrVcHsA9ALjvts55VtQsvQauBGJAkBRgmqNfjJu\r\n"
-				+ "JH1LCaw2lkDVafFtHo/IteXj92DNj+VkzdvUsYKTT1T2SdHMM2cln8L7BDxJ8LxY\r\n" + "IZ5U62L4VNQ6";
+
+		String responsePublicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCt3g2eaNhWfirOH7BNGZ3BPkk/qWMbVQB3OopbxQuoc7wc7HKRoVvqFTeXlm/l9xb/LzL2iI0dIroyzuTJnhYiHXXJSFHC0IKEhDTqeQ7IfoPk64C0154Bze7O/t8McmtqhVbXIMLPCcgf1uB3FT2+7QChg+Ko6l4ZYd+/5btzmQIDAQAB";
+		String responsePrivateKey = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAK3eDZ5o2FZ+Ks4fsE0ZncE+ST+pYxtVAHc6ilvFC6hzvBzscpGhW+oVN5eWb+X3Fv8vMvaIjR0iujLO5MmeFiIddclIUcLQgoSENOp5Dsh+g+TrgLTXngHN7s7+3wxya2qFVtcgws8JyB/W4HcVPb7tAKGD4qjqXhlh37/lu3OZAgMBAAECfzcDC0wT4F99jA2r+Rxr/n4mNwbtkW4UdxFCdISU1Bt4gwyjw5xQccSe8fgEoWMhyyTyyi03B28wjbmFvN4OJvIdoaGVifDvmoEUahpXG0ckrE5oex/1RiXIDNKB+Fr0Kr+fQKr00u7SW+5+9QklwbWNvRCTUStcT1QEQiPlgdECQQDxt6uk2dfMnsDerae1DX2kCoBWx16VMzeHrVd549N8ma9in5l+rM1dqdsx8zeqx1P8m7T13g34J8XORSpUKbi9AkEAuCQNJ6v8ekRZMNjbPpoz8MCp2u1hg4bmiylvb4OOiLY6ONXt9d13uv9xWW0lzRgOTctEDmQ5/VbqP5PEfI96DQJBANLtiQ3IvySi4AExHmjCxgGw3D9dqK6fy/RMkkoeQf24CrEQPpyo5Gi4gTt8VvZjDGoh4e6vgBctddJCzuY0pi0CQHnTqDxqBhViaNvvbUZCwUB0RyxHxy88rgS9+jL+B+wdG/IEX3Y9+vvmCrkOhGbnlncTl0gqOU+KFFrRybpbNnUCQQCP2qX2TZie9vGdtKTrAPp2fQwD7e8aQNS2i7kRCleZKG8TQLr6h9gxlp2r3vZKyTgILPlJbeEelIooS1uDnaII";
 		appkey.setResponsePublicKey(responsePublicKey);
 		appkey.setResponsePrivateKey(responsePrivateKey);
-		AuthUtil.rsaKeyMap.put("eyc_app_20190501", appkey);
+
+		AuthUtil.rsaKeyMap.put(AuthConsts.DEFAULT_APPID, appkey);
 	}
 
 	/**
 	 * 将AppId和Key做映射
 	 */
-	private void initRSAKey() {
+	private void initWxRSAKey() {
 		RsaKey appkey = new RsaKey();
-		String requestPublicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDkW0N2lGrfWUiN6OSxM5DpMP7D\r\n"
-				+ "UHewxsHuDlrOjDUE6P2pO4SdCcanNBBxAN0iXuVhlzm27AOVvCKg+JIpckT6t9tc\r\n"
-				+ "k2FI1sVzP/80tx4J1ONtUROHrrc4GT3QXMIjP/0Rw0qnma59lnMtwQnHd7JqKr/k\r\n" + "WGd3vhpnJiUeAwO5qwIDAQAB";
-		String requestPrivateKey = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAORbQ3aUat9ZSI3o\r\n"
-				+ "5LEzkOkw/sNQd7DGwe4OWs6MNQTo/ak7hJ0Jxqc0EHEA3SJe5WGXObbsA5W8IqD4\r\n"
-				+ "kilyRPq321yTYUjWxXM//zS3HgnU421RE4eutzgZPdBcwiM//RHDSqeZrn2Wcy3B\r\n"
-				+ "Ccd3smoqv+RYZ3e+GmcmJR4DA7mrAgMBAAECgYBnMns1bnMxxlaMkzAuiIA3cgXf\r\n"
-				+ "3FCK2fewDlqpNyGKu4RO42/VzCIzU8sOVnaY3svIo5/Yc6ZXF7OKjWr4QgS7cnOh\r\n"
-				+ "s8bjftXmiSDjjXYKV8zxiMcrR4v+uwqBBqsdWBT6dH3Ju2akZ9dX35JEFbrB9G1k\r\n"
-				+ "9ynCDDX32jmdKuCboQJBAPzzVjGMkqrK8ZOULofTeMEsFhorECRHeejKUXVZn7LP\r\n"
-				+ "r7XNxMbOxB4TNXw2sBQL0DO3IV546tsk1UlFCeFyKPsCQQDnHAYlLoRi9STtMK6a\r\n"
-				+ "mPU9zL+JmtH7amy2rUlsiX1Kr/D0ZKN4970Ci91p5WkJnGMnXd9iHdaOlFhWYCPb\r\n"
-				+ "vzMRAkEAx49S2RSGQaiKnluxugbkpcIaTdrbiUO6siWrzmE+1Nt1TIFiVVaa8v9E\r\n"
-				+ "mxKqJ6aKQ8Ke2OGcp/ePLZcCDJL8MQJBANSWvbxkHtlcgTxCRMrnGuhfOG2e4btw\r\n"
-				+ "uVIM8vaJPpx+XZqiHJHA6be26tRneAikN71Vp498vQnowZ2q0DFqntECQHDgXC+8\r\n"
-				+ "WouhZDq4APO4Zzb8Hoi+o6q8Jpt0D23btr/IwKuwJH9WQJWvhw7tYNlxnrW39OOp\r\n" + "aycRvDszMCKFEfo=";
+		String requestPublicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCCIsx4Vy/27i6tTiJoeuhazDVNb+B8ikvdCgQKolRtVU+KvTGmof/v66VEJ6/rdm2IzT2UdnsTRZmaY5mDLEsrqyj9svoSb923Yfky+APc2nX8Mz8RY6oWCs+NcdZDN7oFNV4/MYnD7flLK+xQ7GQaO0t81Oq4Kv/1iR8uNmyc0wIDAQAB";
+		String requestPrivateKey = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAIIizHhXL/buLq1OImh66FrMNU1v4HyKS90KBAqiVG1VT4q9Maah/+/rpUQnr+t2bYjNPZR2exNFmZpjmYMsSyurKP2y+hJv3bdh+TL4A9zadfwzPxFjqhYKz41x1kM3ugU1Xj8xicPt+Usr7FDsZBo7S3zU6rgq//WJHy42bJzTAgMBAAECgYAF61lLnAOlgr4CygwMnpKVFrbR9+XJJG1A96SpayrV8kx07hglETdYDWruB7QbzL48u8EyUJVWkhLjj+Y6rjgZCsrgc26sJ34v3q2THIUudhwFmYnmzI7z2lq+YRGl/vODWoGMSxgXdsEEZagIupNEy7pimqlqP4szg9S2cjzsoQJBALszhHrsXp21QXblUsB4xnYNqNj5PNE53hLMNIG1OS0b3VJ79MlMwp4XZoNDmjjzaSBDofto3jSwR2qQT6n91aMCQQCx9mWywvBZpJuhRVv1OI+gOPJDYunqe9zTosInWIKlwRTn349PuvBoUOtioc93lYBT3akfaN5uajYPbJScza8RAkAWJhBEovbG3g0yzgsubpu8l/0kPsjtUFVwD+0ec5yiM6vJ+JSLxKM6JTahzTvQBSyo/peJsWyo+zpX518lk7zVAkApMjO6nPvMlJleTNMLwislWOlkBgrGOCQXbc7qEsgznK29O3hOaaTrUQgcTf7b3OTXBTH4TmtnPfkDuwvv/IExAkAkdLo8y20llEQ4iWQOyKv9151rO2HmRRH6dDeTstFci83/RU8SRFLXkNG8KCLvTBGczLF8dzapi9XoaJiG7O2q";
 		appkey.setRequestPublicKey(requestPublicKey);
 		appkey.setRequestPrivateKey(requestPrivateKey);
-		String responsePublicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCowDs6P6bMEjT45ZRNC3ItoGNw\r\n"
-				+ "Gc5gmO0M+VbxvDKaOg2CqP4wczA0ugfZ0mY+kwWlUu6gDB67O42cIDUL8wqyncUH\r\n"
-				+ "tJNIgo3VRSDqN6kOD8HcdYU6OiK9hgSVpbqdzR69oZx/RMjDlK92XRlSyIB4hI71\r\n" + "vzgv5gkrkf1UkIAr/wIDAQAB";
-		String responsePrivateKey = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKjAOzo/pswSNPjl\r\n"
-				+ "lE0Lci2gY3AZzmCY7Qz5VvG8Mpo6DYKo/jBzMDS6B9nSZj6TBaVS7qAMHrs7jZwg\r\n"
-				+ "NQvzCrKdxQe0k0iCjdVFIOo3qQ4Pwdx1hTo6Ir2GBJWlup3NHr2hnH9EyMOUr3Zd\r\n"
-				+ "GVLIgHiEjvW/OC/mCSuR/VSQgCv/AgMBAAECgYAa8ugCe1vFxzqSbQdr7mIDi1OV\r\n"
-				+ "+WkN4B4rLj6GSEnEe3Tg4uAFGMAgC31pecI+R/hk2IOnJ4hY2j/ZKQOPrvaMIWbr\r\n"
-				+ "iudaoGbbztqIWgNzbyO4tV5p/eu4zVEMU4CVtOAYSd1zMhmh4KjYEhPyJ7Y189ZG\r\n"
-				+ "96MiyPYfRd+whkeD8QJBANEYastvzru5KRJLeb4qqBHi4aO6TQuQxmtoemIvAVaV\r\n"
-				+ "aK5I5iPR2WV+Wzl1NdKKa0aBpgZNI5hDBrZiIDbquVsCQQDOmvp/45jlXp9v+c58\r\n"
-				+ "bw0KRLzcFmCTpYQEmWyz5J3Yk97CjzTBWp1r1doNetGVPJpgVuq0OCLai2KL5DuX\r\n"
-				+ "RXUtAkEArK3YjHeiqH9qvtQcD4OU12iiZZ+WvyVp6AwZffpJxaKQF9bWUOCeA+aN\r\n"
-				+ "Ge+FaoGrxEePwAZ2jelUosx4xEGmnwJBALUDbZPdCZl0ZMZLnJDDDy6++KTvaiAR\r\n"
-				+ "9O++qFGYbH9TVukpZPQ++wt+qvQCdluFZFAh9rJ9OHQ3iNi910P60+UCQA0Fz3TK\r\n"
-				+ "SVkDJH7iZvs5n+5B2R400eGK/AXghwP2cpdXqppRHPuXuc/8J+d3YwEF2GQ9dd0a\r\n" + "JaV4pNnu4jVRczc=";
+
+		String responsePublicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDBrZoTIgeC/FzAsqE80ZfUe/fPqLq7gfUKMMFo7BFJi871xsTDR5Zm2p2TOYv59cyKi+JaJZTl1+F6kzHsEWJq+h0tWNyF9vp8xB1LvCZNELvE2qyzL+fuQt2Pl66Ok/MWO8hhuHLahJAWQ9zXV4xhj626B7yqACA7uliLb8CRNQIDAQAB";
+		String responsePrivateKey = "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAMGtmhMiB4L8XMCyoTzRl9R798+ouruB9QowwWjsEUmLzvXGxMNHlmbanZM5i/n1zIqL4lollOXX4XqTMewRYmr6HS1Y3IX2+nzEHUu8Jk0Qu8TarLMv5+5C3Y+Xro6T8xY7yGG4ctqEkBZD3NdXjGGPrboHvKoAIDu6WItvwJE1AgMBAAECgYA3xX3wtIPlPDaZZtb3ZIOMNIaPzc634Bxn6tJHHHN98jyOmcZfVWYCCEIH+zJLsHROESoFO309EoVjfq+JgxgLpdPJ6w3utLhYOeL3JfLGHo3j7hzNTW2QDGb1Qc10cpif+PRgUsOrv2tCqPNZFBitagT4uQtDOTgf5CqixY1WAQJBAOeA9Jt6dBlkSRcEBlES1Ya1EE98lnzIRgnP3QIS6qbwslP7NxS/pQwtwtiTEb0gZhXjNqTX+HVo3s3wRlNzA6UCQQDWLAPMJNcetkHA6ijBpj12cCdN3Sf0oZcokmVOtQ7RYFWPMI3WwlA7oENNCbeckYKMGUMPftfluDdRMEmqdqJRAkBEM0Zcg3+ud0/c+u+NdNn43GCYuiBvVGTlwRnf4YjFc4Vlnk2EzEyoQNb1DKaeK+xHKG/Rslpc5G83BkEBlpGNAkAUfyHd56iux8KDM+WyorY/H3yjdwbb4psUxu3rGmjQoOePTJZGd1I2YqAOP1/THBniToiccwc2dOrWWkiyh6gBAkBicSPEpxd5ZzZIBQ6UcCmfjDL53m5Se2Kr8fCHoGzAtkbm6/smbQv8gn5sftwCvhBehqBmc5o3XepNQ3WVwIZR";
 		appkey.setResponsePublicKey(responsePublicKey);
 		appkey.setResponsePrivateKey(responsePrivateKey);
-		AuthUtil.rsaKeyMap.put("eyc_app_20190918", appkey);
+
+		AuthUtil.rsaKeyMap.put(AuthConsts.WX_APPID, appkey);
 	}
 
 }

@@ -7,8 +7,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.xwj.enums.LimitType;
-
 /**
  * 请求限流
  */
@@ -19,28 +17,13 @@ import com.xwj.enums.LimitType;
 public @interface RequestLimit {
 
 	/**
-	 * 资源的key
-	 */
-	String key() default "";
-
-	/**
-	 * Key的prefix
-	 */
-	String prefix() default "";
-
-	/**
 	 * 给定的时间段(秒)
 	 */
-	int period();
+	long period() default 60;
 
 	/**
 	 * 最多的访问限制次数
 	 */
-	int count();
-
-	/**
-	 * 限流类型
-	 */
-	LimitType limitType() default LimitType.CUSTOMER;
+	long count() default Integer.MAX_VALUE;
 
 }

@@ -21,6 +21,7 @@ import lombok.SneakyThrows;
 public class RSAUtil {
 
 	private static final String ALGORITHM = "RSA";
+	private static final int KEY_SIZE = 1024;
 	public static final String PUB_KEY = "pub";
 	public static final String PRI_KEY = "pri";
 
@@ -30,7 +31,7 @@ public class RSAUtil {
 	@SneakyThrows
 	public static KeyPair initKeyPair() {
 		KeyPairGenerator generator = KeyPairGenerator.getInstance(ALGORITHM);
-		generator.initialize(1024);
+		generator.initialize(KEY_SIZE);
 		return generator.generateKeyPair();
 	}
 
@@ -38,14 +39,14 @@ public class RSAUtil {
 	 * 生成秘钥
 	 */
 	@SneakyThrows
-	public static Map<String, byte[]> generateKey() {
+	public static Map<String, String> generateKey() {
 		KeyPair keyPair = initKeyPair();
 		byte[] publicKeyBytes = keyPair.getPublic().getEncoded();
 		byte[] privateKeyBytes = keyPair.getPrivate().getEncoded();
-		Map<String, byte[]> map = new HashMap<>();
-		map.put(PUB_KEY, publicKeyBytes);
-		map.put(PRI_KEY, privateKeyBytes);
-		return map;
+		Map<String, String> keyMap = new HashMap<>();
+		keyMap.put(PUB_KEY, Base64Util.encode(publicKeyBytes));
+		keyMap.put(PRI_KEY, Base64Util.encode(privateKeyBytes));
+		return keyMap;
 	}
 
 	/**
@@ -57,7 +58,7 @@ public class RSAUtil {
 		Cipher cipher = Cipher.getInstance(ALGORITHM);
 		cipher.init(Cipher.ENCRYPT_MODE, key);
 		byte[] result = cipher.doFinal(data.getBytes());
-		return Base64.getEncoder().encodeToString(result);
+		return Base64Util.encode(result);
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class RSAUtil {
 		PrivateKey key = getPrivateKey(privateKey);
 		Cipher cipher = Cipher.getInstance(ALGORITHM);
 		cipher.init(Cipher.DECRYPT_MODE, key);
-		byte[] result = cipher.doFinal(Base64.getDecoder().decode(data));
+		byte[] result = cipher.doFinal(Base64Util.decode(data));
 		return new String(result);
 	}
 
@@ -120,10 +121,17 @@ public class RSAUtil {
 	 */
 	@SneakyThrows
 	public static PrivateKey getPrivateKey(String privateKey) {
-		byte[] decodedKey = Base64.getDecoder().decode(privateKey.getBytes());
+		byte[] decodedKey = Base64Util.decode(privateKey.getBytes());
 		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decodedKey);
 		KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
 		return keyFactory.generatePrivate(keySpec);
+	}
+
+	public static void main(String[] args) {
+		// 生成公钥私钥
+		Map<String, String> keyMap = generateKey();
+		System.out.println("Public Key: " + keyMap.get(PUB_KEY));
+		System.out.println("Private Key: " + keyMap.get(PRI_KEY));
 	}
 
 }

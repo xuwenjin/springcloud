@@ -20,7 +20,7 @@ public class CommonHttpInputMessage implements HttpInputMessage {
 
 	public CommonHttpInputMessage(HttpInputMessage inputMessage) throws Exception {
 		String json = IOUtils.toString(inputMessage.getBody(), "UTF-8");
-		log.error("app请求未加密参数:{}", json);
+		log.info("app请求未加密参数:{}", json);
 		this.headers = inputMessage.getHeaders();
 		this.body = IOUtils.toInputStream(json, "UTF-8");
 	}

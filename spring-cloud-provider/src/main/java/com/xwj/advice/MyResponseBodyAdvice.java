@@ -2,7 +2,6 @@ package com.xwj.advice;
 
 import java.lang.reflect.Method;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
@@ -13,7 +12,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.xwj.annotations.IgnoreEncode;
-import com.xwj.interceptor.AuthUtil;
+import com.xwj.auth.AuthUtil;
+import com.xwj.utils.CommonUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,10 +41,7 @@ public class MyResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 				return obj;
 			}
 
-			String appId = request.getHeaders().getFirst("AppId");// 传入APPID来决定启用哪个秘钥对
-			if (StringUtils.isEmpty(appId)) {
-				appId = AuthUtil.defaultAppId;
-			}
+			String appId = CommonUtil.getAppId(request.getHeaders().getFirst("AppId"));// 传入APPID来决定启用哪个秘钥对
 			if (AuthUtil.rsaKeyMap.containsKey(appId)) {
 				return EncryptHttpOutputMessage.getResponse(obj, httpResponse, appId);
 			}

@@ -5,10 +5,10 @@ import org.springframework.http.server.ServerHttpResponse;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.xwj.common.ResponseData;
+import com.xwj.auth.AuthUtil;
+import com.xwj.common.ApiResponseData;
 import com.xwj.common.RsaKey;
 import com.xwj.common.SecurityResponse;
-import com.xwj.interceptor.AuthUtil;
 import com.xwj.utils.AESUtil;
 import com.xwj.utils.CommonUtil;
 import com.xwj.utils.RSAUtil;
@@ -33,8 +33,8 @@ public class EncryptHttpOutputMessage {
 				json = toJsonStringWithNullValue(obj);
 			}
 			// 如果出现异常，则直接输出
-			if (obj instanceof ResponseData) {
-				ResponseData response = (ResponseData) obj;
+			if (obj instanceof ApiResponseData) {
+				ApiResponseData response = (ApiResponseData) obj;
 				if (!response.isSuccess()) {
 					return obj;
 				}
@@ -51,7 +51,7 @@ public class EncryptHttpOutputMessage {
 		// 1、生成AES秘钥
 		String key = CommonUtil.generateKey();
 		// 2、AES用秘钥加密
-		String data = AESUtil.encode(key, json);
+		String data = AESUtil.encrypt(json, key);
 		try {
 			// 3、使用服务端RSA公钥对AES秘钥加密
 			RsaKey rsaKey = AuthUtil.rsaKeyMap.get(appId);
@@ -69,6 +69,11 @@ public class EncryptHttpOutputMessage {
 		return response;
 	}
 
+	/**
+	 * Object转json字符串
+	 * 
+	 * 默认是不输出值为null的字段，这里设置为输出
+	 */
 	private static String toJsonStringWithNullValue(Object obj) {
 		return JSON.toJSONString(obj, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat);
 	}

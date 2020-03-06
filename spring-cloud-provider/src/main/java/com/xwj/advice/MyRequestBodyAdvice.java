@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -13,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAdapter;
 
 import com.xwj.annotations.IgnoreEncode;
-import com.xwj.interceptor.AuthUtil;
+import com.xwj.auth.AuthUtil;
+import com.xwj.utils.CommonUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,16 +42,13 @@ public class MyRequestBodyAdvice extends RequestBodyAdviceAdapter {
 	public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType,
 			Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
 		Method method = parameter.getMethod();
-		String appId = inputMessage.getHeaders().getFirst("AppId");// 传入APPID来决定启用哪个秘钥对
 		try {
 			if (method.isAnnotationPresent(IgnoreEncode.class)) {
 				// 带这个注解的方法就不启用加密，即使加密已经启动
 				return new CommonHttpInputMessage(inputMessage);
 			}
 			if (AuthUtil.security.get()) {// 启用加密传输
-				if (StringUtils.isEmpty(appId)) {
-					appId = AuthUtil.defaultAppId;
-				}
+				String appId = CommonUtil.getAppId(inputMessage.getHeaders().getFirst("AppId"));// 传入APPID来决定启用哪个秘钥对
 				if (AuthUtil.rsaKeyMap.containsKey(appId)) {
 					return new DecryptHttpInputMessage(inputMessage, appId);
 				}

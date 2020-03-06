@@ -1,8 +1,10 @@
-package com.xwj.cache;
+package com.xwj.auth;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -11,8 +13,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import com.googlecode.concurrentlinkedhashmap.Weighers;
+import com.xwj.common.AppUserLogVO;
 import com.xwj.common.RedisKeys;
-import com.xwj.interceptor.AuthUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -216,6 +218,28 @@ public class LoginInfoService {
 			redisTemplate.delete(RedisKeys.LOGIN_INFO);
 			// 删除最新登录信息
 			redisTemplate.delete(RedisKeys.LAST_LOGIN_INFO);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * 设置用户日志
+	 */
+	public void setUserLog(String phone, String accessToken, String userIp, String url, String type, String msg) {
+		try {
+			if (StringUtils.isEmpty(phone)) {
+				phone = "未知";
+			}
+			AppUserLogVO appUserLog = new AppUserLogVO();
+			appUserLog.setMobile(phone);
+			appUserLog.setIp(userIp);
+			appUserLog.setToken(accessToken);
+			appUserLog.setUrl(url);
+			appUserLog.setActionType(type);
+			appUserLog.setActionTime(new Date());
+			appUserLog.setActionResult(msg);
+			log.info("用户日志：{}", appUserLog);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
