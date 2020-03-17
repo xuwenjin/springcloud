@@ -41,6 +41,8 @@ public class AuthController {
 
 	@Autowired
 	private LoginInfoService loginInfoService;
+	@Autowired
+	private CacheService cacheService;
 
 	private static final AtomicInteger count1 = new AtomicInteger();
 	private static final AtomicInteger count2 = new AtomicInteger();
@@ -175,6 +177,26 @@ public class AuthController {
 	@GetMapping("/testRequestLimit2")
 	public int testRequestLimit2() {
 		return count2.incrementAndGet();
+	}
+
+	/**
+	 * 添加黑名单
+	 */
+	@IgnoreEncode
+	@IgnoreAuth
+	@PostMapping("/addBlackIp")
+	public void addBlackIp(String blackIp) {
+		cacheService.addBlackIp(blackIp);
+	}
+
+	/**
+	 * 解除黑名单
+	 */
+	@IgnoreEncode
+	@IgnoreAuth
+	@PostMapping("/removeBlackIp")
+	public void removeBlackIp(String blackIp) {
+		cacheService.removeBlackIp(blackIp);
 	}
 
 }

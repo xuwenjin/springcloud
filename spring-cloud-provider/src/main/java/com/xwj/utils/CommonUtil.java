@@ -1,5 +1,8 @@
 package com.xwj.utils;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,6 +18,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class CommonUtil {
+
+	/**
+	 * 创建redis的key，以":"连接
+	 */
+	public static String buildRedisKey(String... keys) {
+		return Arrays.stream(keys).collect(Collectors.joining(":"));
+	}
 
 	/**
 	 * 生成随机16位key(包含大小写字母和数字)
@@ -33,8 +43,10 @@ public class CommonUtil {
 	/**
 	 * 校验时间戳是否过期
 	 * 
-	 * @param timestamp 时间戳(毫秒)
-	 * @param time      有效时长(毫秒)
+	 * @param timestamp
+	 *            时间戳(毫秒)
+	 * @param time
+	 *            有效时长(毫秒)
 	 */
 	public static boolean checkTimestamp(long timestamp, long time) {
 		long nowTimeStamp = System.currentTimeMillis();
@@ -49,7 +61,8 @@ public class CommonUtil {
 	/**
 	 * 校验时间戳是否过期(默认60秒)
 	 * 
-	 * @param timestamp 时间戳(毫秒)
+	 * @param timestamp
+	 *            时间戳(毫秒)
 	 */
 	public static boolean checkTimestamp(long timestamp) {
 		return checkTimestamp(timestamp, AuthConsts.REQUEST_TIMEOUT);

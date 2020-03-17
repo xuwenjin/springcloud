@@ -20,8 +20,6 @@ public class AuthInit implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		log.info("初始化鉴权参数");
-		AuthUtil.blackLimit.add("55.55.10.1");
-		AuthUtil.blackLimit.add("55.55.10.2");
 		initDefaultRSAKey();
 		initWxRSAKey();
 	}

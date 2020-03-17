@@ -17,5 +17,9 @@ public class AuthConsts {
 	 * 请求超时时间
 	 */
 	public static final long REQUEST_TIMEOUT = 60000; // 默认60秒
+	/**
+	 * 黑名单限制时间
+	 */
+	public static final long BLACK_TIMEOUT = 24; // 默认24小时
 
 }

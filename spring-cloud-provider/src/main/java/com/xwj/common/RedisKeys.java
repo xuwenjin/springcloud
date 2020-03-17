@@ -11,4 +11,6 @@ public class RedisKeys {
 
 	public static final String REQUEST_LIMIT = "AUTH:requestLimit:"; // 请求限流
 
+	public static final String BLACK_LIMIT = "AUTH:blackLimit"; // 黑名单
+
 }

@@ -1,11 +1,9 @@
 package com.xwj.auth;
 
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.google.common.collect.Sets;
 import com.xwj.common.RsaKey;
 
 /**
@@ -21,10 +19,10 @@ public class AuthUtil {
 	 * 启用加密传输
 	 */
 	public static AtomicBoolean security = new AtomicBoolean(true);
-	/**
-	 * 保存ip做为黑名单
-	 */
-	public static Set<String> blackLimit = Sets.newConcurrentHashSet();
+	// /**
+	// * 保存ip做为黑名单
+	// */
+	// public static Set<String> blackLimit = Sets.newConcurrentHashSet();
 	/**
 	 * 保存ip做为白名单，白名单是为了设置访问ip例外的
 	 */
