@@ -14,11 +14,11 @@ public class AuthUtil {
 	/**
 	 * 开启鉴权
 	 */
-	public static AtomicBoolean auth = new AtomicBoolean(true);
+	public static AtomicBoolean auth = new AtomicBoolean(false);
 	/**
 	 * 启用加密传输
 	 */
-	public static AtomicBoolean security = new AtomicBoolean(true);
+	public static AtomicBoolean security = new AtomicBoolean(false);
 	// /**
 	// * 保存ip做为黑名单
 	// */

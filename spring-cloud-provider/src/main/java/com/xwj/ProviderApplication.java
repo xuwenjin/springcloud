@@ -6,7 +6,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-@EnableAsync
+@EnableAsync // 开启异步调用
 @EnableRetry // 开始重试
 @SpringBootApplication
 @ServletComponentScan // @ServletComponentScan扫描带@WebFilter、@WebServlet、@WebListener并将帮我们注入bean
