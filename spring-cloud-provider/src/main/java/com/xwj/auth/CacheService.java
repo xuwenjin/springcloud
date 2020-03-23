@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.xwj.common.AuthConsts;
@@ -17,6 +18,8 @@ import com.xwj.utils.CommonUtil;
 @Service
 public class CacheService {
 
+	@Value("${jwt.expire:3600}")
+	private int expire; // token失效时间
 	@Autowired
 	private JsonRedisTemplate redisTemplate;
 
@@ -53,6 +56,30 @@ public class CacheService {
 				redisTemplate.delete(redisKey);
 			}
 		}
+	}
+
+	/**
+	 * 通过用户名查询token
+	 */
+	public String getJwtToken(String username) {
+		String redisKey = CommonUtil.buildRedisKey(RedisKeys.USER_INFO, username);
+		return (String) redisTemplate.opsForValue().get(redisKey);
+	}
+
+	/**
+	 * 通过用户名查询token是否存在
+	 */
+	public boolean hasJwtToken(String username) {
+		String redisKey = CommonUtil.buildRedisKey(RedisKeys.USER_INFO, username);
+		return redisTemplate.hasKey(redisKey);
+	}
+
+	/**
+	 * 将token放在redis
+	 */
+	public void setJwtToken(String username, String token) {
+		String redisKey = CommonUtil.buildRedisKey(RedisKeys.USER_INFO, username);
+		redisTemplate.opsForValue().set(redisKey, token, expire, TimeUnit.SECONDS);
 	}
 
 }

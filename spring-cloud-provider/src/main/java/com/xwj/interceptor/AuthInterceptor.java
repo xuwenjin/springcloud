@@ -25,6 +25,7 @@ import com.xwj.handler.HandlerChain;
 import com.xwj.handler.auth.AppIdHandlerChain;
 import com.xwj.handler.auth.BaseAuthHandlerChain;
 import com.xwj.handler.auth.BlackHandlerChain;
+import com.xwj.handler.auth.JwtTokenHandlerChain;
 import com.xwj.handler.auth.ReplayLimitHandlerChain;
 import com.xwj.handler.auth.RequestLimitHandlerChain;
 import com.xwj.utils.AESUtil;
@@ -45,6 +46,8 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 	private LoginInfoService loginInfoService;
 	@Autowired
 	private BaseAuthHandlerChain baseAuthHandlerChain;
+	@Autowired
+	private JwtTokenHandlerChain jwtTokenHandlerChain;
 	@Autowired
 	private BlackHandlerChain blackHandlerChain;
 	@Autowired
@@ -78,6 +81,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		chain.addHandler(blackHandlerChain);
 		chain.addHandler(appIdHandlerChain);
 		chain.addHandler(baseAuthHandlerChain);
+		chain.addHandler(jwtTokenHandlerChain);
 		chain.addHandler(replayLimitHandlerChain);
 		chain.addHandler(requestLimitHandlerChain);
 		ApiResponseData responseData = chain.handleAuth(chain, handlerMethod, request, response);

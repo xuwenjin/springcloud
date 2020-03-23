@@ -13,4 +13,6 @@ public class RedisKeys {
 
 	public static final String BLACK_LIMIT = "AUTH:blackLimit"; // 黑名单
 
+	public static final String USER_INFO = "AUTH:userInfo"; // 用户信息
+
 }

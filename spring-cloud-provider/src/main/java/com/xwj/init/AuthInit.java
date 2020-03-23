@@ -11,7 +11,7 @@ import com.xwj.common.RsaKey;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 初始化鉴权参数
+ * 初始化鉴权参数(匹配appId，且用作数据的加解密)
  */
 @Slf4j
 @Component

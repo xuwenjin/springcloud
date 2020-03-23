@@ -14,7 +14,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class User {
+public class UserInfo {
 
 	@Id
 	@TableGenerator(name = "global_id_gen", allocationSize = 1)
@@ -22,7 +22,13 @@ public class User {
 	private Long id;
 
 	@ColumnDef("用户名")
-	private String lastName;
+	public String username; // 账号
+
+	@ColumnDef("密码")
+	public String password; // 密码
+
+	@ColumnDef("姓名")
+	public String name; // 用户名称
 
 	@ColumnDef("邮箱")
 	private String email;

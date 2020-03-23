@@ -1,6 +1,10 @@
 package com.xwj.utils;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -92,6 +96,15 @@ public class CommonUtil {
 			appId = AuthConsts.DEFAULT_APPID;
 		}
 		return appId;
+	}
+
+	/**
+	 * LocalDateTime转换为Date
+	 */
+	public static Date localDateTime2Date(LocalDateTime localDateTime) {
+		ZoneId zoneId = ZoneId.systemDefault();
+		Instant instant = localDateTime.atZone(zoneId).toInstant();
+		return Date.from(instant);
 	}
 
 }

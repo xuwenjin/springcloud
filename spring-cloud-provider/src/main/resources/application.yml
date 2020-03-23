@@ -57,5 +57,11 @@ logging:
     jdbc.sqltiming: error #记录sql执行的时间
     com:  #包名
       xwj: info
+
+#jwt相关配置      
+jwt:
+  expire: 14400
+  secret: xx1WET12^%3^(WE45      
+
    
       

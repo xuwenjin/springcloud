@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
-import com.xwj.entity.User;
+import com.xwj.entity.UserInfo;
 import com.xwj.lock.RedisLock;
 import com.xwj.redis.JsonRedisTemplate;
 import com.xwj.service.IUserService;
@@ -49,7 +49,7 @@ public class RedisController implements InitializingBean {
 	 * 缓存击穿
 	 */
 	@GetMapping("/find")
-	public User findById() {
+	public UserInfo findById() {
 		return userService.findById(10L);
 	}
 
@@ -65,13 +65,13 @@ public class RedisController implements InitializingBean {
 	 * 缓存穿透
 	 */
 	@GetMapping("/find/{id}")
-	public User findById(@PathVariable Long id) {
+	public UserInfo findById(@PathVariable Long id) {
 		if (!bf.mightContain(id)) {
 			return null;
 		}
 
 		// 先从缓存中查询，查不到读数据库
-		User user = (User) redisTemplate.opsForValue().get("" + id);
+		UserInfo user = (UserInfo) redisTemplate.opsForValue().get("" + id);
 		if (user == null) {
 			user = userService.findById(id);
 		}
@@ -165,8 +165,8 @@ public class RedisController implements InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		redisTemplate.opsForValue().set("num", "20");
 		
-		List<User> userList = userService.findAll();
-		for (User user : userList) {
+		List<UserInfo> userList = userService.findAll();
+		for (UserInfo user : userList) {
 			bf.put(user.getId());
 		}
 	}

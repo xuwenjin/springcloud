@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.xwj.entity.User;
+import com.xwj.entity.UserInfo;
 import com.xwj.operlog.MyLog;
 import com.xwj.service.IUserService;
 
@@ -27,29 +27,28 @@ public class UserController {
 
 	@MyLog("查询")
 	@GetMapping("/findAll")
-	public List<User> findAll() {
+	public List<UserInfo> findAll() {
 		return userService.findAll();
 	}
 
 	@MyLog("查询")
 	@GetMapping("/find/{id}")
-	public User findById(@PathVariable Long id) {
+	public UserInfo findById(@PathVariable Long id) {
 		return userService.findById(id);
 	}
 
 	@PostMapping("save")
-	public User save(@RequestBody User user) {
+	public UserInfo save(@RequestBody UserInfo user) {
 		return userService.save(user);
 	}
-	
+
 	@GetMapping("saveAll")
 	public void saveAll() {
-		List<User> list = new ArrayList<>();
+		List<UserInfo> list = new ArrayList<>();
 		for (int i = 11; i < 10000; i++) {
-			User user = new User();
+			UserInfo user = new UserInfo();
 			user.setAge(i);
 			user.setEmail(i + "@qq.com");
-			user.setLastName(i + "name");
 			list.add(user);
 		}
 		userService.saveAll(list);
@@ -65,7 +64,7 @@ public class UserController {
 	 */
 	@SentinelResource(value = "all", blockHandler = "exceptionHandler")
 	@GetMapping("/all")
-	public List<User> all(String id) {
+	public List<UserInfo> all(String id) {
 		return userService.findAll();
 	}
 

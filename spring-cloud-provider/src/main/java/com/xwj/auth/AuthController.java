@@ -22,7 +22,7 @@ import com.xwj.annotations.ReplayLimit;
 import com.xwj.annotations.RequestLimit;
 import com.xwj.common.AuthConsts;
 import com.xwj.common.RsaKey;
-import com.xwj.entity.User;
+import com.xwj.entity.UserInfo;
 import com.xwj.utils.AESUtil;
 import com.xwj.utils.CommonUtil;
 import com.xwj.utils.MD5Util;
@@ -145,8 +145,8 @@ public class AuthController {
 	 * 测试基础鉴权(post请求)
 	 */
 	@PostMapping("/testBasePost2")
-	public String testBasePost2(@RequestBody User vo) {
-		log.info("id:{}, name:{}", vo.getId(), vo.getLastName());
+	public String testBasePost2(@RequestBody UserInfo vo) {
+		log.info("id:{}, name:{}", vo.getId(), vo.getUsername());
 		return "testBasePost2";
 	}
 

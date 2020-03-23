@@ -2,16 +2,18 @@ package com.xwj.service;
 
 import java.util.List;
 
-import com.xwj.entity.User;
+import com.xwj.entity.UserInfo;
 
 public interface IUserService {
 
-	List<User> findAll();
+	List<UserInfo> findAll();
 
-	User findById(Long id);
+	UserInfo findById(Long id);
 
-	User save(User user);
-	
-	void saveAll(List<User> userList);
+	UserInfo validate(String username, String password);
+
+	UserInfo save(UserInfo user);
+
+	void saveAll(List<UserInfo> userList);
 
 }
