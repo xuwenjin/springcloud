@@ -10,10 +10,12 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * jwt工具类
  */
+@Slf4j
 public class JwtUtil {
 
 	/** jwt签发者 */
@@ -49,7 +51,11 @@ public class JwtUtil {
 	 */
 	@SneakyThrows
 	public static Claims parserTokenByPubKey(String token, String pubKey) {
-		return Jwts.parser().setSigningKey(RSAUtil.getPublicKey(pubKey)).parseClaimsJws(token).getBody();
+		Claims chaims = Jwts.parser().setSigningKey(RSAUtil.getPublicKey(pubKey)).parseClaimsJws(token).getBody();
+		Integer exp = (Integer) chaims.get(Claims.EXPIRATION);
+		long now = (long) System.currentTimeMillis() / 1000;
+		log.info("过期时间：{}，当前时间：{}", exp, now);
+		return chaims;
 	}
 
 	/**
@@ -60,6 +66,7 @@ public class JwtUtil {
 		Claims chaims = parserTokenByPubKey(token, pubKey);
 		Integer exp = (Integer) chaims.get(Claims.EXPIRATION);
 		long now = (long) System.currentTimeMillis() / 1000;
+		log.info("过期时间：{}，当前时间：{}", exp, now);
 		return exp - now > 0;
 	}
 
@@ -93,7 +100,23 @@ public class JwtUtil {
 	 */
 	@SneakyThrows
 	public static Claims parserToken(String token, String secret) {
-		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+		Claims chaims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+		Integer exp = (Integer) chaims.get(Claims.EXPIRATION);
+		long now = (long) System.currentTimeMillis() / 1000;
+		log.info("过期时间：{}，当前时间：{}", exp, now);
+		return chaims;
+	}
+
+	/**
+	 * 是否过期
+	 */
+	@SneakyThrows
+	public static boolean isExpirate(String token, String secret) {
+		Claims chaims = parserToken(token, secret);
+		Integer exp = (Integer) chaims.get(Claims.EXPIRATION);
+		long now = (long) System.currentTimeMillis() / 1000;
+		log.info("过期时间：{}，当前时间：{}", exp, now);
+		return exp - now > 0;
 	}
 
 }
