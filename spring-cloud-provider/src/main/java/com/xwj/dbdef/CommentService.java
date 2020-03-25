@@ -1,13 +1,13 @@
 package com.xwj.dbdef;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.persistence.Id;
-
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -17,9 +17,12 @@ import org.springframework.stereotype.Component;
 import com.xwj.annotations.ColumnDef;
 import com.xwj.annotations.TableDef;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 生成表备注服务
  */
+@Slf4j
 @Component
 public class CommentService {
 
@@ -35,19 +38,15 @@ public class CommentService {
 		ApplicationContext context = ContextUtils.getApplicationContext();
 		if (context != null) {
 			Map<String, Object> beanMap = context.getBeansWithAnnotation(TableDef.class);
-			System.out.println("----------" + beanMap);
 			for (String key : beanMap.keySet()) {
 				Object bean = beanMap.get(key);
 				if (bean != null) {
-					Object target = null;
-					try {
-						// 如果是代理对象，需要转换为目标对象
-						target = AopTargetUtils.getTarget(bean);
-					} catch (Exception e) {
-						e.printStackTrace();
+					// 如果是代理对象，需要转换为目标对象
+					Object target = AopTargetUtils.getTarget(bean);
+					if (target != null) {
+						this.createTableComment(target.getClass());
+						this.createColumnCommnet(target.getClass());
 					}
-					createTableComment(target.getClass());
-					createColumnCommnet(target.getClass());
 				}
 			}
 		}
@@ -66,7 +65,7 @@ public class CommentService {
 		String tableCommnet = annotation.value(); // 表备注
 		String tableName = TableBeanUtil.propertyToField(clazz.getSimpleName()); // 表名
 		tableMap.put(clazz.getSimpleName(), tableName);
-		doUpdateTable(tableName, tableCommnet);
+		this.doUpdateTable(tableName, tableCommnet);
 	}
 
 	/**
@@ -79,20 +78,43 @@ public class CommentService {
 		Field[] fs = cls.getDeclaredFields();
 		List<ColumnBean> columnList = new ArrayList<>();
 		for (Field filed : fs) {
-			Id id = filed.getAnnotation(Id.class);
+			if (this.isContainIgnoreJdbcType(filed)) {
+				continue;
+			}
 			ColumnDef column = filed.getAnnotation(ColumnDef.class);
 			if (column != null && StringUtils.isNotEmpty(column.value())) {
-				boolean isPriKey = id != null; // 是否主键
 				String columnComment = column.value(); // 字段备注
 				String length = column.length();// 字段长度
 				String columnName = TableBeanUtil.propertyToField(filed.getName()); // 数据库字段名
-				String columnType = DbUtil.getColumnType(filed.getType().getSimpleName(), length, isPriKey); // 数据库字段类型
-				columnList.add(new ColumnBean(columnName, columnType, columnComment));
+				String columnType = DbUtil.getColumnType(filed.getType().getSimpleName(), length); // 数据库字段类型
+				if (StringUtils.isNotEmpty(columnName) && StringUtils.isNotEmpty(columnType)) {
+					columnList.add(new ColumnBean(columnName, columnType, columnComment));
+				}
 			}
 		}
-		doUpdateColumn(tableName, columnList);
+		this.doUpdateColumn(tableName, columnList);
 	}
 
+	/**
+	 * 是否包含忽略类型
+	 */
+	private boolean isContainIgnoreJdbcType(Field filed) {
+		Annotation[] annArr = filed.getAnnotations();
+		if (ArrayUtils.isNotEmpty(annArr)) {
+			for (Annotation ann : annArr) {
+				String annName = ann.annotationType().getSimpleName();
+				if (IgnoreJdbcType.isContain(annName)) {
+					log.info("包含忽略类型名称：{}", annName);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 更新表备注
+	 */
 	private void doUpdateTable(String tableName, String tableComment) {
 		String sql = "ALTER TABLE " + tableName + " COMMENT '" + tableComment + "'";
 		jdbcTemplate.update(sql);

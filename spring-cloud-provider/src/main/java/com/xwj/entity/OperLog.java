@@ -1,9 +1,10 @@
-package com.xwj.operlog;
+package com.xwj.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 
 import com.xwj.annotations.ColumnDef;
+import com.xwj.annotations.TableDef;
 import com.xwj.core.domain.BaseEntity;
 
 import lombok.Getter;
@@ -11,13 +12,11 @@ import lombok.Setter;
 
 /**
  * 操作日志
- * 
- * @author xwj
- *
  */
 @Entity
 @Getter
 @Setter
+@TableDef("操作日志")
 public class OperLog extends BaseEntity {
 
 	@ColumnDef("操作员id")

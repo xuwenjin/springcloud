@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.TableGenerator;
 
 import com.xwj.annotations.ColumnDef;
+import com.xwj.annotations.TableDef;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@TableDef("用户信息")
 public class UserInfo {
 
 	@Id

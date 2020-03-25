@@ -15,6 +15,6 @@ public @interface TableDef {
 	/**
 	 * 备注
 	 */
-	String value() default "";
+	String value();
 
 }

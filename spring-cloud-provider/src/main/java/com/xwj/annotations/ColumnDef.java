@@ -12,7 +12,7 @@ public @interface ColumnDef {
 	/**
 	 * 备注
 	 */
-	String value() default "";
+	String value();
 
 	/**
 	 * 长度。如 255、19,2

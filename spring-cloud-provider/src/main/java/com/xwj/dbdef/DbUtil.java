@@ -10,25 +10,23 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DbUtil {
 
-	public static final String BLANK = " "; // 空格
+	private static final String BLANK = " "; // 空格
 
 	// 基本类型
-	public static final String[] BASIC_TYPE = { "type", "short", "int", "long", "float", "double", "boolean", "char" };
+	private static final String[] BASIC_TYPE = { "byte", "short", "int", "long", "float", "double", "boolean", "char" };
 
 	/**
 	 * 根据jpa默认生成数据库字段类型转换
 	 * 
 	 * @param fieldType
 	 *            实体类字段类型
-	 * @param isPriKey
-	 *            是否主键
-	 * @return
 	 */
-	public static String getColumnType(String fieldType, String length, boolean isPriKey) {
-		if (isPriKey) {
-			return " BIGINT(20) NOT NULL ";
+	public static String getColumnType(String fieldType, String length) {
+		// 如果找不到定义的类型，则返回空
+		if (StringUtils.isEmpty(fieldType) || !isContain(fieldType)) {
+			return null;
 		}
-		String columnDef = JdbcTypeEnum.getColumnDef(fieldType, length);
+		String columnDef = getColumnDef(fieldType, length);
 		String defaultVal = isBasicType(fieldType) ? " NOT NULL" : " NULL ";
 		return columnDef + defaultVal;
 	}
@@ -54,8 +52,35 @@ public class DbUtil {
 		return StringUtils.stripEnd(sql.toString(), ",");
 	}
 
-	public static void main(String[] args) {
-		System.out.println(isBasicType(null));
+	/**
+	 * 获取数据库字段定义
+	 * 
+	 * @param fieldType
+	 *            实体字段类型
+	 * @param length
+	 *            数据库字段长度。如(19,2)、255
+	 */
+	public static final String getColumnDef(String fieldType, String dbLength) {
+		String lengthStr = "";
+		JdbcTypeEnum typeEnum = JdbcTypeEnum.valueOf(fieldType.toUpperCase());
+		if (StringUtils.isNotEmpty(dbLength)) {
+			// 如果有定义长度，则用定义的
+			lengthStr = "(" + dbLength + ")";
+		} else {
+			// 如果没有定义长度，则查询枚举中的定义的
+			if (StringUtils.isNotEmpty(typeEnum.getDbLength())) {
+				lengthStr = "(" + typeEnum.getDbLength() + ") ";
+			}
+		}
+		return typeEnum.getDbType() + lengthStr;
+	}
+
+	/**
+	 * 是否属于定义的类型
+	 */
+	public static boolean isContain(String fieldType) {
+		return Arrays.stream(JdbcTypeEnum.values()).filter(d -> d.name().equals(fieldType.toUpperCase())).findAny()
+				.isPresent();
 	}
 
 }

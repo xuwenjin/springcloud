@@ -18,6 +18,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.alibaba.fastjson.JSON;
 import com.xwj.annotations.OperLogAnn;
+import com.xwj.entity.OperLog;
 import com.xwj.utils.RequestUtil;
 
 import lombok.SneakyThrows;
