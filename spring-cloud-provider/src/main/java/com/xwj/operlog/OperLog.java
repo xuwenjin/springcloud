@@ -1,13 +1,10 @@
 package com.xwj.operlog;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.TableGenerator;
+import javax.persistence.Lob;
+
+import com.xwj.annotations.ColumnDef;
+import com.xwj.core.domain.BaseEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,27 +18,34 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class OperLog implements Serializable {
+public class OperLog extends BaseEntity {
 
-	private static final long serialVersionUID = -9025235999092063537L;
+	@ColumnDef("操作员id")
+	private String userId;
 
-	@Id
-	@TableGenerator(name = "global_id_gen", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "global_id_gen")
-	private Long id;
+	@ColumnDef("操作员名称")
+	private String username;
 
-	private String username; // 用户名
+	@ColumnDef("操作说明")
+	private String operation;
 
-	private String operation; // 操作
+	@ColumnDef("操作模块")
+	private String operationModule;
 
-	private String method; // 方法名
+	@ColumnDef("操作方法")
+	private String method;
 
-	private String paramsCls; // 入参类型，多个以逗号分割
+	@ColumnDef("请求uri")
+	private String path;
 
-	private String resultCls; // 出参类型
+	@Lob
+	@ColumnDef(value = "请求参数", length = "2000")
+	private String requestParam;
 
-	private String ip; // ip地址
+	@ColumnDef(value = "响应结果", length = "2000")
+	private String responseResult;
 
-	private Date createDate; // 操作时间
+	@ColumnDef("请求ip")
+	private String ip;
 
 }

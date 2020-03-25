@@ -14,7 +14,7 @@ public class AuthUtil {
 	/**
 	 * 开启鉴权
 	 */
-	public static AtomicBoolean auth = new AtomicBoolean(true);
+	public static AtomicBoolean auth = new AtomicBoolean(false);
 	/**
 	 * 启用加密传输
 	 */

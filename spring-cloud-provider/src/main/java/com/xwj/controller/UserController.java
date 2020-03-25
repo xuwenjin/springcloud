@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
+import com.xwj.annotations.OperLogAnn;
 import com.xwj.entity.UserInfo;
-import com.xwj.operlog.MyLog;
 import com.xwj.service.IUserService;
 
 @RestController
@@ -25,18 +25,19 @@ public class UserController {
 	@Autowired
 	private IUserService userService;
 
-	@MyLog("查询")
+	@OperLogAnn(value = "查询所有", operModule = "人员管理")
 	@GetMapping("/findAll")
 	public List<UserInfo> findAll() {
 		return userService.findAll();
 	}
 
-	@MyLog("查询")
+	@OperLogAnn(value = "查询单个", operModule = "人员管理")
 	@GetMapping("/find/{id}")
 	public UserInfo findById(@PathVariable Long id) {
 		return userService.findById(id);
 	}
 
+	@OperLogAnn(value = "新增人员", operModule = "人员管理")
 	@PostMapping("save")
 	public UserInfo save(@RequestBody UserInfo user) {
 		return userService.save(user);
@@ -45,10 +46,12 @@ public class UserController {
 	@GetMapping("saveAll")
 	public void saveAll() {
 		List<UserInfo> list = new ArrayList<>();
-		for (int i = 11; i < 10000; i++) {
+		for (int i = 1; i < 100; i++) {
 			UserInfo user = new UserInfo();
 			user.setAge(i);
 			user.setEmail(i + "@qq.com");
+			user.setUsername("abc" + i);
+			user.setPassword("123456");
 			list.add(user);
 		}
 		userService.saveAll(list);
