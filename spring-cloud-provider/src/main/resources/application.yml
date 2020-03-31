@@ -64,6 +64,10 @@ logging:
 jwt:
   expire: 14400
   secret: xx1WET12^%3^(WE45      
+  
+test:
+  conditional: abc
+  
 
    
       
