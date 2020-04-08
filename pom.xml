@@ -38,6 +38,7 @@
 		<module>spring-cloud-provider-sleuth</module>
 		<module>spring-cloud-quartz-one</module>
 		<module>spring-cloud-quartz-two</module>
+		<module>spring-cloud-websocket</module>
 	</modules>
 
 	<dependencies>
