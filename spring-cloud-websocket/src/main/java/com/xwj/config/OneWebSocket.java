@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 
  * 前后端交互的类实现消息的接收推送(自己发送给自己)
  * 
  * @ServerEndpoint(value = "/test/one") 前端通过此URI和后端交互，建立连接
@@ -53,7 +52,7 @@ public class OneWebSocket {
 	 */
 	@OnMessage
 	public void onMessage(String message, Session session) {
-		log.info("服务端收到客户端[{}]的消息:{}", session.getId(), message);
+		log.info("服务端收到客户端[{}]的消息[{}]", session.getId(), message);
 		this.sendMessage("Hello, " + message, session);
 	}
 
@@ -68,7 +67,7 @@ public class OneWebSocket {
 	 */
 	private void sendMessage(String message, Session toSession) {
 		try {
-			log.info("服务端给客户端[{}]发送消息{}", toSession.getId(), message);
+			log.info("服务端给客户端[{}]发送消息[{}]", toSession.getId(), message);
 			toSession.getBasicRemote().sendText(message);
 		} catch (Exception e) {
 			log.error("服务端发送消息给客户端失败：{}", e);

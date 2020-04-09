@@ -16,7 +16,7 @@
 
 	//判断当前浏览器是否支持WebSocket, 主要此处要更换为自己的地址
 	if ('WebSocket' in window) {
-		websocket = new WebSocket("ws://localhost:18092/test/oneToMany");
+		websocket = new WebSocket("ws://localhost:18092/test/one");
 	} else {
 		alert('Not support websocket')
 	}

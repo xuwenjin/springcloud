@@ -60,7 +60,7 @@ public class OneToManyWebSocket {
 	 */
 	@OnMessage
 	public void onMessage(String message, Session session) {
-		log.info("服务端收到客户端[{}]的消息:{}", session.getId(), message);
+		log.info("服务端收到客户端[{}]的消息[{}]", session.getId(), message);
 		this.sendMessage(message, session);
 	}
 
@@ -81,7 +81,7 @@ public class OneToManyWebSocket {
 			Session toSession = sessionEntry.getValue();
 			// 排除掉自己
 			if (!fromSession.getId().equals(toSession.getId())) {
-				log.info("服务端给客户端[{}]发送消息{}", toSession.getId(), message);
+				log.info("服务端给客户端[{}]发送消息[{}]", toSession.getId(), message);
 				toSession.getAsyncRemote().sendText(message);
 			}
 		}

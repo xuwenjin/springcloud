@@ -19,7 +19,6 @@ import com.xwj.domain.MyMessage;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 
  * 前后端交互的类实现消息的接收推送(自己发送给另一个人)
  * 
  * @ServerEndpoint(value = "/test/oneToOne") 前端通过此URI 和后端交互，建立连接
@@ -63,7 +62,7 @@ public class OneToOneWebSocket {
 	 */
 	@OnMessage
 	public void onMessage(String message, Session session) {
-		log.info("服务端收到客户端[{}]的消息:{}", session.getId(), message);
+		log.info("服务端收到客户端[{}]的消息[{}]", session.getId(), message);
 		try {
 			MyMessage myMessage = JSON.parseObject(message, MyMessage.class);
 			if (myMessage != null) {
@@ -88,7 +87,7 @@ public class OneToOneWebSocket {
 	 */
 	private void sendMessage(String message, Session toSession) {
 		try {
-			log.info("服务端给客户端[{}]发送消息{}", toSession.getId(), message);
+			log.info("服务端给客户端[{}]发送消息[{}]", toSession.getId(), message);
 			toSession.getBasicRemote().sendText(message);
 		} catch (Exception e) {
 			log.error("服务端发送消息给客户端失败：{}", e);
