@@ -51,14 +51,12 @@ public class RedisGeoController {
 		System.out.println("两点坐标间隔公里数：" + distance.getValue() + distance.getUnit());
 
 		Circle circle = new Circle(114.366384, 30.4082, Metrics.KILOMETERS.getMultiplier());
-		RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs()
-				.includeDistance().includeCoordinates().sortAscending().limit(5);
-		GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisGeoService.nearByXY(circle, args);
-		System.out.println("根据给定的经纬度查询附近元素：" + results);
+		GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisGeoService.nearByXY(circle, 5);
+		System.out.println("根据给定的经纬度，查询附近的坐标点位：" + results);
 
 		Distance centerDistance = new Distance(5, Metrics.KILOMETERS);
-		results = redisGeoService.nearByPlace("东方雨林", centerDistance, args);
-		System.out.println("查询东方雨林附近5km以内的坐标点位：:" + results);
+		results = redisGeoService.nearByPlace("东方雨林", centerDistance, 5);
+		System.out.println("根据指定地点，查询附近5km以内的坐标点位：:" + results);
 
 		redisGeoService.geoHash("东方雨林");
 		System.out.println("返回指定位置hash值：" + results);

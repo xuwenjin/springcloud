@@ -53,10 +53,19 @@ public class RedisGeoService {
 	/**
 	 * 根据给定的经纬度，返回半径不超过指定距离的元素
 	 * 
-	 * redis命令：georadius cityGeo 116.405285 39.904989 100 km WITHDIST WITHCOORD
-	 * ASC COUNT 5
+	 * @param count
+	 *            限定返回的个数
+	 * 
+	 *            redis命令：georadius cityGeo 116.405285 39.904989 100 km WITHDIST
+	 *            WITHCOORD ASC COUNT 5
 	 */
-	public GeoResults<RedisGeoCommands.GeoLocation<String>> nearByXY(Circle circle, RedisGeoCommands.GeoRadiusCommandArgs args) {
+	public GeoResults<RedisGeoCommands.GeoLocation<String>> nearByXY(Circle circle, long count) {
+		// includeDistance 包含距离
+		// includeCoordinates 包含经纬度
+		// sortAscending 正序排序
+		// limit 限定返回的记录数
+		RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs()
+				.includeDistance().includeCoordinates().sortAscending().limit(count);
 		GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisTemplate.opsForGeo().radius(CITY_GEO_KEY,
 				circle, args);
 		return results;
@@ -68,8 +77,13 @@ public class RedisGeoService {
 	 * redis命令：georadiusbymember cityGeo 北京 100 km WITHDIST WITHCOORD ASC COUNT
 	 * 5
 	 */
-	public GeoResults<RedisGeoCommands.GeoLocation<String>> nearByPlace(String member, Distance distance,
-			RedisGeoCommands.GeoRadiusCommandArgs args) {
+	public GeoResults<RedisGeoCommands.GeoLocation<String>> nearByPlace(String member, Distance distance, long count) {
+		// includeDistance 包含距离
+		// includeCoordinates 包含经纬度
+		// sortAscending 正序排序
+		// limit 限定返回的记录数
+		RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs()
+				.includeDistance().includeCoordinates().sortAscending().limit(count);
 		GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisTemplate.opsForGeo().radius(CITY_GEO_KEY,
 				member, distance, args);
 		return results;

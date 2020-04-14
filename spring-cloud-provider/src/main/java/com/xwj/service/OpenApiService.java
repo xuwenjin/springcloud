@@ -55,7 +55,7 @@ public class OpenApiService {
 		}
 		params.put("client_id", clientId);
 		params.put("timestamp", getCurrMinSecondTimestamp());
-//		params.put("timestamp", "1569232774204");
+		// params.put("timestamp", "1569232774204");
 		params.put("sign", this.sign(params));
 	}
 
@@ -65,13 +65,13 @@ public class OpenApiService {
 	private String request(Map<String, Object> params, String url, String urlParams) {
 		String apiDomain = "http://localhost:8088";
 		this.buildRequestMap(params);
-		
+
 		log.info("请求参数：{}", params);
 
 		String sUrl = apiDomain + url + urlParams;
 		return restTemplate.getForObject(sUrl, String.class, params);
 	}
-	
+
 	/**
 	 * HashMap转为MultiValueMap
 	 */
@@ -84,7 +84,7 @@ public class OpenApiService {
 		}
 		return params;
 	}
-	
+
 	/**
 	 * 发送post请求
 	 */
@@ -119,19 +119,20 @@ public class OpenApiService {
 		String responseStr = request(new HashMap<>(), "/app/resource/common/getCarList", sb.toString());
 		log.info("responseStr:{}", responseStr);
 	}
-	
+
 	/**
 	 * 同步城市列表
 	 */
 	public void getOpenApi2() {
-		StringBuffer sb = this.buildRequestParam();
+		// StringBuffer sb = this.buildRequestParam();
 		Map<String, Object> params = new HashMap<>();
 		params.put("orderId", "123456");
-//		String responseStr = request(new HashMap<>(), "/app/resource/redis/get/abc", sb.toString());
+		// String responseStr = request(new HashMap<>(),
+		// "/app/resource/redis/get/abc", sb.toString());
 		String responseStr = requestPost(params, "/app/resource/debug/order/orderPush");
 		log.info("responseStr:{}", responseStr);
 	}
-	
+
 	/**
 	 * 取消订单
 	 */
@@ -142,18 +143,19 @@ public class OpenApiService {
 		params.put("supCode", "sq");
 		params.put("orderId", "1234567");
 		params.put("cancelReason", "不想打车123456789");
-//		String responseStr = requestPost(params, "/app/resource/order/cancel");
+		// String responseStr = requestPost(params,
+		// "/app/resource/order/cancel");
 		String responseStr = requestPost(params, "/app/resource/order/create/1234");
 		log.info("responseStr:{}", responseStr);
 	}
-	
+
 	/**
 	 * 获取当前时间精确到毫秒的时间戳(13位)
 	 */
 	public static long getCurrMinSecondTimestamp() {
 		return getMinSecondTimestamp(new Date());
 	}
-	
+
 	public static long getMinSecondTimestamp(Date date) {
 		if (null == date) {
 			return 0;
@@ -161,7 +163,7 @@ public class OpenApiService {
 		String timestamp = String.valueOf(date.getTime());
 		return Long.valueOf(timestamp);
 	}
-	
+
 	public static void main(String[] args) {
 		System.out.println(getCurrMinSecondTimestamp());
 	}
