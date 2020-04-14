@@ -30,16 +30,12 @@ public class RedisController implements InitializingBean {
 
 	@Autowired
 	private IUserService userService;
-
 	@Autowired
 	private JsonRedisTemplate redisTemplate;
-
 	@Autowired
 	private RedisLockRegistry redisLockRegistry;
-
 	@Autowired
 	private RedisLock lock; // 手写的redis锁
-
 	@Autowired
 	private RedissonClient redisson;
 
@@ -60,7 +56,7 @@ public class RedisController implements InitializingBean {
 	public void testSubscribe(@PathVariable String key) {
 		redisTemplate.opsForValue().set(key, key, 60, TimeUnit.SECONDS);
 	}
-	
+
 	/**
 	 * 缓存穿透
 	 */
@@ -164,11 +160,11 @@ public class RedisController implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		redisTemplate.opsForValue().set("num", "20");
-		
+
 		List<UserInfo> userList = userService.findAll();
 		for (UserInfo user : userList) {
 			bf.put(user.getId());
 		}
 	}
-
+	
 }
