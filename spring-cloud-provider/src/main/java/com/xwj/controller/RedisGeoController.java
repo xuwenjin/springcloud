@@ -16,10 +16,12 @@ import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.GeoOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xwj.service.RedisGeoService;
+import com.xwj.utils.CommonUtil;
 
 /**
  * 测试redis
@@ -33,6 +35,28 @@ public class RedisGeoController {
 
 	@Autowired
 	private RedisGeoService redisGeoService;
+
+	/**
+	 * 使用redis+GEO，计算两个坐标点的距离
+	 */
+	@GetMapping("getDistance")
+	public void getDistance() {
+		GeoOperations<String, String> ops = redisTemplate.opsForGeo();
+
+		Set<RedisGeoCommands.GeoLocation<String>> locations = new HashSet<>();
+
+		locations.add(new RedisGeoCommands.GeoLocation<String>("DFYL", new Point(114.366384, 30.4082)));
+		locations.add(new RedisGeoCommands.GeoLocation<String>("WUDX", new Point(114.365248, 30.53786)));
+
+		// 放入两个坐标：东方雨林-武汉大学
+		Map<String, Point> pointMap = new HashMap<>();
+		pointMap.put("DFYL", new Point(114.366384, 30.4082));
+		pointMap.put("WUDX", new Point(114.365248, 30.53786));
+		ops.add("GET_DISTANCE", locations);
+
+		Distance distance = ops.distance("GET_DISTANCE", "DFYL", "WUDX", RedisGeoCommands.DistanceUnit.METERS);
+		System.out.println("间隔距离：" + distance.getValue());
+	}
 
 	/**
 	 * 使用redis+GEO，计算不同的值
@@ -63,25 +87,31 @@ public class RedisGeoController {
 	}
 
 	/**
-	 * 使用redis+GEO，计算两个坐标点的距离
+	 * 使用redis+GEO，上报司机位置
 	 */
-	@GetMapping("getDistance")
-	public void getDistance() {
-		GeoOperations<String, String> ops = redisTemplate.opsForGeo();
+	@PostMapping("addDriverPosition")
+	public Long addDriverPosition(String cityId, String driverId, Double lng, Double lat) {
+		String redisKey = CommonUtil.buildRedisKey("geo_key", cityId);
+		Long addnum = redisGeoService.addGeoPoin(redisKey, new Point(lng, lat), driverId);
 
-		Set<RedisGeoCommands.GeoLocation<String>> locations = new HashSet<>();
+		List<Point> points = redisGeoService.geoGetByKey(redisKey, driverId);
+		System.out.println("坐标点：" + points);
 
-		locations.add(new RedisGeoCommands.GeoLocation<String>("DFYL", new Point(114.366384, 30.4082)));
-		locations.add(new RedisGeoCommands.GeoLocation<String>("WUDX", new Point(114.365248, 30.53786)));
+		return addnum;
+	}
 
-		// 放入两个坐标：东方雨林-武汉大学
-		Map<String, Point> pointMap = new HashMap<>();
-		pointMap.put("DFYL", new Point(114.366384, 30.4082));
-		pointMap.put("WUDX", new Point(114.365248, 30.53786));
-		ops.add("GET_DISTANCE", locations);
+	/**
+	 * 使用redis+GEO，查询附近司机位置
+	 */
+	@GetMapping("getNearDrivers")
+	public GeoResults<RedisGeoCommands.GeoLocation<String>> getNearDrivers(String cityId, Double lng, Double lat) {
+		String redisKey = CommonUtil.buildRedisKey("geo_key", cityId);
 
-		Distance distance = ops.distance("GET_DISTANCE", "DFYL", "WUDX", RedisGeoCommands.DistanceUnit.METERS);
-		System.out.println("间隔距离：" + distance.getValue());
+		Circle circle = new Circle(lng, lat, Metrics.KILOMETERS.getMultiplier());
+		GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisGeoService.nearByXY(redisKey, circle, 5);
+		System.out.println("查询附近司机位置：" + results);
+
+		return results;
 	}
 
 }

@@ -25,19 +25,38 @@ public class RedisGeoService {
 	 * 
 	 * redis 命令：geoadd cityGeo 116.405285 39.904989 "北京"
 	 */
-	public Long addGeoPoin(Point point, String member) {
-		Long addedNum = redisTemplate.opsForGeo().add(CITY_GEO_KEY, point, member);
-		return addedNum;
+	public Long addGeoPoin(String key, Point point, String member) {
+		if (redisTemplate.hasKey(key)) {
+			redisTemplate.opsForGeo().remove(key, member);
+		}
+		return redisTemplate.opsForGeo().add(key, point, member);
 	}
 
 	/**
-	 * 查找指定key的经纬度信息，可以指定多个key，批量返回
+	 * 添加经纬度信息
+	 * 
+	 * redis 命令：geoadd cityGeo 116.405285 39.904989 "北京"
+	 */
+	public Long addGeoPoin(Point point, String member) {
+		return addGeoPoin(CITY_GEO_KEY, point, member);
+	}
+
+	/**
+	 * 查找指定key的经纬度信息，可以指定多个member，批量返回
 	 * 
 	 * redis命令：geopos cityGeo 北京
 	 */
 	public List<Point> geoGet(String... members) {
-		List<Point> points = redisTemplate.opsForGeo().position(CITY_GEO_KEY, members);
-		return points;
+		return geoGetByKey(CITY_GEO_KEY, members);
+	}
+
+	/**
+	 * 查找指定key的经纬度信息，可以指定多个member，批量返回
+	 * 
+	 * redis命令：geopos cityGeo 北京
+	 */
+	public List<Point> geoGetByKey(String key, String... members) {
+		return redisTemplate.opsForGeo().position(key, members);
 	}
 
 	/**
@@ -60,15 +79,26 @@ public class RedisGeoService {
 	 *            WITHCOORD ASC COUNT 5
 	 */
 	public GeoResults<RedisGeoCommands.GeoLocation<String>> nearByXY(Circle circle, long count) {
+		return nearByXY(CITY_GEO_KEY, circle, count);
+	}
+
+	/**
+	 * 根据给定的经纬度，返回半径不超过指定距离的元素
+	 * 
+	 * @param count
+	 *            限定返回的个数
+	 * 
+	 *            redis命令：georadius cityGeo 116.405285 39.904989 100 km WITHDIST
+	 *            WITHCOORD ASC COUNT 5
+	 */
+	public GeoResults<RedisGeoCommands.GeoLocation<String>> nearByXY(String key, Circle circle, long count) {
 		// includeDistance 包含距离
 		// includeCoordinates 包含经纬度
 		// sortAscending 正序排序
 		// limit 限定返回的记录数
 		RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs()
 				.includeDistance().includeCoordinates().sortAscending().limit(count);
-		GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisTemplate.opsForGeo().radius(CITY_GEO_KEY,
-				circle, args);
-		return results;
+		return redisTemplate.opsForGeo().radius(key, circle, args);
 	}
 
 	/**
