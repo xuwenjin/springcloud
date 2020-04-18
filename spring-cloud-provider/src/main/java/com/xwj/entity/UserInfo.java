@@ -1,13 +1,10 @@
 package com.xwj.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.TableGenerator;
 
 import com.xwj.annotations.ColumnDef;
 import com.xwj.annotations.TableDef;
+import com.xwj.core.domain.BaseEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,12 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @TableDef("用户信息")
-public class UserInfo {
-
-	@Id
-	@TableGenerator(name = "global_id_gen", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.TABLE, generator = "global_id_gen")
-	private Long id;
+public class UserInfo extends BaseEntity {
 
 	@ColumnDef("用户名")
 	public String username; // 账号

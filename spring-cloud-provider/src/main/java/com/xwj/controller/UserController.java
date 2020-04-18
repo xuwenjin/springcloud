@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,9 @@ import com.xwj.annotations.OperLogAnn;
 import com.xwj.entity.UserInfo;
 import com.xwj.service.IUserService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("user")
 public class UserController {
@@ -25,7 +29,7 @@ public class UserController {
 	@Autowired
 	private IUserService userService;
 
-	@OperLogAnn(value = "查询所有", operModule = "人员管理")
+	// @OperLogAnn(value = "查询所有", operModule = "人员管理")
 	@GetMapping("/findAll")
 	public List<UserInfo> findAll() {
 		return userService.findAll();
@@ -41,6 +45,34 @@ public class UserController {
 	@PostMapping("save")
 	public UserInfo save(@RequestBody UserInfo user) {
 		return userService.save(user);
+	}
+
+	/**
+	 * 测试乐观锁
+	 */
+	@PostMapping("testOptimismLock")
+	public void testOptimismLock() {
+		List<UserInfo> list = new ArrayList<>();
+
+		UserInfo user1 = userService.findById(100L);
+		user1.setName("1111");
+		list.add(user1);
+
+		UserInfo user2 = userService.findById(101L);
+		user2.setName("2222");
+		list.add(user2);
+
+		for (UserInfo user : list) {
+			try {
+				userService.save(user);
+			} catch (ObjectOptimisticLockingFailureException e) {
+				log.error("保存异常：{}", e.getMessage());
+				// log.error("保存异常", e);
+			}
+		}
+
+		// 当批量保存时，如果出现一条数据version不一致，则会报乐观锁，导致整个事物回滚
+		// userService.saveAll(list);
 	}
 
 	@GetMapping("saveAll")

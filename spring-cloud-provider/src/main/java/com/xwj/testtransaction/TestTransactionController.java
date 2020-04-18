@@ -46,11 +46,11 @@ public class TestTransactionController {
 	 */
 	@GetMapping("test2")
 	public void test2() {
-//		requiredService.transaction_exception_required_required();
+		requiredService.transaction_exception_required_required();
 //		requiredService.transaction_required_required_exception();
 //		requiredService.transaction_required_required_exception_try();
 //		requiredService.transaction_exception_notransaction();
-		requiredService.transaction_notransaction_exception();
+//		requiredService.transaction_notransaction_exception();
 	}
 
 	/**

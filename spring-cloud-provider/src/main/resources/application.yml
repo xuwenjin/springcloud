@@ -53,12 +53,12 @@ eureka:
     
 #spring boot默认日志
 logging:
-  file: my.log   #日志文件名称(也可以带路径)
+  #file: my.log   #日志文件名称(也可以带路径)
   level:  #日志级别控制
     jdbc: off  #日志最高级别，只打印sql及参数
-    jdbc.sqltiming: error #记录sql执行的时间
+    jdbc.sqltiming: debug #记录sql执行的时间
     com:  #包名
-      xwj: info
+      xwj: debug
 
 #jwt相关配置      
 jwt:
