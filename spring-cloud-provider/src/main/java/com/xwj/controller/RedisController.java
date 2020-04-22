@@ -1,6 +1,7 @@
 package com.xwj.controller;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
@@ -40,6 +41,16 @@ public class RedisController implements InitializingBean {
 	private RedissonClient redisson;
 
 	private static BloomFilter<Long> bf = BloomFilter.create(Funnels.longFunnel(), 1000000);
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		redisTemplate.opsForValue().set("num", "20");
+
+		List<UserInfo> userList = userService.findAll();
+		for (UserInfo user : userList) {
+			bf.put(user.getId());
+		}
+	}
 
 	/**
 	 * 缓存击穿
@@ -157,14 +168,33 @@ public class RedisController implements InitializingBean {
 		}
 	}
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		redisTemplate.opsForValue().set("num", "20");
+	/**
+	 * 测试zset排序
+	 */
+	@GetMapping("/zset")
+	public void zset() {
+		String key = "zset";
 
-		List<UserInfo> userList = userService.findAll();
-		for (UserInfo user : userList) {
-			bf.put(user.getId());
-		}
+		// 添加单条
+		redisTemplate.opsForZSet().add(key, 1, 5);
+		redisTemplate.opsForZSet().add(key, 2, 8);
+		redisTemplate.opsForZSet().add(key, 3, 11);
+
+		Set<Object> results = redisTemplate.opsForZSet().reverseRangeByScore(key, 5, 9);
+		System.out.println("results：" + results);
+
+		// 按时间排序
+		redisTemplate.opsForZSet().add(key, 1, System.currentTimeMillis());
+		Long min = System.currentTimeMillis();
+		redisTemplate.opsForZSet().add(key, 2, System.currentTimeMillis());
+		redisTemplate.opsForZSet().add(key, 3, System.currentTimeMillis());
+		redisTemplate.opsForZSet().add(key, 4, System.currentTimeMillis());
+		redisTemplate.opsForZSet().add(key, 5, System.currentTimeMillis());
+		redisTemplate.opsForZSet().add(key, 6, System.currentTimeMillis());
+		Long max = System.currentTimeMillis();
+		redisTemplate.opsForZSet().add(key, 7, System.currentTimeMillis());
+		results = redisTemplate.opsForZSet().reverseRangeByScore(key, min, max);
+		System.out.println("指定时间范围内数据：" + results);
 	}
-	
+
 }
