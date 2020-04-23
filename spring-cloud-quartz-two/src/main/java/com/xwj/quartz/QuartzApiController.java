@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +28,7 @@ public class QuartzApiController {
 	/**
 	 * 指定时间点触发的任务
 	 */
-	@RequestMapping("/job/start/{id}")
+	@GetMapping("/job/start/{id}")
 	public void startQuartzJob(@PathVariable String id) {
 		// 20s之后执行
 		LocalDateTime ldt = LocalDateTime.now();
@@ -39,9 +40,9 @@ public class QuartzApiController {
 	}
 
 	/**
-	 * 定时任务
+	 * 带定时表达式的任务
 	 */
-	@RequestMapping("/job/cron/{id}")
+	@GetMapping("/job/cron/{id}")
 	public void cronQuartzJob(@PathVariable String id) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("id", id);
@@ -50,9 +51,20 @@ public class QuartzApiController {
 	}
 
 	/**
+	 * 带定时表达式和指定时间范围的任务
+	 */
+	@GetMapping("/job/cronInRange/{id}")
+	public void cronQuartzJobInRange(@PathVariable String id) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("id", id);
+		// 每10秒执行一次
+		quartzScheduler.addJobWithCron(MyJob2.class, id, "0/10 * * * * ?", 120, params);
+	}
+
+	/**
 	 * 删除某个任务
 	 */
-	@RequestMapping(value = "/job/delete")
+	@GetMapping("/job/delete")
 	public boolean deleteJob(String name, String group) {
 		return quartzScheduler.deleteJob(name, group);
 	}
@@ -60,7 +72,7 @@ public class QuartzApiController {
 	/**
 	 * 修改任务执行时间
 	 */
-	@RequestMapping("/job/modify")
+	@GetMapping("/job/modify")
 	public boolean modifyQuartzJob(String name, String group, String time) {
 		return quartzScheduler.modifyJob(name, group, time);
 	}
@@ -68,7 +80,7 @@ public class QuartzApiController {
 	/**
 	 * 暂停某个任务
 	 */
-	@RequestMapping(value = "/job/pause")
+	@GetMapping("/job/pause")
 	public void pauseQuartzJob(String name, String group) {
 		quartzScheduler.pauseJob(name, group);
 	}
@@ -76,7 +88,7 @@ public class QuartzApiController {
 	/**
 	 * 暂停所有任务
 	 */
-	@RequestMapping(value = "/job/pauseAll")
+	@GetMapping("/job/pauseAll")
 	public void pauseAllQuartzJob() {
 		quartzScheduler.pauseAllJob();
 	}

@@ -1,5 +1,6 @@
 package com.xwj.quartz;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
 
@@ -18,6 +19,8 @@ import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.xwj.util.TimeUtil;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +37,7 @@ public class MyQuartzScheduler {
 	private final String JOB_NAME_PREFIX = "JOB_"; // 任务名称前缀
 
 	/**
-	 * 指定时间后执行任务
+	 * 指定时间后执行任务(只会执行一次)
 	 * 
 	 * @param triggerStartTime
 	 *            指定时间
@@ -54,7 +57,7 @@ public class MyQuartzScheduler {
 	}
 
 	/**
-	 * 带触发器的任务
+	 * 带触发器的任务(执行多次)
 	 * 
 	 * @param cronExpression
 	 *            定时任务表达式
@@ -68,6 +71,32 @@ public class MyQuartzScheduler {
 		// 基于表达式构建触发器
 		CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
 		CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(jobName, groupName)
+				.withSchedule(cronScheduleBuilder).build();
+
+		// 将触发器与任务绑定到调度器内
+		this.scheduleJob(jobClass, groupName, jobName, params, cronTrigger);
+	}
+
+	/**
+	 * 带触发器的任务，同时指定时间段(立马执行)
+	 * 
+	 * @param timeoutSeconds
+	 *            超时时间(秒)
+	 * @param cronExpression
+	 *            定时任务表达式
+	 */
+	@SneakyThrows
+	public void addJobWithCron(Class<? extends Job> jobClass, String jobName, String cronExpression,
+			long timeoutSeconds, Map<String, Object> params) {
+		// 使用job类名作为组名
+		String groupName = jobClass.getSimpleName();
+
+		// 计算结束时间
+		Date endDate = TimeUtil.localDateTime2Date(LocalDateTime.now().plusSeconds(timeoutSeconds));
+
+		// 基于表达式构建触发器，同时指定时间段
+		CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
+		CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(jobName, groupName).startNow().endAt(endDate)
 				.withSchedule(cronScheduleBuilder).build();
 
 		// 将触发器与任务绑定到调度器内
