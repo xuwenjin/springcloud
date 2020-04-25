@@ -1,11 +1,18 @@
 server:
-  port: 18092
-  
+  port: 18093
+spring:
+  application:
+    name: spring-cloud-shardingjdbc
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL57InnoDBDialect
 
-    
-
-
-
-  
-      
-   
+logging:
+  level:  #日志级别控制
+    jdbc: off  #日志最高级别，只打印sql及参数
+    jdbc.sqltiming: info #记录sql执行的时间
+    com:  #包名
+      xwj: debug

@@ -1,0 +1,52 @@
+dataSources:
+  ds0: !!com.alibaba.druid.pool.DruidDataSource
+    driverClassName: net.sf.log4jdbc.DriverSpy
+    url: jdbc:log4jdbc:mysql://localhost:3306/order1?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+  ds1: !!com.alibaba.druid.pool.DruidDataSource
+    driverClassName: net.sf.log4jdbc.DriverSpy
+    url: jdbc:log4jdbc:mysql://localhost:3306/order2?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+shardingRule:  
+  tables:
+    user_info: 
+      # 数据节点
+      actualDataNodes: ds${0..1}.user_info${0..1}
+      # 分库策略
+      databaseStrategy:
+        inline:
+          shardingColumn: num
+          algorithmExpression: ds${num % 2}
+      # 分表策略
+      tableStrategy: 
+        inline:
+          shardingColumn: age
+          algorithmExpression: user_info${age % 2}
+      keyGeneratorColumnName: id
+    address_info: 
+      actualDataNodes: ds${0..1}.address_info${0..1}
+       # 分表策略
+      tableStrategy: 
+        inline:
+          shardingColumn: code
+          algorithmExpression: address_info${code % 2}
+      keyGeneratorColumnName: id
+  bindingTables:
+    - user_info,address_info
+  defaultDataSourceName: ds0
+  # 默认分库策略
+  defaultDatabaseStrategy:
+    inline:
+      shardingColumn: id
+      algorithmExpression: ds${id % 2}
+  defaultTableStrategy:
+    none:
+  # 是否展示sql
+  props:
+    sql.show: false
+
+  
+      
+   
