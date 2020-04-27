@@ -1,0 +1,52 @@
+server:
+  port: 18093
+spring:
+  application:
+    name: spring-cloud-shardingsphere
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL57InnoDBDialect
+  shardingsphere:
+    props:
+      sql.show: true      
+    datasource:
+      names: ds0,ds1
+      ds0:  #ds0 配置
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: net.sf.log4jdbc.DriverSpy
+        url: jdbc:log4jdbc:mysql://localhost:3306/share1?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+      ds1:   #ds1 配置
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: net.sf.log4jdbc.DriverSpy
+        url: jdbc:log4jdbc:mysql://localhost:3306/share2?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+    # 分库策略 根据id取模确定数据进哪个数据库
+    sharding:  
+      default-database-strategy:
+        inline:
+          sharding-column: id
+          algorithm-expression: ds$->{id % 2}
+      tables:
+        t_order:
+          # 数据节点
+          actual-data-nodes: ds$->{0..1}.t_order_$->{0..2}
+          # 分表策略
+          table-strategy:
+            inline:
+              # 分表字段id
+              sharding-column: id
+              # 分表策略 根据id取模,确定数据最终落在那个表中
+              algorithm-expression: t_order_$->{id % 3}
+      
+logging:
+  level:  #日志级别控制
+    jdbc: off  #日志最高级别，只打印sql及参数
+    jdbc.sqltiming: info #记录sql执行的时间
+    com:  #包名
+      xwj: debug

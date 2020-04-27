@@ -40,6 +40,7 @@
 		<module>spring-cloud-quartz-two</module>
 		<module>spring-cloud-websocket</module>
 		<module>spring-cloud-shardingjdbc</module>
+		<module>spring-cloud-shardingsphere</module>
 	</modules>
 
 	<dependencies>

@@ -1,3 +1,13 @@
+app:
+  db0:
+    host: 127.0.01
+    port: 3306
+    dbname: order1
+  db1:
+    host: 127.0.01
+    port: 3306
+    dbname: order2
+
 server:
   port: 18093
 spring:
@@ -5,8 +15,8 @@ spring:
     name: spring-cloud-shardingjdbc
   jpa:
     open-in-view: true
-    hibernate:
-      ddl-auto: update
+    #hibernate:
+      #ddl-auto: update
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL57InnoDBDialect
 
