@@ -1,7 +1,6 @@
 package com.xwj.controller;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
@@ -173,17 +172,27 @@ public class RedisController implements InitializingBean {
 	 */
 	@GetMapping("/zset")
 	public void zset() {
-		String key = "zset";
+		String key = "test1";
 
 		// 添加单条
+		redisTemplate.opsForZSet().add(key, 7, 1);
+		redisTemplate.opsForZSet().add(key, 4, 3);
 		redisTemplate.opsForZSet().add(key, 1, 5);
 		redisTemplate.opsForZSet().add(key, 2, 8);
-		redisTemplate.opsForZSet().add(key, 3, 11);
+		redisTemplate.opsForZSet().add(key, 5, 11);
 
-		Set<Object> results = redisTemplate.opsForZSet().reverseRangeByScore(key, 5, 9);
-		System.out.println("results：" + results);
+		// 按score排名从小打大，返回排名前三个对应value(默认)
+		System.out.println("按排名从小打大:" + redisTemplate.opsForZSet().range(key, 0, 2));
+		// 按score排名从大到小，返回排名前三个对应value
+		System.out.println("按排名从大到小:" + redisTemplate.opsForZSet().reverseRange(key, 0, 2));
+
+		// 在score范围内，按从小打大返回value(默认)
+		System.out.println("按score范围从小打大：" + redisTemplate.opsForZSet().rangeByScore(key, 5, 9));
+		// 在score范围内，按从大到小返回value
+		System.out.println("按score范围从大到小：" + redisTemplate.opsForZSet().reverseRangeByScore(key, 5, 9));
 
 		// 按时间排序
+		key = "test2";
 		redisTemplate.opsForZSet().add(key, 1, System.currentTimeMillis());
 		Long min = System.currentTimeMillis();
 		redisTemplate.opsForZSet().add(key, 2, System.currentTimeMillis());
@@ -193,8 +202,7 @@ public class RedisController implements InitializingBean {
 		redisTemplate.opsForZSet().add(key, 6, System.currentTimeMillis());
 		Long max = System.currentTimeMillis();
 		redisTemplate.opsForZSet().add(key, 7, System.currentTimeMillis());
-		results = redisTemplate.opsForZSet().reverseRangeByScore(key, min, max);
-		System.out.println("指定时间范围内数据：" + results);
+		System.out.println("指定时间范围内数据：" + redisTemplate.opsForZSet().reverseRangeByScore(key, min, max));
 	}
 
 }

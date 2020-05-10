@@ -35,6 +35,12 @@
 			<version>2.6</version>
 		</dependency>
 		<dependency>
+			<!-- fastjson -->
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.60</version>
+		</dependency>
+		<dependency>
 			<!-- log4jdbc 方便打印出sql信息，比如SQL参数、执行时间等信息 -->
 			<groupId>com.googlecode.log4jdbc</groupId>
 			<artifactId>log4jdbc</artifactId>
