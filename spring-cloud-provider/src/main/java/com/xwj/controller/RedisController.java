@@ -52,7 +52,17 @@ public class RedisController implements InitializingBean {
 	}
 
 	/**
-	 * 缓存击穿
+	 * 缓存雪崩----在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效，请求全部转发到DB，DB瞬时压力过重雪崩。
+	 */
+	@GetMapping("/findAll")
+	public List<UserInfo> findAll() {
+		return userService.findAll();
+	}
+
+	/**
+	 * 缓存击穿----查询一个一定不存在的数据，直接穿过缓存到DB
+	 * 
+	 * 解决方案：在原有的失效时间基础上增加一个随机值，比如1-5分钟随机，这样每一个缓存的过期时间的重复率就会降低，就很难引发集体失效的事件
 	 */
 	@GetMapping("/find")
 	public UserInfo findById() {
@@ -60,7 +70,7 @@ public class RedisController implements InitializingBean {
 	}
 
 	/**
-	 * 缓存击穿
+	 * 缓存击穿----某一时间点，某一个key缓存过期，大量的并发请求过来
 	 */
 	@GetMapping("/subcribe/{key}")
 	public void testSubscribe(@PathVariable String key) {
@@ -68,11 +78,18 @@ public class RedisController implements InitializingBean {
 	}
 
 	/**
-	 * 缓存穿透
+	 * 缓存穿透----查询一个一定不存在的数据，直接穿过缓存到DB
+	 * 
+	 * 解决方案：
+	 * 
+	 * 1、使用布隆过滤器，将所有可能存在的数据哈希到一个足够大的bitmap中
+	 * 
+	 * 2、把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟
 	 */
 	@GetMapping("/find/{id}")
 	public UserInfo findById(@PathVariable Long id) {
 		if (!bf.mightContain(id)) {
+			// 一个一定不存在的数据，会被布隆过滤器拦住
 			return null;
 		}
 
