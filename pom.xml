@@ -41,6 +41,9 @@
 		<module>spring-cloud-websocket</module>
 		<module>spring-cloud-shardingjdbc</module>
 		<module>spring-cloud-shardingsphere</module>
+		<module>spring-cloud-seata-order</module>
+		<module>spring-cloud-seata-account</module>
+		<module>spring-cloud-seata-account-api</module>
 	</modules>
 
 	<dependencies>
