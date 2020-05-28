@@ -7,17 +7,12 @@
 		<artifactId>spring-cloud-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>spring-cloud-zuul</artifactId>
+	<artifactId>spring-cloud-gate</artifactId>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
-		</dependency>
-		<dependency>
-			<!-- eureka客户端 -->
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

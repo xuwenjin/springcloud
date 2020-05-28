@@ -1,0 +1,14 @@
+app:
+  db:
+    host: 127.0.01
+    port: 3306
+    dbname: xwj
+
+server:
+  port: 8040
+    
+spring:
+  application:
+    name: gateway
+    
+
