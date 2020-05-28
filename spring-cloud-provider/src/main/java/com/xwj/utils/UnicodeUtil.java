@@ -1,7 +1,5 @@
 package com.xwj.utils;
 
-import org.junit.Test;
-
 public class UnicodeUtil {
 
 	/**
@@ -30,8 +28,7 @@ public class UnicodeUtil {
 		return returnStr;
 	}
 
-	@Test
-	public void testUnicode() {
+	public static void main(String[] args) {
 		// Unicode码
 		String aa = "\\u5916\\u56fd\\u4eba\\u88ab\\u4e2d\\u56fd\\u8fd9\\u4e00\\u5927\\u52a8\\u4f5c\\u6298\\u670d";
 		// 转中文
