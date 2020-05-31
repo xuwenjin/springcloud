@@ -32,7 +32,7 @@ public class UnicodeUtil {
 
 	@Test
 	public void testUnicode() {
-		// Unicode码
+		// Unicode码  1111
 		String aa = "\\u5916\\u56fd\\u4eba\\u88ab\\u4e2d\\u56fd\\u8fd9\\u4e00\\u5927\\u52a8\\u4f5c\\u6298\\u670d";
 		// 转中文
 		String cnAa = unicodeToCn(aa);
