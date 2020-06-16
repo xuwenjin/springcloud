@@ -1,5 +1,9 @@
 org:
   quartz:
+    dataSource:
+      member:
+        validateOnCheckout: true
+        validationQuery: SELECT 'x'
     scheduler:
       instanceName: quartzScheduler  #调度器实例名称
       instanceId: AUTO     #调度器实例编号自动生成

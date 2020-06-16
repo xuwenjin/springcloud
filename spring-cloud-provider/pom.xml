@@ -112,6 +112,12 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.9.0</version>
 		</dependency>
+		<dependency>
+			<!-- 自定义starter -->
+			<groupId>com.xwj</groupId>
+			<artifactId>demo-spring-boot-starter</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 </project>

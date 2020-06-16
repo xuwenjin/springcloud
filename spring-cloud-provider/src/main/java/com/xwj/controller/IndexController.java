@@ -7,15 +7,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xwj.HelloService;
+
 @RestController
 public class IndexController {
 
-//	@Resource(name = "jasyptStringEncryptor")
+	// @Resource(name = "jasyptStringEncryptor")
 	@Autowired
 	private StringEncryptor encryptor;
 
 	@Value("${spring.datasource.password}")
 	private String dbPassword; // 数据库密码
+
+	@Autowired
+	private HelloService helloService;
 
 	/**
 	 * 测试jasypt加密解密
@@ -42,6 +47,14 @@ public class IndexController {
 	@GetMapping("/hello")
 	public String testSentinel() {
 		return "hello";
+	}
+
+	/**
+	 * 测试自定义starter
+	 */
+	@GetMapping("/starter")
+	public String testStarter() {
+		return helloService.sayHello("小明");
 	}
 
 }
