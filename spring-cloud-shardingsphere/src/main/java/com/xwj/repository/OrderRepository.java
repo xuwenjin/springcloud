@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.xwj.entity.OrderInfo;
 
-public interface UserRepository extends JpaRepository<OrderInfo, Long> {
+public interface OrderRepository extends JpaRepository<OrderInfo, Long> {
 
 }

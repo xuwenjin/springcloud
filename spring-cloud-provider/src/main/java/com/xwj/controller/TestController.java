@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xwj.billcode.SequenceGenerator;
 import com.xwj.properties.TestConfiguration;
 
 @RestController
@@ -20,6 +21,15 @@ public class TestController {
 			return test1Configuration.getField();
 		}
 		return "OK";
+	}
+
+	/**
+	 * 雪花算法-测试生成id(QPS：1200左右)
+	 * @return
+	 */
+	@GetMapping("idWorker")
+	public String idWorker() {
+		return SequenceGenerator.uuid16();
 	}
 
 }

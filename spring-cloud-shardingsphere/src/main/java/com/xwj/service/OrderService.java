@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.xwj.entity.OrderInfo;
-import com.xwj.repository.UserRepository;
+import com.xwj.repository.OrderRepository;
 
 @Service
-public class UserService {
+public class OrderService {
 
 	@Autowired
-	private UserRepository repository;
+	private OrderRepository repository;
 
 	public OrderInfo findById(Long id) {
 		Optional<OrderInfo> optional = repository.findById(id);
@@ -27,8 +27,8 @@ public class UserService {
 		return repository.findAll();
 	}
 
-	public OrderInfo save(OrderInfo user) {
-		return repository.save(user);
+	public OrderInfo save(OrderInfo order) {
+		return repository.save(order);
 	}
 
 }
