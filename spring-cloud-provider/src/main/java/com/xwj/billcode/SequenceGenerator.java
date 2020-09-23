@@ -1,13 +1,12 @@
 package com.xwj.billcode;
 
 import java.security.SecureRandom;
-import java.util.Date;
-import java.util.Random;
-
-import org.apache.commons.lang3.time.DateFormatUtils;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.IntStream;
 
 import com.xwj.billcode.base.IdWorker;
 import com.xwj.util.PatternConsts;
+import com.xwj.util.TimeUtil;
 
 import lombok.SneakyThrows;
 
@@ -22,10 +21,12 @@ public class SequenceGenerator {
 	 */
 	@SneakyThrows
 	public static String uuid32() {
-		Date date = new Date(System.currentTimeMillis());
-		String dateStr = DateFormatUtils.format(date, PatternConsts.DF_SIMPLE_YMDHMS);
+		// 14位时间戳
+		String dateStr = TimeUtil.dateToString(TimeUtil.now(), PatternConsts.DF_SIMPLE_YMDHMS);
 		try {
-			return dateStr + IdWorker.getFlowIdWorkerInstance().nextId();
+			// 18位雪花算法id
+			long nextId = IdWorker.getFlowIdWorkerInstance().nextId();
+			return dateStr + nextId;
 		} catch (Exception e) {
 			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 			StringBuffer tmp = new StringBuffer("");
@@ -41,11 +42,12 @@ public class SequenceGenerator {
 	 */
 	@SneakyThrows
 	public static String uuid16() {
-		Date date = new Date(System.currentTimeMillis());
-		String dateStr = DateFormatUtils.format(date, PatternConsts.DF_SIMPLE_YMD);
+		// 8位时间戳
+		String dateStr = TimeUtil.dateToString(TimeUtil.now(), PatternConsts.DF_SIMPLE_YMD);
 		try {
-			return dateStr.substring(2, 8)
-					+ String.valueOf(IdWorker.getFlowIdWorkerInstance().nextId()).substring(0, 10);
+			long nextId = IdWorker.getFlowIdWorkerInstance().nextId();
+			// 6位时间戳 + 10位雪花算法id
+			return dateStr.substring(2, 8) + String.valueOf(nextId).substring(0, 10);
 		} catch (Exception e) {
 			SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 			StringBuffer tmp = new StringBuffer("");
@@ -59,25 +61,19 @@ public class SequenceGenerator {
 	/**
 	 * 生成指定位数随机数字
 	 * 
-	 * @param digit 数字位数
+	 * @param digit
+	 *            数字位数
 	 */
 	public static String getRandomNum(int digit) {
 		if (digit < 1) {
 			return "";
 		}
 
-		Random rd = new Random();
+		// ThreadLocalRandom解决了Random类在多线程下多个线程竞争内部唯一的原子性种子变量而导致大量线程自旋重试的不足
+		ThreadLocalRandom localRandom = ThreadLocalRandom.current();
 		StringBuilder numStr = new StringBuilder();
-		for (int i = 0; i < digit; i++) {
-			numStr.append(rd.nextInt(10));
-		}
+		IntStream.of(0, digit).forEach(index -> numStr.append(localRandom.nextInt(10)));
 		return numStr.toString();
-	}
-	
-	
-	public static void main(String[] args) {
-		System.out.println(uuid32());
-		System.out.println(uuid16());
 	}
 
 }
