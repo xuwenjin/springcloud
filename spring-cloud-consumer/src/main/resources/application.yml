@@ -1,26 +1,9 @@
-app:
-  db:
-    host: 127.0.0.1
-    port: 3306
-    dbname: xwj
-    
 server:
   port: 18082
     
 spring:
   application:
     name: service-consumer #应用程序名称
-  #durid 数据库连接池
-  datasource: 
-    type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://${app.db.host}:${app.db.port}/${app.db.dbname}?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8
-    username: root
-    password: 123456
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true  # 让hibernate打印执行的SQL
 
 management:
   endpoints:
