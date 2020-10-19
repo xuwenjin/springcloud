@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
-import com.xwj.entity.UserEntity;
+import com.xwj.entity.UserInfoVo;
 
 @RestController
 public class HystrixController {
@@ -25,16 +25,16 @@ public class HystrixController {
 	@GetMapping("/getOne/{id}")
 	@HystrixCommand(fallbackMethod = "getOneFallBack", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000") })
-	public UserEntity getOne(@PathVariable Long id) {
-		UserEntity user = restTemplate.getForObject("http://service-provider/find/" + id, UserEntity.class);
+	public UserInfoVo getOne(@PathVariable Long id) {
+		UserInfoVo user = restTemplate.getForObject("http://service-provider/find/" + id, UserInfoVo.class);
 		return user;
 	}
 
 	/**
 	 * 参数跟返回类型必须跟上面的一样，不然会报找不到该方法的错
 	 */
-	public UserEntity getOneFallBack(Long id) {
-		UserEntity user = new UserEntity();
+	public UserInfoVo getOneFallBack(Long id) {
+		UserInfoVo user = new UserInfoVo();
 		user.setId("1000");
 		user.setAge(12);
 		return user;

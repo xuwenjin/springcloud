@@ -2,7 +2,7 @@ package com.xwj.feign;
 
 import org.springframework.stereotype.Component;
 
-import com.xwj.entity.UserEntity;
+import com.xwj.entity.UserInfoVo;
 
 /**
  * 降级回调类
@@ -11,15 +11,15 @@ import com.xwj.entity.UserEntity;
 public class UserFallback implements UserFeignClient {
 
 	@Override
-	public UserEntity findById(Long id) {
-		UserEntity user = new UserEntity();
+	public UserInfoVo findById(Long id) {
+		UserInfoVo user = new UserInfoVo();
 		user.setId("1000");
 		user.setAge(12);
 		return user;
 	}
 
 	@Override
-	public UserEntity findUser(UserEntity user) {
+	public UserInfoVo saveUser(UserInfoVo user) {
 		return null;
 	}
 

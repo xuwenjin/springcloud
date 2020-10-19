@@ -3,6 +3,7 @@ package com.xwj;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 
@@ -10,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableRetry // 开始重试
 @SpringBootApplication
 @ServletComponentScan // @ServletComponentScan扫描带@WebFilter、@WebServlet、@WebListener并将帮我们注入bean
-// @EnableDiscoveryClient
+@EnableDiscoveryClient
 public class ProviderApplication {
 
 	public static void main(String[] args) {
