@@ -10,10 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xwj.entity.AddressInfo;
 import com.xwj.entity.OrderInfo;
-import com.xwj.service.AddressService;
-import com.xwj.service.UserService;
+import com.xwj.service.OrderService;
 
 /**
  * 分库分表
@@ -23,24 +21,14 @@ import com.xwj.service.UserService;
 public class ShardingJdbcController {
 
 	@Autowired
-	private UserService userService;
-	@Autowired
-	private AddressService addressService;
+	private OrderService orderService;
 
 	/**
 	 * 保存
 	 */
-	@PostMapping("/user/save")
-	public OrderInfo save(@RequestBody OrderInfo user) {
-		return userService.save(user);
-	}
-
-	/**
-	 * 保存
-	 */
-	@PostMapping("/address/save")
-	public AddressInfo save(@RequestBody AddressInfo address) {
-		return addressService.save(address);
+	@PostMapping("/order/save")
+	public OrderInfo save(@RequestBody OrderInfo order) {
+		return orderService.save(order);
 	}
 
 	/**
@@ -48,23 +36,15 @@ public class ShardingJdbcController {
 	 */
 	@GetMapping("findById/{id}")
 	public OrderInfo findById(@PathVariable String id) {
-		return userService.findById(Long.valueOf(id));
+		return orderService.findById(Long.valueOf(id));
 	}
 
 	/**
 	 * 查询列表
 	 */
-	@GetMapping("/user/findAll")
+	@GetMapping("/order/findAll")
 	public List<OrderInfo> findUserAll() {
-		return userService.findAll();
-	}
-
-	/**
-	 * 查询列表
-	 */
-	@GetMapping("/address/findAll")
-	public List<AddressInfo> findAddressAll() {
-		return addressService.findAll();
+		return orderService.findAll();
 	}
 
 }

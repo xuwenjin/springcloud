@@ -1,0 +1,23 @@
+${AnsiColor.BRIGHT_BLUE}
+                                                                               
+XXXXXXX       XXXXXXXWWWWWWWW                           WWWWWWWW    JJJJJJJJJJJ
+X:::::X       X:::::XW::::::W                           W::::::W    J:::::::::J
+X:::::X       X:::::XW::::::W                           W::::::W    J:::::::::J
+X::::::X     X::::::XW::::::W                           W::::::W    JJ:::::::JJ
+XXX:::::X   X:::::XXX W:::::W           WWWWW           W:::::W       J:::::J  
+   X:::::X X:::::X     W:::::W         W:::::W         W:::::W        J:::::J  
+    X:::::X:::::X       W:::::W       W:::::::W       W:::::W         J:::::J  
+     X:::::::::X         W:::::W     W:::::::::W     W:::::W          J:::::j  
+     X:::::::::X          W:::::W   W:::::W:::::W   W:::::W           J:::::J  
+    X:::::X:::::X          W:::::W W:::::W W:::::W W:::::WJJJJJJJ     J:::::J  
+   X:::::X X:::::X          W:::::W:::::W   W:::::W:::::W J:::::J     J:::::J  
+XXX:::::X   X:::::XXX        W:::::::::W     W:::::::::W  J::::::J   J::::::J  
+X::::::X     X::::::X         W:::::::W       W:::::::W   J:::::::JJJ:::::::J  
+X:::::X       X:::::X          W:::::W         W:::::W     JJ:::::::::::::JJ   
+X:::::X       X:::::X           W:::W           W:::W        JJ:::::::::JJ     
+XXXXXXX       XXXXXXX            WWW             WWW           JJJJJJJJJ       
+                                                                               
+${AnsiColor.BRIGHT_GREEN}
+PengJu erp  Boot Version: 2.2.0
+Spring Boot Version: ${spring-boot.version}${spring-boot.formatted-version}
+${AnsiColor.BLACK}

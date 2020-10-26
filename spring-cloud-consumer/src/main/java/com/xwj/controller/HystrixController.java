@@ -26,7 +26,7 @@ public class HystrixController {
 	@HystrixCommand(fallbackMethod = "getOneFallBack", commandProperties = {
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000") })
 	public UserInfoVo getOne(@PathVariable Long id) {
-		UserInfoVo user = restTemplate.getForObject("http://service-provider/find/" + id, UserInfoVo.class);
+		UserInfoVo user = restTemplate.getForObject("http://service-provider/user/find/" + id, UserInfoVo.class);
 		return user;
 	}
 
@@ -35,8 +35,7 @@ public class HystrixController {
 	 */
 	public UserInfoVo getOneFallBack(Long id) {
 		UserInfoVo user = new UserInfoVo();
-		user.setId("1000");
-		user.setAge(12);
+		user.setAge(13);
 		return user;
 	}
 

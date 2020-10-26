@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RefreshScope // 这边的@RefreshScope注解不能少，否则即使调用/refresh，配置也不会刷新
 public class IndexController {
 
-	@Value("${profile}")
+	@Value("${profile:}")
 	private String profile;
 
 	@RequestMapping("/profile")
