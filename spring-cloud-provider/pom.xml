@@ -121,6 +121,18 @@
 			<artifactId>demo-spring-boot-starter</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<!--zookeeper客户端 -->
+			<groupId>com.101tec</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>0.11</version>
+		</dependency>
+		<dependency>
+			<!-- 分布式协调服务 zookeeper -->
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.6.2</version>
+		</dependency>
 	</dependencies>
 
 </project>
