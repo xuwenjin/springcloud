@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xwj.lock.ZooKeeperLock;
+import com.xwj.lock.ZooKeeperSimpleLock;
 
 /**
  * 测试ZooKeeper
@@ -49,7 +50,8 @@ public class ZooKeeperController {
 	 */
 	@GetMapping("testLock")
 	public void testLock() throws InterruptedException {
-		ZooKeeperLock lock = new ZooKeeperLock();
+		// ZooKeeperLock lock = new ZooKeeperLock();
+		ZooKeeperSimpleLock lock = new ZooKeeperSimpleLock();
 
 		lock.lock();
 		String s = Thread.currentThread().getName();
