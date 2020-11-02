@@ -128,10 +128,9 @@
 			<version>0.11</version>
 		</dependency>
 		<dependency>
-			<!-- 分布式协调服务 zookeeper -->
-			<groupId>org.apache.zookeeper</groupId>
-			<artifactId>zookeeper</artifactId>
-			<version>3.6.2</version>
+			<!-- RabbitMQ 消息中间件 -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 	</dependencies>
 

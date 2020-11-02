@@ -2,7 +2,7 @@ package com.xwj.controller;
 
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.I0Itec.zkclient.serialize.SerializableSerializer;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,16 +17,14 @@ import com.xwj.lock.ZooKeeperSimpleLock;
 @RequestMapping("zookeeper")
 public class ZooKeeperController {
 
-	@Autowired
-	private ZkClient zkClient;
-
 	private Integer num = 1000;
 
 	@GetMapping("/watch")
 	public void watchTest() throws InterruptedException {
 		// 1、创建一个持久化znode
 		String path = "/hello";
-		zkClient.createPersistent(path);
+
+		ZkClient zkClient = new ZkClient("localhost:2181", 1000, 1000, new SerializableSerializer());
 
 		// 2、创建一个监听器
 		IZkDataListener listener = new IZkDataListener() {
