@@ -19,9 +19,10 @@ public class RabbitMQController {
 	 */
 	@GetMapping("/sendMsg")
 	public String sendMsg() {
-		// mqSender.sendDirectMessage();
+		mqSender.sendDirectMessage();
 		// mqSender.sendTopicMessage();
-		mqSender.sendFanoutMessage();
+		// mqSender.sendFanoutMessage();
+		// mqSender.sendException();
 
 		return "OK";
 	}

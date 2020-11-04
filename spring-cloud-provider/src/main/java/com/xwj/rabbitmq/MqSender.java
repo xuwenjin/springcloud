@@ -54,6 +54,19 @@ public class MqSender {
 	}
 
 	/**
+	 * 异常情况，发送消息
+	 */
+	public void sendException() {
+		String msg = buildMsgStr();
+
+		// 1、无效的exchange
+//		rabbitTemplate.convertAndSend("no.exchange", MqConsts.DIRECT_ROUTINGKEY, msg);
+
+		// 2、exchange上没有绑定队列
+		rabbitTemplate.convertAndSend("lonelyDirectExchange", MqConsts.DIRECT_ROUTINGKEY, msg);
+	}
+
+	/**
 	 * 构建消息体
 	 */
 	private String buildMsgStr() {

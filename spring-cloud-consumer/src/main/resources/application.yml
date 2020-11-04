@@ -4,6 +4,14 @@ server:
 spring:
   application:
     name: service-consumer #应用程序名称
+  rabbitmq:
+     listener:
+       simple:
+         acknowledge-mode: manual   #采用手动应答
+         concurrency: 1  #指定最小消费者数量
+         max-concurrency: 10 #指定最大消费者数量
+         retry:
+           enabled: true  #是否支持重试
 
 management:
   endpoints:

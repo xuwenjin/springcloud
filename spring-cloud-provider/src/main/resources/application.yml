@@ -41,6 +41,11 @@ spring:
     port: 6379 
     password: ## 密码（默认为空）
   cloud:    sentinel:      transport:        dashboard: localhost:8888
+  rabbitmq:
+    # 开启发送确认
+    publisher-confirms: true
+    # 开启发送失败退回
+    publisher-returns: true
    
 eureka:
   client:

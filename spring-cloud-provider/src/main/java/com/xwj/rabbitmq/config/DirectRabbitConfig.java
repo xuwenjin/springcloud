@@ -47,4 +47,12 @@ public class DirectRabbitConfig {
 		return BindingBuilder.bind(directQueue()).to(xwjDirectExchange()).with(MqConsts.DIRECT_ROUTINGKEY);
 	}
 
+	/**
+	 * 没有绑定队列的交换机(用户测试回调)
+	 */
+	@Bean
+	DirectExchange lonelyDirectExchange() {
+		return new DirectExchange("lonelyDirectExchange");
+	}
+
 }
