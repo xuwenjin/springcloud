@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 /**
  * 初始化类
  * 
- * 查看SpringBoot的启动过程(SpringApplication.run()方法)，会发现在spring容器启动完成后，会调用afterRefresh()方法，该方法中会
+ * 查看SpringBoot的启动过程(SpringApplication.run()方法)，会发现在spring容器启动完成后，会调用callRunners()方法，该方法中会
  * 执行加入到spring容器中并实现了ApplicationRunner的Bean
  * 
  */
