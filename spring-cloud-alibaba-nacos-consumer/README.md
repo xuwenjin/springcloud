@@ -1,0 +1,1 @@
+1、nacos的服务发现组件中，自带ribbon(默认的负载均衡策略规则为ZoneAvoidanceRule，类似于轮询策略)
