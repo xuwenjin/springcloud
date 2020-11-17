@@ -31,7 +31,7 @@ public class ContextListener {
 	 */
 	@EventListener
 	public void handle(Object event) throws IOException {
-		System.out.println("*********" + (++counter) + ": " + event.toString() + "*********");
+//		System.out.println("*********" + (++counter) + ": " + event.toString() + "*********");
 	}
 
 }

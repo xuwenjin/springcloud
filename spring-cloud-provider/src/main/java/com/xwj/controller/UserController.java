@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("user")
 public class UserController {
 
+	@Value("${server.port}")
+	private String port;
+
 	@Autowired
 	private IUserService userService;
 
@@ -38,6 +42,7 @@ public class UserController {
 	@OperLogAnn(value = "查询单个", operModule = "人员管理")
 	@GetMapping("/find/{id}")
 	public UserInfo findById(@PathVariable Long id) {
+		System.out.println("port:" + port);
 		return userService.findById(id);
 	}
 
