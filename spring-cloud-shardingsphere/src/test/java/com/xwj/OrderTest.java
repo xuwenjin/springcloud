@@ -12,11 +12,11 @@ import com.xwj.entity.OrderInfo;
 import com.xwj.service.OrderService;
 
 /**
- * 测试查询
+ * 测试订单表
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class SimpleTest {
+public class OrderTest {
 
 	@Autowired
 	private OrderService orderService;

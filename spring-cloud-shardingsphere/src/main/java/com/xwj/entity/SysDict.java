@@ -7,18 +7,18 @@ import javax.persistence.Table;
 import lombok.Data;
 
 /**
- * 订单表(业务表)
+ * 字典表(公共表)
  */
 @Entity
 @Data
-@Table(name = "t_order")
-public class OrderInfo {
+@Table(name = "t_dict")
+public class SysDict {
 
 	@Id
 	private Long id;
 
-	private String status;
+	private String code;
 
-	private int orderType;
+	private String value;
 
 }

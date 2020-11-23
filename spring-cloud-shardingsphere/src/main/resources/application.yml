@@ -13,7 +13,7 @@ spring:
       hibernate.dialect: org.hibernate.dialect.MySQL57InnoDBDialect
   shardingsphere:
     props:
-      sql.show: true      
+      sql.show: true 
     datasource:
       names: ds0,ds1
       ds0:  #ds0 配置
@@ -30,6 +30,7 @@ spring:
         password: 123456
     # 分库策略 根据id取模确定数据进哪个数据库
     sharding:  
+      broadcast-tables: t_dict  #指定t_dict为广播表(公共表，每个库都有该表)
       default-database-strategy:
         inline:
           sharding-column: id
