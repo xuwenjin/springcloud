@@ -1,6 +1,7 @@
 使用SpringBoot集成Sharding-Jdbc
 
-两个库：share1、order2
-order1下的表：global_id_gen、
-order2下的表：
+application1.yml 为分库分表配置
+application.yml 为读写分离配置
+
+
 

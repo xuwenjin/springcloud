@@ -23,11 +23,13 @@ public class OrderTest {
 
 	@Test
 	public void testInsert() {
-		OrderInfo order = new OrderInfo();
-		order.setId(2L);
-		order.setOrderType(0);
-		order.setStatus("created");
-		orderService.save(order);
+		for (int i = 0; i < 5; i++) {
+			OrderInfo order = new OrderInfo();
+			order.setId(Long.valueOf(i + 1));
+			order.setOrderType(0);
+			order.setStatus("created");
+			orderService.save(order);
+		}
 	}
 
 	@Test
