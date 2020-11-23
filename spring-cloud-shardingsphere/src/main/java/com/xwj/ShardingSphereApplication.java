@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * 使用springboot配置方式分库分表(使用apache下的依赖)
  */
-// 这里一定要排除这里的SpringBootConfiguration，因为我们已经自定义了DataSource，所以需要排除掉shardingjdbc设置的DataSource
 @SpringBootApplication
 public class ShardingSphereApplication {
 

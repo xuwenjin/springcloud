@@ -18,18 +18,14 @@ spring:
       names: ds0,ds1
       ds0:  #ds0 配置
         type: com.alibaba.druid.pool.DruidDataSource
-        #driver-class-name: net.sf.log4jdbc.DriverSpy
         driver-class-name: com.mysql.cj.jdbc.Driver
         url: jdbc:mysql://localhost:3306/share0?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-        #url: jdbc:log4jdbc:mysql://localhost:3306/share1?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
         username: root
         password: 123456
       ds1:   #ds1 配置
         type: com.alibaba.druid.pool.DruidDataSource
-        #driver-class-name: net.sf.log4jdbc.DriverSpy
         driver-class-name: com.mysql.cj.jdbc.Driver
         url: jdbc:mysql://localhost:3306/share1?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-        #url: jdbc:log4jdbc:mysql://localhost:3306/share2?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
         username: root
         password: 123456
     # 分库策略 根据id取模确定数据进哪个数据库
