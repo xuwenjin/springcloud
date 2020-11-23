@@ -24,6 +24,7 @@ public class SimpleTest {
 	@Test
 	public void testInsert() {
 		OrderInfo order = new OrderInfo();
+		order.setId(2L);
 		order.setOrderType(0);
 		order.setStatus("created");
 		orderService.save(order);
@@ -37,7 +38,7 @@ public class SimpleTest {
 	}
 
 	@Test
-	public void testSelect2() {
+	public void testSelectAll() {
 		List<OrderInfo> list = orderService.findAll();
 		list.forEach(d -> System.out.println(d));
 	}

@@ -47,7 +47,7 @@ spring:
               # 分表字段id
               sharding-column: id
               # 分表策略 根据id取模,确定数据最终落在那个表中
-              algorithm-expression: t_order_$->{id % 3}
+              algorithm-expression: t_order_$->{id % 2}
 
 logging:
   level:  #日志级别控制
