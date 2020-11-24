@@ -1,4 +1,4 @@
-# 分表
+# 分表 + 读写分离
 server:
   port: 18093
 spring:
@@ -16,22 +16,33 @@ spring:
     props:
       sql.show: true 
     datasource:
-      names: ds0
-      ds0:  #ds0 配置
+      names: m0,s0
+      m0:  #主库(可写)
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/share0?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+        url: jdbc:mysql://192.168.20.12:3306/mydb?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+      s0: #从库(可读)
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://192.168.20.15:3306/mydb?autoReconnect=true&failOverReadOnly=false&createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
         username: root
         password: 123456
     sharding:  
       broadcast-tables: t_dict  #指定t_dict为广播表(公共表，每个库都有该表)
+      master-slave-rules:
+        #定义主库从库数据源(ds0包括m0和s0)
+        ds0: 
+          master-data-source-name: m0
+          slave-data-source-names: s0
       tables:
         t_order:
-          actual-data-nodes: ds0.t_order_$->{0..1}   # 数据节点
+          actual-data-nodes: ds0.t_order_$->{0..1}   # 数据节点(注意这里的ds0，为上面自定义的主从库数据源名称)
           key-generator:
             column: id
             type: SNOWFLAKE
-          # 分表策略(水平)
+          # 分表策略
           table-strategy:
             inline:
               sharding-column: id  # 分表字段

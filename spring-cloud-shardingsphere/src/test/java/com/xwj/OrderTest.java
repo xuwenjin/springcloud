@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.xwj.entity.OrderInfo;
+import com.xwj.entity.OrderInfoDetail;
+import com.xwj.service.OrderDetailService;
 import com.xwj.service.OrderService;
 
 /**
@@ -20,15 +22,45 @@ public class OrderTest {
 
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	private OrderDetailService orderDetailService;
 
+	/**
+	 * 保存订单
+	 */
 	@Test
 	public void testInsert() {
-		for (int i = 0; i < 5; i++) {
+		for (int i = 1; i <= 20; i++) {
 			OrderInfo order = new OrderInfo();
-			order.setId(Long.valueOf(i + 1));
-			order.setOrderType(0);
+			order.setId(Long.valueOf(i));
 			order.setStatus("created");
+
+			// 随机生成0和1(分库时，用的orderType分片，这里可随机插入到不同的库)
+			int orderType = (int) (10 * Math.random()) % 2;
+			order.setOrderType(orderType);
+
 			orderService.save(order);
+		}
+	}
+
+	/**
+	 * 查询订单，然后保存订单详情信息
+	 */
+	@Test
+	public void testFindInsert() {
+		List<OrderInfo> orderList = orderService.findAll();
+		int orderCount = orderList.size();
+		System.out.println("订单数量：" + orderCount);
+
+		for (int i = 0; i < orderCount; i++) {
+			OrderInfo order = orderList.get(i);
+
+			OrderInfoDetail orderDetail = new OrderInfoDetail();
+			orderDetail.setId(Long.valueOf(i + 1));
+			orderDetail.setOrderId(order.getId());
+			orderDetail.setOrderType(order.getOrderType());
+			orderDetail.setDescription("不错的商品" + (i + 1));
+			orderDetailService.save(orderDetail);
 		}
 	}
 
@@ -41,8 +73,8 @@ public class OrderTest {
 
 	@Test
 	public void testSelectAll() {
-		List<OrderInfo> list = orderService.findAll();
-		list.forEach(d -> System.out.println(d));
+		List<OrderInfo> orderList = orderService.findAll();
+		orderList.forEach(d -> System.out.println(d));
 	}
 
 }

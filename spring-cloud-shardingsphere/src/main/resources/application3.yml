@@ -1,4 +1,4 @@
-# 分库 + 分表(多表)
+# 分库 + 分表(单表)
 server:
   port: 18093
 spring:
@@ -31,32 +31,22 @@ spring:
         password: 123456
     sharding:  
       broadcast-tables: t_dict  #指定t_dict为广播表(公共表，每个库都有该表)
-      default-database-strategy:
-        # 使用默认分库策略(所有数据分库都用该字段)
-        inline:
-          sharding-column: order_type
-          algorithm-expression: ds$->{order_type % 2}
       tables:
         t_order:
           actual-data-nodes: ds$->{0..1}.t_order_$->{0..1}  # 数据节点
           key-generator:
             column: id
             type: SNOWFLAKE
+          # 分库策略(水平)
+          database-strategy:
+            inline:
+              sharding-column: order_type   # 分库字段
+              algorithm-expression: ds$->{order_type % 2}  # 分库算法
           # 分表策略(水平)
           table-strategy:
             inline:
               sharding-column: id   # 分表字段id
               algorithm-expression: t_order_$->{id % 2}  # 分表算法
-        t_order_detail:
-          actual-data-nodes: ds$->{0..1}.t_order_detail_$->{0..1}  # 数据节点
-          key-generator:
-            column: id
-            type: SNOWFLAKE
-          # 分表策略(水平)
-          table-strategy:
-            inline:
-              sharding-column: order_id  # 分表字段
-              algorithm-expression: t_order_detail_$->{order_id % 2}  # 分表算法
 
 logging:
   level:  #日志级别控制
