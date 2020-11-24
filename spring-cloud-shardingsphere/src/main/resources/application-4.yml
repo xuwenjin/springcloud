@@ -1,17 +1,5 @@
 # 分库 + 分表(多表)
-server:
-  port: 18093
 spring:
-  application:
-    name: spring-cloud-shardingsphere
-  main:
-    allow-bean-definition-overriding: true
-  jpa:
-    open-in-view: true
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate.dialect: org.hibernate.dialect.MySQL57InnoDBDialect
   shardingsphere:
     props:
       sql.show: true 
@@ -58,10 +46,3 @@ spring:
             inline:
               sharding-column: order_id  # 分表字段
               algorithm-expression: t_order_detail_$->{order_id % 2}  # 分表算法
-
-logging:
-  level:  #日志级别控制
-    jdbc: off  #日志最高级别，只打印sql及参数
-    jdbc.sqltiming: info #记录sql执行的时间
-    com:  #包名
-      xwj: debug

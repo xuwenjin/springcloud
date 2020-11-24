@@ -1,6 +1,7 @@
 package com.xwj;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,6 +86,24 @@ public class OrderTest {
 	public void testSelectPage() {
 		List<OrderDetailVo> orderList = orderService.queryOrderDetailList(3, 5);
 		System.out.println(orderList.size());
+	}
+
+	/**
+	 * 总数统计
+	 */
+	@Test
+	public void testSelectCount() {
+		long count = orderService.queryCount();
+		System.out.println(count);
+	}
+
+	/**
+	 * 分组统计
+	 */
+	@Test
+	public void testSelectGroup() {
+		List<Map<String, Object>> list = orderService.queryGroupList();
+		System.out.println(list);
 	}
 
 }

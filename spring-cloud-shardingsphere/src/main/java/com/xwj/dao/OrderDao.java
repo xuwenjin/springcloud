@@ -43,4 +43,13 @@ public class OrderDao {
 		return template.query(sql.toString(), paramMap, new BeanPropertyRowMapper<>(OrderDetailVo.class));
 	}
 
+	public List<Map<String, Object>> queryGroupList() {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" select order_type, count(1) num ");
+		sql.append(" from t_order ");
+		sql.append(" group by order_type ");
+		sql.append(" order by order_type ");
+		return jdbcTemplate.queryForList(sql.toString());
+	}
+
 }

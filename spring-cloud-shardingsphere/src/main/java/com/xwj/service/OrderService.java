@@ -1,6 +1,7 @@
 package com.xwj.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,20 @@ public class OrderService {
 	public List<OrderDetailVo> queryOrderDetailList(int page, int pageSize) {
 		int start = (page - 1) * pageSize;
 		return orderDao.queryOrderDetailList(start, pageSize);
+	}
+
+	/**
+	 * 统计总数
+	 */
+	public long queryCount() {
+		return repository.count();
+	}
+
+	/**
+	 * 分组统计
+	 */
+	public List<Map<String, Object>> queryGroupList() {
+		return orderDao.queryGroupList();
 	}
 
 }
