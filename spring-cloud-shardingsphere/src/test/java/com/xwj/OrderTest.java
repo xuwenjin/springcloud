@@ -12,6 +12,7 @@ import com.xwj.entity.OrderInfo;
 import com.xwj.entity.OrderInfoDetail;
 import com.xwj.service.OrderDetailService;
 import com.xwj.service.OrderService;
+import com.xwj.vo.OrderDetailVo;
 
 /**
  * 测试订单表
@@ -75,6 +76,15 @@ public class OrderTest {
 	public void testSelectAll() {
 		List<OrderInfo> orderList = orderService.findAll();
 		orderList.forEach(d -> System.out.println(d));
+	}
+
+	/**
+	 * 连表查询(分页查询)
+	 */
+	@Test
+	public void testSelectPage() {
+		List<OrderDetailVo> orderList = orderService.queryOrderDetailList(3, 5);
+		System.out.println(orderList.size());
 	}
 
 }
