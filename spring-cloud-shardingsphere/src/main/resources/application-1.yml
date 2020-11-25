@@ -16,9 +16,9 @@ spring:
       tables:
         t_order:
           actual-data-nodes: ds0.t_order_$->{0..1}   # 数据节点
-          key-generator:
-            column: id
-            type: SNOWFLAKE
+          #key-generator:
+            #column: id
+            #type: SNOWFLAKE
           # 分表策略(水平)
           table-strategy:
             inline:

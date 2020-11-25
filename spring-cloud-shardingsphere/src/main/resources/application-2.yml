@@ -27,9 +27,6 @@ spring:
       tables:
         t_order:
           actual-data-nodes: ds0.t_order_$->{0..1}   # 数据节点(注意这里的ds0，为上面自定义的主从库数据源名称)
-          key-generator:
-            column: id
-            type: SNOWFLAKE
           # 分表策略
           table-strategy:
             inline:

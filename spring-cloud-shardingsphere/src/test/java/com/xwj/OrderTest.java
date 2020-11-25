@@ -32,6 +32,22 @@ public class OrderTest {
 	 */
 	@Test
 	public void testInsert() {
+		OrderInfo order = new OrderInfo();
+		order.setId(1L);
+		order.setStatus("dispatched");
+
+		// 随机生成0和1(分库时，用的orderType分片，这里可随机插入到不同的库)
+		int orderType = (int) (10 * Math.random()) % 2;
+		order.setOrderType(orderType);
+
+		orderService.save(order);
+	}
+
+	/**
+	 * 批量保存订单
+	 */
+	@Test
+	public void testInsertBatch() {
 		for (int i = 1; i <= 20; i++) {
 			OrderInfo order = new OrderInfo();
 			order.setId(Long.valueOf(i));
