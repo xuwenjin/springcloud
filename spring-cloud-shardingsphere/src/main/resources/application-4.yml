@@ -1,4 +1,4 @@
-# 分库 + 分表(多表)
+# 分库 + 分表(多表) + 绑定表
 spring:
   shardingsphere:
     props:
