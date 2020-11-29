@@ -45,5 +45,12 @@ hystrix:
             
 feign:
   hystrix:
-    enabled: true #打开feign对hystrix的支持
+    enabled: false #打开feign对hystrix的支持
+  client:
+    config:
+      service-provider:  #只对service-provider使用拦截器(要想拦截器生效，必须关闭hystrix)
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+        requestInterceptors: com.xwj.interceptor.FeignBasicAuthRequestInterceptor
    

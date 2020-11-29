@@ -1,7 +1,10 @@
 package com.xwj.controller;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,8 +44,18 @@ public class UserController {
 
 	@OperLogAnn(value = "查询单个", operModule = "人员管理")
 	@GetMapping("/find/{id}")
-	public UserInfo findById(@PathVariable Long id) {
+	public UserInfo findById(@PathVariable Long id, HttpServletRequest request) {
 		System.out.println("port:" + port);
+
+		Enumeration<String> headerNames = request.getHeaderNames();
+		if (headerNames != null) {
+			while (headerNames.hasMoreElements()) {
+				String name = headerNames.nextElement();
+				String value = request.getHeader(name);
+				System.out.println(name + ":" + value);
+			}
+		}
+
 		return userService.findById(id);
 	}
 
