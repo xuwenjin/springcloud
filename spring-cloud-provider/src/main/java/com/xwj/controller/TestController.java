@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.xwj.billcode.SequenceGenerator;
 import com.xwj.properties.TestConfiguration;
+import com.xwj.service.test.IBaseService;
 
 @RestController
 @RequestMapping("test")
@@ -14,6 +15,8 @@ public class TestController {
 
 	@Autowired(required = false)
 	private TestConfiguration test1Configuration;
+	@Autowired
+	private IBaseService baseService;
 
 	@GetMapping("testConfiguration")
 	public String testConfiguration() {
@@ -30,6 +33,14 @@ public class TestController {
 	@GetMapping("idWorker")
 	public String idWorker() {
 		return SequenceGenerator.uuid16();
+	}
+
+	/**
+	 * 测试@Conditional相关注解
+	 */
+	@GetMapping("testConditional")
+	public String testConditional() {
+		return baseService.sayHello();
 	}
 
 }
