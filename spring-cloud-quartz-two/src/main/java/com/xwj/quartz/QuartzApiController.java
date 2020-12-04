@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.xwj.quartz.job.MyJob1;
 import com.xwj.quartz.job.MyJob2;
+import com.xwj.quartz.job.MyJob3;
+import com.xwj.quartz.listener.AllJobListener;
+import com.xwj.quartz.listener.MyJob3Listener;
+import com.xwj.quartz.listener.AllTriggerListener;
 import com.xwj.util.TimeUtil;
 
 /**
@@ -58,7 +62,9 @@ public class QuartzApiController {
 		Map<String, Object> params = new HashMap<>();
 		params.put("id", id);
 		// 每10秒执行一次
-		quartzScheduler.addJobWithCron(MyJob2.class, id, "0/10 * * * * ?", 120, params);
+		quartzScheduler.addJobWithCron(MyJob3.class, id, "0/10 * * * * ?", 30, params);
+		// 增加任务监听
+		quartzScheduler.addJobListener(id, MyJob3.class, new MyJob3Listener(quartzScheduler));
 	}
 
 	/**
@@ -91,6 +97,22 @@ public class QuartzApiController {
 	@GetMapping("/job/pauseAll")
 	public void pauseAllQuartzJob() {
 		quartzScheduler.pauseAllJob();
+	}
+
+	/**
+	 * 注册任务监听器
+	 */
+	@GetMapping("/addJobListener")
+	public void addJobListener() {
+		quartzScheduler.addJobListener(new AllJobListener());
+	}
+
+	/**
+	 * 注册触发器监听器
+	 */
+	@GetMapping("/addTriggerListener")
+	public void addTriggerListener() {
+		quartzScheduler.addTriggerListener(new AllTriggerListener());
 	}
 
 }

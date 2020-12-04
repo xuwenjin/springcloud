@@ -11,11 +11,15 @@ import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
+import org.quartz.JobListener;
+import org.quartz.Matcher;
 import org.quartz.Scheduler;
 import org.quartz.Trigger;
 import org.quartz.Trigger.TriggerState;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
+import org.quartz.TriggerListener;
+import org.quartz.impl.matchers.KeyMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,18 +43,15 @@ public class MyQuartzScheduler {
 	/**
 	 * 指定时间后执行任务(只会执行一次)
 	 * 
-	 * @param triggerStartTime
-	 *            指定时间
+	 * @param triggerStartTime 指定时间
 	 */
 	@SneakyThrows
-	public void addJob(Class<? extends Job> jobClass, String jobName, Date triggerStartTime,
-			Map<String, Object> params) {
+	public void addJob(Class<? extends Job> jobClass, String jobName, Date triggerStartTime, Map<String, Object> params) {
 		// 使用job类名作为组名
 		String groupName = jobClass.getSimpleName();
 
 		// 创建任务触发器
-		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobName, groupName).startAt(triggerStartTime)
-				.build();
+		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobName, groupName).startAt(triggerStartTime).build();
 
 		// 将触发器与任务绑定到调度器内
 		this.scheduleJob(jobClass, groupName, jobName, params, trigger);
@@ -59,19 +60,16 @@ public class MyQuartzScheduler {
 	/**
 	 * 带触发器的任务(执行多次)
 	 * 
-	 * @param cronExpression
-	 *            定时任务表达式
+	 * @param cronExpression 定时任务表达式
 	 */
 	@SneakyThrows
-	public void addJobWithCron(Class<? extends Job> jobClass, String jobName, String cronExpression,
-			Map<String, Object> params) {
+	public void addJobWithCron(Class<? extends Job> jobClass, String jobName, String cronExpression, Map<String, Object> params) {
 		// 使用job类名作为组名
 		String groupName = jobClass.getSimpleName();
 
 		// 基于表达式构建触发器
 		CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
-		CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(jobName, groupName)
-				.withSchedule(cronScheduleBuilder).build();
+		CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(jobName, groupName).withSchedule(cronScheduleBuilder).build();
 
 		// 将触发器与任务绑定到调度器内
 		this.scheduleJob(jobClass, groupName, jobName, params, cronTrigger);
@@ -80,14 +78,11 @@ public class MyQuartzScheduler {
 	/**
 	 * 带触发器的任务，同时指定时间段(立马执行)
 	 * 
-	 * @param timeoutSeconds
-	 *            超时时间(秒)
-	 * @param cronExpression
-	 *            定时任务表达式
+	 * @param timeoutSeconds 超时时间(秒)
+	 * @param cronExpression 定时任务表达式
 	 */
 	@SneakyThrows
-	public void addJobWithCron(Class<? extends Job> jobClass, String jobName, String cronExpression,
-			long timeoutSeconds, Map<String, Object> params) {
+	public void addJobWithCron(Class<? extends Job> jobClass, String jobName, String cronExpression, long timeoutSeconds, Map<String, Object> params) {
 		// 使用job类名作为组名
 		String groupName = jobClass.getSimpleName();
 
@@ -96,16 +91,14 @@ public class MyQuartzScheduler {
 
 		// 基于表达式构建触发器，同时指定时间段
 		CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
-		CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(jobName, groupName).startNow().endAt(endDate)
-				.withSchedule(cronScheduleBuilder).build();
+		CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(jobName, groupName).startNow().endAt(endDate).withSchedule(cronScheduleBuilder).build();
 
 		// 将触发器与任务绑定到调度器内
 		this.scheduleJob(jobClass, groupName, jobName, params, cronTrigger);
 	}
 
 	@SneakyThrows
-	private void scheduleJob(Class<? extends Job> jobClass, String groupName, String jobName,
-			Map<String, Object> params, Trigger trigger) {
+	private void scheduleJob(Class<? extends Job> jobClass, String groupName, String jobName, Map<String, Object> params, Trigger trigger) {
 		jobName = StringUtils.join(JOB_NAME_PREFIX, jobName);
 		log.info("创建任务，任务名称：{}", jobName);
 
@@ -143,8 +136,7 @@ public class MyQuartzScheduler {
 		String oldTime = cronTrigger.getCronExpression();
 		if (!oldTime.equalsIgnoreCase(time)) {
 			CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(time);
-			CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group)
-					.withSchedule(cronScheduleBuilder).build();
+			CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group).withSchedule(cronScheduleBuilder).build();
 			date = scheduler.rescheduleJob(triggerKey, trigger);
 		}
 		return date != null;
@@ -156,6 +148,14 @@ public class MyQuartzScheduler {
 	@SneakyThrows
 	public TriggerState getJobState(String name, String group) {
 		TriggerKey triggerKey = TriggerKey.triggerKey(name, group);
+		return scheduler.getTriggerState(triggerKey);
+	}
+
+	/**
+	 * 获取任务状态
+	 */
+	@SneakyThrows
+	public TriggerState getJobState(TriggerKey triggerKey) {
 		return scheduler.getTriggerState(triggerKey);
 	}
 
@@ -199,6 +199,34 @@ public class MyQuartzScheduler {
 			throw new RuntimeException("任务不存在");
 		}
 		scheduler.resumeJob(jobKey);
+	}
+
+	/**
+	 * 注册任务监听器(全局监听器，监听所有任务)
+	 */
+	@SneakyThrows
+	public void addJobListener(JobListener listener) {
+		scheduler.getListenerManager().addJobListener(listener);
+	}
+
+	/**
+	 * 为任务增加任务监听器
+	 */
+	@SneakyThrows
+	public void addJobListener(String name, Class<? extends Job> jobClass, JobListener listener) {
+		name = StringUtils.join(JOB_NAME_PREFIX, name);
+		String group = jobClass.getSimpleName();
+		JobKey jobKey = new JobKey(name, group);
+		Matcher<JobKey> matcher = KeyMatcher.keyEquals(jobKey);
+		scheduler.getListenerManager().addJobListener(listener, matcher);
+	}
+
+	/**
+	 * 注册触发器监听器(全局监听器，监听所有任务)
+	 */
+	@SneakyThrows
+	public void addTriggerListener(TriggerListener listener) {
+		scheduler.getListenerManager().addTriggerListener(listener);
 	}
 
 }
