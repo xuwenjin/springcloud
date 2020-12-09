@@ -6,11 +6,14 @@ import org.springframework.context.annotation.Configuration;
 import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
 
 /**
- * 配置Sentinel限流切面
+ * Sentinel配置类
  */
 @Configuration
-public class AopConfiguration {
-	
+public class SentinelConfig {
+
+	/**
+	 * 配置Sentinel限流切面
+	 */
 	@Bean
 	public SentinelResourceAspect sentinelResourceAspect() {
 		return new SentinelResourceAspect();
