@@ -14,9 +14,9 @@ public class SentinelConfig {
 	/**
 	 * 配置Sentinel限流切面
 	 */
-//	@Bean
-//	public SentinelResourceAspect sentinelResourceAspect() {
-//		return new SentinelResourceAspect();
-//	}
+	@Bean
+	public SentinelResourceAspect sentinelResourceAspect() {
+		return new SentinelResourceAspect();
+	}
 
 }

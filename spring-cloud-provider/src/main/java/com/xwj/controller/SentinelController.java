@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.SphO;
 import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
 
@@ -29,13 +32,14 @@ public class SentinelController {
 
 	/**资源名称*/
 	private final String RESOURCE_HELLO = "res_hello";
+	private final String RESOURCE_ANN = "res_ann";
 
 	/**
 	 * 初始化流量控制规则
 	 */
 	@PostConstruct // 当前类的构造函数执行之后执行
 	public void initFlowRules() {
-		System.out.println("SentinelController.initFlowRules：初始化限流规则");
+		System.out.println("SentinelController.initFlowRules：初始化流量控制规则");
 		List<FlowRule> rules = new ArrayList<>();
 
 		// 1、创建流量控制规则
@@ -47,6 +51,26 @@ public class SentinelController {
 
 		// 2、加载流量控制规则
 		FlowRuleManager.loadRules(rules);
+	}
+
+	/**
+	 * 初始化熔断降级规则
+	 */
+	@PostConstruct // 当前类的构造函数执行之后执行
+	public void initDegradeRules() {
+		System.out.println("SentinelController.initDegradeRules：初始化熔断降级规则");
+		List<DegradeRule> rules = new ArrayList<>();
+
+		// 1、创建流量控制规则
+		DegradeRule rule = new DegradeRule();
+		rule.setResource(RESOURCE_ANN);// 设置资源名称
+		rule.setGrade(RuleConstant.DEGRADE_GRADE_RT); // 设置熔断策略(主要有三种统计类型：慢调用比例(平均响应时间)、异常比例、异常数策略)
+		rule.setCount(0.001); // 设置阈值(慢调用比例模式下为慢调用临界RT(超出该值计为慢调用)；异常比例/异常数模式下为对应的阈值)
+		rule.setTimeWindow(10); // 设置熔断时长(单位：秒)
+		rules.add(rule);
+
+		// 2、加载熔断降级规则
+		DegradeRuleManager.loadRules(rules);
 	}
 
 	/**
@@ -85,25 +109,39 @@ public class SentinelController {
 		}
 	}
 
-	// /**
-	// * 测试Sentinel限流
-	// */
-	// @SentinelResource(value = "all", blockHandler = "exceptionHandler")
-	// @GetMapping("/all")
-	// public List<UserInfo> all(String id) {
-	// return userService.findAll();
-	// }
-	//
-	// /**
-	// * 处理 BlockException 的方法名，可选项。若未配置，则将 BlockException 直接抛出
-	// *
-	// * 1、blockHandler函数访问范围需要是public
-	// * 2、返回类型需要与原方法相匹配参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为BlockException
-	// * 3、blockHandler函数默认需要和原方法在同一个类中
-	// */
-	// public String exceptionHandler(String id, BlockException e) {
-	// e.printStackTrace();
-	// return "错误发生在" + id;
-	// }
+	/**
+	* 基于@SentinelResource注解，测试Sentinel限流
+	* 
+	* 注解@SentinelResource属性：
+	* 
+	* value：资源名称，必需项
+	* blockHandler：处理 BlockException 的函数名称
+	* fallback：用于在抛出异常的时候提供 fallback 处理逻辑
+	*/
+	@SentinelResource(value = RESOURCE_ANN, blockHandler = "exceptionHandler", fallback = "fallbackHandler")
+	@GetMapping("/ann")
+	public String helloAnn(String id) {
+		return "ann";
+	}
+
+	/**
+	* 处理 BlockException 的方法名，可选项。若未配置，则将 BlockException 直接抛出
+	*
+	* 1、blockHandler函数访问范围需要是public
+	* 2、返回类型需要与原方法相匹配参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为BlockException
+	* 3、blockHandler函数默认需要和原方法在同一个类中
+	*/
+	public String exceptionHandler(String id, BlockException e) {
+		System.out.println("exceptionHandler：" + id);
+		return "系统繁忙，请稍候...";
+	}
+
+	/**
+	 * 类似于上面的exceptionHandler，只是可以处理任务异常
+	 */
+	public String fallbackHandler(String id) {
+		System.out.println("fallbackHandler：" + id);
+		return "系统繁忙，请稍候...";
+	}
 
 }

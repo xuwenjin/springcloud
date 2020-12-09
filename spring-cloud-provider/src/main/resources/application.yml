@@ -48,7 +48,7 @@ spring:
     host: localhost #Redis服务器地址
     port: 6379 
     password: ## 密码（默认为空）
-  cloud:    sentinel:      transport:        dashboard: localhost:8888
+  cloud:    sentinel:      transport:        dashboard: localhost:8888  #设置Sentinel控制台的地址和端口
   rabbitmq:
     # 开启发送确认
     publisher-confirms: true
