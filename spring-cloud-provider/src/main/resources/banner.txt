@@ -18,6 +18,5 @@ X:::::X       X:::::X           W:::W           W:::W        JJ:::::::::JJ
 XXXXXXX       XXXXXXX            WWW             WWW           JJJJJJJJJ       
                                                                                
 ${AnsiColor.BRIGHT_GREEN}
-PengJu erp  Boot Version: 2.2.0
 Spring Boot Version: ${spring-boot.version}${spring-boot.formatted-version}
 ${AnsiColor.BLACK}

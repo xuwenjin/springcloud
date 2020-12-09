@@ -17,7 +17,7 @@ public class MyApplicationListener implements ApplicationListener<ContextRefresh
 	 */
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		System.out.println("容器初始化后，自定义处理逻辑");
+		System.out.println("MyApplicationListener：容器初始化后，自定义处理逻辑");
 	}
 
 }
