@@ -3,7 +3,9 @@ package com.xwj.quartz;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -19,6 +21,7 @@ import org.quartz.Trigger.TriggerState;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.TriggerListener;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.impl.matchers.KeyMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -227,6 +230,20 @@ public class MyQuartzScheduler {
 	@SneakyThrows
 	public void addTriggerListener(TriggerListener listener) {
 		scheduler.getListenerManager().addTriggerListener(listener);
+	}
+
+	/**
+	 * 通过group查询有多少个运行的任务
+	 */
+	@SneakyThrows
+	public long getRunningJobCountByGroup(Class<? extends Job> jobClass) {
+		String groupName = jobClass.getSimpleName();
+		GroupMatcher<JobKey> matcher = GroupMatcher.jobGroupEquals(groupName);
+		Set<JobKey> jobKeySet = scheduler.getJobKeys(matcher);
+		if (CollectionUtils.isNotEmpty(jobKeySet)) {
+			return jobKeySet.stream().filter(d -> StringUtils.equals(d.getGroup(), groupName)).count();
+		}
+		return 0;
 	}
 
 }
