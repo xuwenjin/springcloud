@@ -15,8 +15,8 @@ import com.xwj.quartz.job.MyJob1;
 import com.xwj.quartz.job.MyJob2;
 import com.xwj.quartz.job.MyJob3;
 import com.xwj.quartz.listener.AllJobListener;
-import com.xwj.quartz.listener.MyJob3Listener;
 import com.xwj.quartz.listener.AllTriggerListener;
+import com.xwj.quartz.listener.MyJob3Listener;
 import com.xwj.util.TimeUtil;
 
 /**
@@ -64,7 +64,7 @@ public class QuartzApiController {
 		// 每10秒执行一次
 		quartzScheduler.addJobWithCron(MyJob3.class, id, "0/10 * * * * ?", 30, params);
 		// 增加任务监听
-		quartzScheduler.addJobListener(id, MyJob3.class, new MyJob3Listener(quartzScheduler));
+		quartzScheduler.addJobListener(id, MyJob3.class, new MyJob3Listener(quartzScheduler, id));
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class QuartzApiController {
 	}
 
 	/**
-	 * 注册任务监听器
+	 * 注册任务监听器(全局)
 	 */
 	@GetMapping("/addJobListener")
 	public void addJobListener() {
@@ -108,7 +108,7 @@ public class QuartzApiController {
 	}
 
 	/**
-	 * 注册触发器监听器
+	 * 注册触发器监听器(全局)
 	 */
 	@GetMapping("/addTriggerListener")
 	public void addTriggerListener() {

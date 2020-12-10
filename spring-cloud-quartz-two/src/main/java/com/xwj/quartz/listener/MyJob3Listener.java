@@ -2,6 +2,7 @@ package com.xwj.quartz.listener;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.Trigger.TriggerState;
 import org.quartz.TriggerKey;
 import org.quartz.listeners.JobListenerSupport;
 
@@ -18,20 +19,24 @@ import lombok.extern.slf4j.Slf4j;
 public class MyJob3Listener extends JobListenerSupport {
 
 	private MyQuartzScheduler quartzScheduler;
+	private String jobName;
 
 	public MyJob3Listener() {
 		super();
 	}
 
-	public MyJob3Listener(MyQuartzScheduler quartzScheduler) {
+	public MyJob3Listener(MyQuartzScheduler quartzScheduler, String jobName) {
 		super();
 		this.quartzScheduler = quartzScheduler;
+		this.jobName = jobName;
 	}
 
 	@Override
 	public String getName() {
-		// 一定得返回一个值
-		return "job3Listener";
+		/**
+		 * 一定得返回一个值(如果需要同时监听多个任务，这里的name必须与任务名称一致，否则只会监听一次)
+		 */
+		return jobName;
 	}
 
 	@Override
@@ -45,11 +50,12 @@ public class MyJob3Listener extends JobListenerSupport {
 
 	@Override
 	public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
+		// log.info("job3任务监听器：任务执行已完成~~~");
 		if (quartzScheduler != null) {
 			TriggerKey triggerKey = context.getTrigger().getKey();
-			log.info("任务状态：{}", quartzScheduler.getJobState(triggerKey));
+			TriggerState state = quartzScheduler.getJobState(triggerKey);
+			log.info("name：{}，group：{}，state：{}", triggerKey.getName(), triggerKey.getGroup(), state);
 		}
-		log.info("job3任务监听器：任务执行已完成~~~");
 	}
 
 }
