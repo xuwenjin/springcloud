@@ -21,11 +21,13 @@ public class MyJobListener extends JobListenerSupport {
 	private String jobName;
 
 	public MyJobListener() {
-		super();
+	}
+
+	public MyJobListener(MyQuartzScheduler quartzScheduler) {
+		this.quartzScheduler = quartzScheduler;
 	}
 
 	public MyJobListener(MyQuartzScheduler quartzScheduler, String jobName) {
-		super();
 		this.quartzScheduler = quartzScheduler;
 		this.jobName = jobName;
 	}
@@ -33,7 +35,7 @@ public class MyJobListener extends JobListenerSupport {
 	@Override
 	public String getName() {
 		/**
-		 * 一定得返回一个值(如果需要同时监听多个任务，这里的name必须与任务名称一致，否则只会监听一次)
+		 * 一定得返回一个值(如果需要同时监听多个任务，这里的name必须与任务名称一致，否则只会监听一个任务)
 		 */
 		if (StringUtils.isNotEmpty(jobName)) {
 			return jobName;

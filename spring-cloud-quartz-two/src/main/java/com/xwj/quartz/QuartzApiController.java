@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xwj.quartz.job.MyJob;
-import com.xwj.quartz.listener.AllJobListener;
 import com.xwj.quartz.listener.AllTriggerListener;
 import com.xwj.quartz.listener.MyJobListener;
 import com.xwj.util.TimeUtil;
@@ -61,8 +60,26 @@ public class QuartzApiController {
 		params.put("id", id);
 		// 每10秒执行一次
 		quartzScheduler.addJobWithCron(MyJob.class, id, "0/10 * * * * ?", 30, params);
+		// quartzScheduler.addJobWithCron(MyJob2.class, id, "0/10 * * * * ?",
+		// 30, params);
 		// 增加任务监听
 		quartzScheduler.addJobListener(id, MyJob.class, new MyJobListener(quartzScheduler, id));
+	}
+
+	/**
+	 * 注册任务监听器(全局)
+	 */
+	@GetMapping("/addJobListener")
+	public void addJobListener() {
+		quartzScheduler.addJobListener(new MyJobListener(quartzScheduler));
+	}
+
+	/**
+	 * 注册触发器监听器(全局)
+	 */
+	@GetMapping("/addTriggerListener")
+	public void addTriggerListener() {
+		quartzScheduler.addTriggerListener(new AllTriggerListener());
 	}
 
 	/**
@@ -95,22 +112,6 @@ public class QuartzApiController {
 	@GetMapping("/job/pauseAll")
 	public void pauseAllQuartzJob() {
 		quartzScheduler.pauseAllJob();
-	}
-
-	/**
-	 * 注册任务监听器(全局)
-	 */
-	@GetMapping("/addJobListener")
-	public void addJobListener() {
-		quartzScheduler.addJobListener(new AllJobListener());
-	}
-
-	/**
-	 * 注册触发器监听器(全局)
-	 */
-	@GetMapping("/addTriggerListener")
-	public void addTriggerListener() {
-		quartzScheduler.addTriggerListener(new AllTriggerListener());
 	}
 
 }
