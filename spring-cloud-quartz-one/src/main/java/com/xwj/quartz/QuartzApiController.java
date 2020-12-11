@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xwj.quartz.job.MyJob1;
-import com.xwj.quartz.job.MyJob2;
+import com.xwj.quartz.job.MyJob;
 import com.xwj.util.TimeUtil;
 
 /**
@@ -33,9 +33,10 @@ public class QuartzApiController {
 		LocalDateTime ldt = LocalDateTime.now();
 		Date date = TimeUtil.localDateTime2Date(ldt.plusSeconds(20));
 
+		// 执行一次
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
-		quartzScheduler.addJob(MyJob1.class, id, date, params);
+		quartzScheduler.addJob(MyJob.class, id, date, params);
 	}
 
 	/**
@@ -46,7 +47,19 @@ public class QuartzApiController {
 		Map<String, Object> params = new HashMap<>();
 		params.put("id", id);
 		// 每10秒执行一次
-		quartzScheduler.addJobWithCron(MyJob2.class, id, "0/10 * * * * ?", params);
+		quartzScheduler.addJobWithCron(MyJob.class, id, "0/10 * * * * ?", params);
+	}
+
+	/**
+	 * 带定时表达式和指定时间范围的任务
+	 */
+	@GetMapping("/job/cronInRange/{id}")
+	public void cronQuartzJobInRange(@PathVariable String id) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("id", id);
+
+		// 每10秒执行一次，执行30秒钟
+		quartzScheduler.addJobWithCron(MyJob.class, id, "0/10 * * * * ?", 30, params);
 	}
 
 	/**
