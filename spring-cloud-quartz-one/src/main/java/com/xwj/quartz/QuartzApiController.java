@@ -35,7 +35,7 @@ public class QuartzApiController {
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
-		quartzScheduler.addJob(MyJob1.class, date, params);
+		quartzScheduler.addJob(MyJob1.class, id, date, params);
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class QuartzApiController {
 		Map<String, Object> params = new HashMap<>();
 		params.put("id", id);
 		// 每10秒执行一次
-		quartzScheduler.addJobWithCron(MyJob2.class, "0/10 * * * * ?", params);
+		quartzScheduler.addJobWithCron(MyJob2.class, id, "0/10 * * * * ?", params);
 	}
 
 	/**

@@ -34,7 +34,7 @@ public class UserController {
 	@Autowired
 	private IUserService userService;
 
-	// @OperLogAnn(value = "查询所有", operModule = "人员管理")
+	@OperLogAnn(value = "查询所有", operModule = "人员管理")
 	@GetMapping("/findAll")
 	public List<UserInfo> findAll() {
 		return userService.findAll();

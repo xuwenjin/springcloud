@@ -13,6 +13,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
+/**
+ * Quartz配置类
+ */
 @Configuration
 public class QuartzConfig {
 
@@ -54,12 +57,9 @@ public class QuartzConfig {
 	/**
 	 * 配置任务调度器 使用项目数据源作为quartz数据源
 	 *
-	 * @param jobFactory
-	 *            自定义配置任务工厂
-	 * @param dataSource
-	 *            数据源实例
+	 * @param jobFactory 自定义配置任务工厂
+	 * @param dataSource 数据源实例
 	 */
-	// @Bean(destroyMethod = "destroy")
 	@Bean
 	public SchedulerFactoryBean schedulerFactoryBean(JobFactory jobFactory, DataSource dataSource) throws Exception {
 		SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
@@ -76,7 +76,7 @@ public class QuartzConfig {
 		// 设置上下文spring bean name
 		schedulerFactoryBean.setApplicationContextSchedulerContextKey("applicationContext");
 		// 设置配置文件位置
-		schedulerFactoryBean.setConfigLocation(new ClassPathResource("/quartz.yml"));
+		schedulerFactoryBean.setConfigLocation(new ClassPathResource("/quartz.properties"));
 		return schedulerFactoryBean;
 	}
 

@@ -5,8 +5,9 @@ org:
         validateOnCheckout: true
         validationQuery: SELECT 'x'
     scheduler:
-      instanceName: quartzScheduler  #调度器实例名称
-      instanceId: AUTO     #调度器实例编号自动生成
+      instanceName: instance_one  #调度器实例名称
+      #instanceId: AUTO     #调度器实例编号自动生成
+      instanceId: instance_id_one     #调度器实例编号自动生成
     jobStore:
       class: org.quartz.impl.jdbcjobstore.JobStoreTX  #持久化方式配置
       driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate #持久化方式配置数据驱动，MySQL数据库

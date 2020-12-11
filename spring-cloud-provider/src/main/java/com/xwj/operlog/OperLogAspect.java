@@ -76,7 +76,7 @@ public class OperLogAspect {
 		}
 
 		// 获取响应结果
-		operLog.setResponseResult(JSON.toJSONString(retObj));
+//		operLog.setResponseResult(JSON.toJSONString(retObj));
 
 		// 获取用户ip地址
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())

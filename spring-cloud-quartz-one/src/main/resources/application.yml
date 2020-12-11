@@ -43,7 +43,7 @@ logging:
   level:
     jdbc: off
     jdbc.sqltiming: error #记录sql执行的时间
-    root: INFO
+    #root: INFO
     com.xwj: debug
 
       
