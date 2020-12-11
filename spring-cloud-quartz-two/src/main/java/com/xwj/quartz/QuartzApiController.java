@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xwj.quartz.job.MyJob1;
-import com.xwj.quartz.job.MyJob2;
-import com.xwj.quartz.job.MyJob3;
+import com.xwj.quartz.job.MyJob;
 import com.xwj.quartz.listener.AllJobListener;
 import com.xwj.quartz.listener.AllTriggerListener;
-import com.xwj.quartz.listener.MyJob3Listener;
+import com.xwj.quartz.listener.MyJobListener;
 import com.xwj.util.TimeUtil;
 
 /**
@@ -40,7 +38,7 @@ public class QuartzApiController {
 
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("id", id);
-		quartzScheduler.addJob(MyJob1.class, id, date, params);
+		quartzScheduler.addJob(MyJob.class, id, date, params);
 	}
 
 	/**
@@ -51,7 +49,7 @@ public class QuartzApiController {
 		Map<String, Object> params = new HashMap<>();
 		params.put("id", id);
 		// 每10秒执行一次
-		quartzScheduler.addJobWithCron(MyJob2.class, id, "0/10 * * * * ?", params);
+		quartzScheduler.addJobWithCron(MyJob.class, id, "0/10 * * * * ?", params);
 	}
 
 	/**
@@ -62,9 +60,9 @@ public class QuartzApiController {
 		Map<String, Object> params = new HashMap<>();
 		params.put("id", id);
 		// 每10秒执行一次
-		quartzScheduler.addJobWithCron(MyJob3.class, id, "0/10 * * * * ?", 30, params);
+		quartzScheduler.addJobWithCron(MyJob.class, id, "0/10 * * * * ?", 30, params);
 		// 增加任务监听
-		quartzScheduler.addJobListener(id, MyJob3.class, new MyJob3Listener(quartzScheduler, id));
+		quartzScheduler.addJobListener(id, MyJob.class, new MyJobListener(quartzScheduler, id));
 	}
 
 	/**
