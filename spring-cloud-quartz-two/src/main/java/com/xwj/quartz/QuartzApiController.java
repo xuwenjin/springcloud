@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xwj.quartz.job.MyJob;
+import com.xwj.quartz.job.MyJob2;
 import com.xwj.quartz.listener.AllTriggerListener;
 import com.xwj.quartz.listener.MyJobListener;
 import com.xwj.util.TimeUtil;
@@ -59,11 +60,11 @@ public class QuartzApiController {
 		Map<String, Object> params = new HashMap<>();
 		params.put("id", id);
 		// 每10秒执行一次
-		quartzScheduler.addJobWithCron(MyJob.class, id, "0/10 * * * * ?", 30, params);
+		quartzScheduler.addJobWithCron(MyJob2.class, id, "0/10 * * * * ?", 30, params);
 		// quartzScheduler.addJobWithCron(MyJob2.class, id, "0/10 * * * * ?",
 		// 30, params);
 		// 增加任务监听
-		quartzScheduler.addJobListener(id, MyJob.class, new MyJobListener(quartzScheduler, id));
+		quartzScheduler.addJobListener(id, MyJob2.class, new MyJobListener(quartzScheduler, id));
 	}
 
 	/**
