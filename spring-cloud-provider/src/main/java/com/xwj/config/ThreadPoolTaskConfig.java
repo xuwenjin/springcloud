@@ -13,12 +13,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 public class ThreadPoolTaskConfig {
 
 	/**
-	 * 默认情况下，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，
+	 * 默认情况下，在创建了线程池后，线程池中的线程数为0
 	 * 当线程数小于核心线程数时，创建线程
 	 * 当线程数大于等于核心线程数，且任务队列未满时，将任务放入任务队列
 	 * 当线程数大于等于核心线程数，且任务队列已满：
-	 *   (1)若线程数小于最大线程数，创建线程。
-	 *   (2)若线程数等于最大线程数，抛出异常，拒绝任务，开始使用拒绝策略拒绝
+	 *   (1)若线程数小于等于最大线程数，创建线程。
+	 *   (2)若线程数大于最大线程数，抛出异常，拒绝任务，开始使用拒绝策略拒绝
 	 */
 
 	/** 核心线程数（默认线程数） */
@@ -40,6 +40,7 @@ public class ThreadPoolTaskConfig {
 		executor.setQueueCapacity(QUEUE_CAPACITY);
 		executor.setKeepAliveSeconds(KEEP_ALIVE_TIME);
 		executor.setThreadNamePrefix(THREAD_NAME_PREFIX);
+		executor.setAllowCoreThreadTimeOut(true); // 允许核心线程数超时(默认false)。如果为true，则也是使用keepAliveSeconds作为允许空闲时间
 
 		// 线程池对拒绝任务的处理策略
 		// CallerRunsPolicy：由调用线程（提交任务的线程）处理该任务
