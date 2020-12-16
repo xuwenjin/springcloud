@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
 import com.xwj.entity.UserInfo;
+import com.xwj.lock.MyRedisLock;
 import com.xwj.lock.RedisLock;
 import com.xwj.redis.JsonRedisTemplate;
 import com.xwj.service.IUserService;
@@ -164,7 +165,7 @@ public class RedisController implements InitializingBean {
 	 */
 	@GetMapping("testLock3")
 	public void testLock3() throws InterruptedException {
-		RLock disLock = redisson.getLock("DISLOCK");
+		RLock disLock = redisson.getLock("xwj");
 		// 获取锁最多等待10秒，超时返回false
 		// 如果获取了锁，过期时间是5秒
 		boolean isLock = disLock.tryLock(10000, 5000, TimeUnit.MILLISECONDS);
@@ -184,6 +185,40 @@ public class RedisController implements InitializingBean {
 				disLock.unlock();
 			}
 		}
+	}
+
+	/**
+	 * 测试redis分布式锁(有锁)-手写锁-支持可重入
+	 */
+	@GetMapping("testLock4")
+	public void testLock4() throws InterruptedException {
+		MyRedisLock myRedisLock = new MyRedisLock("xwj");
+		myRedisLock.setRedisTemplate(redisTemplate);
+
+		// 获取锁最多等待10秒，超时返回false
+		// 如果获取了锁，过期时间是5秒
+		boolean isLock = myRedisLock.tryLock(10000, 5000, TimeUnit.MILLISECONDS);
+		if (isLock) {
+			boolean xwj = myRedisLock.tryLock(10000, 5000, TimeUnit.MILLISECONDS);
+			System.out.println("xwj------->" + xwj);
+			if (xwj) {
+				try {
+					String s = Thread.currentThread().getName();
+					int num = Integer.parseInt((String) redisTemplate.opsForValue().get("num"));
+					if (num > 0) {
+						System.out.println(s + "排号成功，号码是：" + num);
+						int remind = num - 1;
+						redisTemplate.opsForValue().set("num", remind + "");
+					} else {
+						System.out.println(s + "排号失败,号码已经被抢光");
+					}
+				} finally {
+					// 无论如何, 最后都要解锁
+					myRedisLock.unlock();
+				}
+			}
+		}
+		myRedisLock.unlock();
 	}
 
 	/**

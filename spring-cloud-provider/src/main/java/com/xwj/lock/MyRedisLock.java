@@ -3,39 +3,31 @@ package com.xwj.lock;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 
 import com.google.common.collect.ImmutableList;
 import com.xwj.redis.JsonRedisTemplate;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * redis实现分布式锁
  * 
- * @author xwj
+ * 加锁和解锁都使用lua脚本，并且锁支持可重入
  */
-@Slf4j
 public class MyRedisLock {
 
-	private static final long TIMEOUT = ObjectUtils.CONST(5000); // 获取锁后过期时间
-
-	protected long leaseTime;
+	protected long lockLeaseTime;
 	private String name;
 	final UUID id;
-	final String entryName;
 
 	private JsonRedisTemplate redisTemplate;
 
-	// 解锁消息内容
+	// 解锁消息内容(redis发布订阅时会用到)
 	public static final Long UNLOCK_MESSAGE = 0L;
 
 	public MyRedisLock(String name) {
 		this.id = UUID.randomUUID();
 		this.name = name;
-		this.entryName = id + ":" + name;
 	}
 
 	public void setRedisTemplate(JsonRedisTemplate redisTemplate) {
@@ -45,13 +37,38 @@ public class MyRedisLock {
 	/**
 	 * 加锁
 	 */
-	public boolean lock() {
+	public boolean tryLock(long waitTime, long leaseTime, TimeUnit unit) {
+		long time = unit.toMillis(waitTime);
 		long threadId = Thread.currentThread().getId();
-		Long ttl = tryAcquire(TIMEOUT, TimeUnit.MILLISECONDS, threadId);
+		Long ttl = tryAcquire(leaseTime, TimeUnit.MILLISECONDS, threadId);
+//		System.out.println("ttl------>" + ttl);
 		if (ttl == null) {
+			// 加锁成功
 			return true;
 		}
-		return false;
+
+		long current = System.currentTimeMillis();
+		time -= System.currentTimeMillis() - current;
+		if (time <= 0) {
+			// 如果已超过等待时间，则直接返回false，加锁失败
+			return false;
+		}
+
+		while (true) {
+			// 自旋加锁
+			long currentTime = System.currentTimeMillis();
+			ttl = tryAcquire(leaseTime, unit, threadId);
+			if (ttl == null) {
+				// 加锁成功
+				return true;
+			}
+
+			time -= System.currentTimeMillis() - currentTime;
+			if (time <= 0) {
+				// 如果已超过等待时间，则直接返回false，加锁失败
+				return false;
+			}
+		}
 	}
 
 	private Long tryAcquire(long leaseTime, TimeUnit unit, long threadId) {
@@ -62,16 +79,17 @@ public class MyRedisLock {
 	}
 
 	private Long tryLockInnerAsync(long leaseTime, TimeUnit unit, long threadId) {
-		leaseTime = unit.toMillis(leaseTime);
+		lockLeaseTime = unit.toMillis(leaseTime);
 
 		String luaScript = buildLockLuaScript();
 		RedisScript<Long> redisScript = new DefaultRedisScript<>(luaScript, Long.class);
 
 		ImmutableList<String> keys = ImmutableList.of(name);
+		String lockName = getLockName(threadId);
 		
-		System.out.println("key:" + name +", hkey:" + entryName +", leaseTime" +leaseTime);
+//		System.out.println("lock -------->  key:" + name +", hkey:" + lockName +", leaseTime:" + lockLeaseTime);
 		
-		return redisTemplate.execute(redisScript, keys, leaseTime, entryName);
+		return redisTemplate.execute(redisScript, keys, leaseTime, lockName);
 	}
 
 	/**
@@ -121,8 +139,13 @@ public class MyRedisLock {
 		RedisScript<Long> redisScript = new DefaultRedisScript<>(luaScript, Long.class);
 
 		ImmutableList<String> keys = ImmutableList.of(name, getChannelName());
-		Long res = redisTemplate.execute(redisScript, keys, UNLOCK_MESSAGE, leaseTime, entryName);
-		log.info("unlock.res ----->" + res);
+		String lockName = getLockName(threadId);
+		
+//		System.out.println("unlock -------->  key:" + keys +", hkey:" + lockName +", leaseTime:" + lockLeaseTime);
+		
+		Long res = redisTemplate.execute(redisScript, keys, UNLOCK_MESSAGE, lockLeaseTime, lockName);
+		
+		System.out.println("unlock.res ----->" + res);
 	}
 	
 	private String getChannelName() {
@@ -172,5 +195,9 @@ public class MyRedisLock {
             "end; " +
             "return nil;";
 	}
+	
+	protected String getLockName(long threadId) {
+        return id + ":" + threadId;
+    }
 
 }
