@@ -58,20 +58,20 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://admin:admin@localhost:8761/eureka
+      defaultZone: http://admin:admin@localhost:8761/eureka  #Eureka Server地址
   instance:
     prefer-ip-address: true #当猜测主机名时，服务器的IP地址应该在操作系统报告的主机名中使用
     instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}} #更改Eureka实例ID
     
     
 #spring boot默认日志
-logging:
+#logging:
   #file: my.log   #日志文件名称(也可以带路径)
-  level:  #日志级别控制
-    jdbc: off  #日志最高级别，只打印sql及参数
-    jdbc.sqltiming: debug #记录sql执行的时间
-    com:  #包名
-      xwj: debug
+  #level:  #日志级别控制
+   #jdbc: debug  #日志最高级别，只打印sql及参数
+   #jdbc.sqltiming: debug #记录sql执行的时间
+   #com:  #包名
+      #xwj: debug
 
 #jwt相关配置      
 jwt:
