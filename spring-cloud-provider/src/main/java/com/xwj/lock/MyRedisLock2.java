@@ -1,6 +1,10 @@
 package com.xwj.lock;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -24,8 +28,12 @@ public class MyRedisLock2 {
 	/**传进来的锁名称*/
 	private String name;
 
+	private final String entryName;
+
 	/**uuid*/
 	private final UUID id;
+
+	private static final ConcurrentMap<String, MyExpirationEntry> EXPIRATION_RENEWAL_MAP = new ConcurrentHashMap<>();
 
 	private JsonRedisTemplate redisTemplate;
 
@@ -35,6 +43,7 @@ public class MyRedisLock2 {
 	public MyRedisLock2(String name) {
 		this.id = UUID.randomUUID();
 		this.name = name;
+		this.entryName = id + ":" + name;
 	}
 
 	public void setRedisTemplate(JsonRedisTemplate redisTemplate) {
@@ -50,7 +59,6 @@ public class MyRedisLock2 {
 		Long ttl = tryAcquire(leaseTime, unit, threadId);
 		// System.out.println("ttl------>" + ttl);
 		if (ttl == null) {
-			System.out.println("加锁成功");
 			// 加锁成功
 			return true;
 		}
@@ -93,7 +101,8 @@ public class MyRedisLock2 {
 
 		Long ttl = redisTemplate.execute(redisScript, keys, lockLeaseTime, lockName);
 		if (ttl == null) {
-			renew(threadId);
+			// 加锁成功，开启续命
+			scheduleExpirationRenewal(threadId);
 		}
 		return ttl;
 	}
@@ -116,20 +125,47 @@ public class MyRedisLock2 {
 		System.out.println("unlock.res ----->" + res);
 	}
 
+	private void scheduleExpirationRenewal(long threadId) {
+		MyExpirationEntry entry = new MyExpirationEntry();
+
+		// 如果执行的key存在，则直接返回旧的value，否则替换旧的value并返回新的value
+		MyExpirationEntry oldEntry = EXPIRATION_RENEWAL_MAP.putIfAbsent(entryName, entry);
+		if (oldEntry != null) {
+			oldEntry.incrThreadCount(threadId);
+		} else {
+			entry.incrThreadCount(threadId);
+			renewExpiration();
+		}
+	}
+
 	/**
 	 * 锁-续命
 	 */
-	private void renew(long threadId) {
+	private void renewExpiration() {
+		MyExpirationEntry ee = EXPIRATION_RENEWAL_MAP.get(entryName);
+		if (ee == null) {
+			return;
+		}
+
+		// 创建一个延时线程
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		executor.schedule(() -> {
+			MyExpirationEntry ent = EXPIRATION_RENEWAL_MAP.get(entryName);
+			if (ent == null) {
+				return;
+			}
+			Long threadId = ent.getFirstThreadId();
+			if (threadId == null) {
+				return;
+			}
+
 			Long res = doRenew(threadId);
 			System.out.println("续命结果：" + res);
 			if (res > 0) {
-				System.out.println("续命成功");
 				// 续命成功，再开启一个续命任务
-				renew(threadId);
+				renewExpiration();
 			}
-		}, 2000, TimeUnit.MILLISECONDS);
+		}, lockLeaseTime / 3, TimeUnit.MILLISECONDS);
 	}
 
 	private Long doRenew(long threadId) {
@@ -251,6 +287,57 @@ public class MyRedisLock2 {
 		// 当前key不存在，则返回0
 		"end; " + 
 			"return 0;";
+	}
+
+	public static class MyExpirationEntry {
+
+		private final Map<Long, Integer> threadIds = new LinkedHashMap<>();
+
+		public MyExpirationEntry() {
+		}
+
+		/**
+		 * 增加当前线程对应的数量
+		 */
+		public void incrThreadCount(long threadId) {
+			Integer counter = threadIds.get(threadId);
+			if (counter == null) {
+				counter = 1;
+			} else {
+				counter++;
+			}
+			threadIds.put(threadId, counter);
+		}
+
+		public boolean hasNoThreads() {
+			return threadIds.isEmpty();
+		}
+
+		/**
+		 * 获取下一个ThreadId
+		 */
+		public Long getFirstThreadId() {
+			if (threadIds.isEmpty()) {
+				return null;
+			}
+			return threadIds.keySet().iterator().next();
+		}
+
+		/**
+		 * 减少当前线程对应的数量
+		 */
+		public void decrThreadCount(long threadId) {
+			Integer counter = threadIds.get(threadId);
+			if (counter == null) {
+				return;
+			}
+			counter--;
+			if (counter == 0) {
+				threadIds.remove(threadId);
+			} else {
+				threadIds.put(threadId, counter);
+			}
+		}
 	}
 
 }

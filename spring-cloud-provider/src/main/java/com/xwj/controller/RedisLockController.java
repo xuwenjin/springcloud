@@ -33,9 +33,15 @@ public class RedisLockController implements InitializingBean {
 	@Autowired
 	private RedissonClient redisson;
 
+	/**初始化号码*/
+	private static final String INIT_NUM = "lock_num";
+
+	/**锁名称*/
+	private static final String LOCK_NAME = "xwj";
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		redisTemplate.opsForValue().set("num", "20");
+		redisTemplate.opsForValue().set(INIT_NUM, "10");
 	}
 
 	/**
@@ -44,13 +50,13 @@ public class RedisLockController implements InitializingBean {
 	@GetMapping("testUnLock")
 	public void testUnLock() throws InterruptedException {
 		String s = Thread.currentThread().getName();
-		int num = Integer.valueOf((String) redisTemplate.opsForValue().get("num"));
+		int num = Integer.valueOf((String) redisTemplate.opsForValue().get(INIT_NUM));
 		if (num > 0) {
-			System.out.println(s + "排号成功，号码是：" + num);
+			System.out.println(s + "----排号成功，号码是：" + num);
 			int remind = num - 1;
-			redisTemplate.opsForValue().set("num", remind + "");
+			redisTemplate.opsForValue().set(INIT_NUM, remind + "");
 		} else {
-			System.out.println(s + "排号失败,号码已经被抢光");
+			System.out.println(s + "----排号失败，号码已经被抢光");
 		}
 	}
 
@@ -59,18 +65,18 @@ public class RedisLockController implements InitializingBean {
 	 */
 	@GetMapping("testLock")
 	public void testLock() throws InterruptedException {
-		Lock lock = redisLockRegistry.obtain("lock");
+		Lock lock = redisLockRegistry.obtain(LOCK_NAME);
 		boolean isLock = lock.tryLock(1, TimeUnit.SECONDS);
 		String s = Thread.currentThread().getName();
 		if (isLock) {
-			int num = Integer.valueOf((String) redisTemplate.opsForValue().get("num"));
+			int num = Integer.valueOf((String) redisTemplate.opsForValue().get(INIT_NUM));
 			if (num > 0) {
-				System.out.println(s + "排号成功，号码是：" + num);
+				System.out.println(s + "----排号成功，号码是：" + num);
 				int remind = num - 1;
-				redisTemplate.opsForValue().set("num", remind + "");
+				redisTemplate.opsForValue().set(INIT_NUM, remind + "");
 			}
 		} else {
-			System.out.println(s + "排号失败,号码已经被抢光");
+			System.out.println(s + "----排号失败，号码已经被抢光");
 		}
 		lock.unlock();
 	}
@@ -80,18 +86,18 @@ public class RedisLockController implements InitializingBean {
 	 */
 	@GetMapping("testLock2")
 	public void testLock2() throws InterruptedException {
-		if (lock.lock("xwj")) {
+		if (lock.lock(LOCK_NAME)) {
 			String s = Thread.currentThread().getName();
-			int num = Integer.valueOf((String) redisTemplate.opsForValue().get("num"));
+			int num = Integer.valueOf((String) redisTemplate.opsForValue().get(INIT_NUM));
 			if (num > 0) {
-				System.out.println(s + "排号成功，号码是：" + num);
+				System.out.println(s + "----排号成功，号码是：" + num);
 				int remind = num - 1;
-				redisTemplate.opsForValue().set("num", remind + "");
+				redisTemplate.opsForValue().set(INIT_NUM, remind + "");
 			} else {
-				System.out.println(s + "排号失败,号码已经被抢光");
+				System.out.println(s + "----排号失败，号码已经被抢光");
 			}
 		}
-		lock.unlock("xwj");
+		lock.unlock(LOCK_NAME);
 	}
 
 	/**
@@ -99,25 +105,31 @@ public class RedisLockController implements InitializingBean {
 	 */
 	@GetMapping("testLock3")
 	public void testLock3() throws InterruptedException {
-		RLock disLock = redisson.getLock("xwj");
-		// 获取锁最多等待10秒，超时返回false
+		RLock disLock = redisson.getLock(LOCK_NAME);
+		// 获取锁最多等待12秒，超时返回false
 		// 如果获取了锁，过期时间是5秒
-		boolean isLock = disLock.tryLock(10000, 5000, TimeUnit.MILLISECONDS);
+		String s = Thread.currentThread().getName();
+		boolean isLock = disLock.tryLock(27000, 3000, TimeUnit.MILLISECONDS);
 		if (isLock) {
 			try {
-				String s = Thread.currentThread().getName();
-				int num = Integer.parseInt((String) redisTemplate.opsForValue().get("num"));
+				int num = Integer.parseInt((String) redisTemplate.opsForValue().get(INIT_NUM));
 				if (num > 0) {
-					System.out.println(s + "排号成功，号码是：" + num);
+					// a、加锁成功，排号成功
+					System.out.println(s + "--------排号成功，号码是：" + num);
 					int remind = num - 1;
-					redisTemplate.opsForValue().set("num", remind + "");
+					TimeUnit.MILLISECONDS.sleep(4000);
+					redisTemplate.opsForValue().set(INIT_NUM, remind + "");
 				} else {
-					System.out.println(s + "排号失败,号码已经被抢光");
+					// b、加锁成功，号用完了，排号失败
+					System.out.println(s + "----排号失败，号码已经被抢光");
 				}
 			} finally {
 				// 无论如何, 最后都要解锁
 				disLock.unlock();
 			}
+		} else {
+			// c、自旋超时，加锁失败(多线程时，waitTime要尽量设置大一些(默认30秒))
+			System.out.println(s + "----抢票超时，请稍后重试");
 		}
 	}
 
@@ -126,11 +138,11 @@ public class RedisLockController implements InitializingBean {
 	 */
 	@GetMapping("relock")
 	public void relock() throws InterruptedException {
-		MyRedisLock myRedisLock = new MyRedisLock("xwj");
+		MyRedisLock myRedisLock = new MyRedisLock(LOCK_NAME);
 		myRedisLock.setRedisTemplate(redisTemplate);
 
-		// 获取锁最多等待10秒，超时返回false
-		// 如果获取了锁，过期时间是5秒
+		// 获取锁最多等待5秒，超时返回false
+		// 如果获取了锁，过期时间是3秒
 		boolean isLock = myRedisLock.tryLock(5000, 3000, TimeUnit.MILLISECONDS);
 		if (isLock) {
 			boolean xwj = myRedisLock.tryLock(5000, 3000, TimeUnit.MILLISECONDS);
@@ -138,13 +150,13 @@ public class RedisLockController implements InitializingBean {
 			if (xwj) {
 				try {
 					String s = Thread.currentThread().getName();
-					int num = Integer.parseInt((String) redisTemplate.opsForValue().get("num"));
+					int num = Integer.parseInt((String) redisTemplate.opsForValue().get(INIT_NUM));
 					if (num > 0) {
-						System.out.println(s + "排号成功，号码是：" + num);
+						System.out.println(s + "----排号成功，号码是：" + num);
 						int remind = num - 1;
-						redisTemplate.opsForValue().set("num", remind + "");
+						redisTemplate.opsForValue().set(INIT_NUM, remind + "");
 					} else {
-						System.out.println(s + "排号失败,号码已经被抢光");
+						System.out.println(s + "----排号失败，号码已经被抢光");
 					}
 				} finally {
 					// 无论如何, 最后都要解锁
@@ -160,29 +172,34 @@ public class RedisLockController implements InitializingBean {
 	 */
 	@GetMapping("renewlock")
 	public void renewlock() throws InterruptedException {
-		MyRedisLock2 myRedisLock = new MyRedisLock2("xwj");
+		MyRedisLock2 myRedisLock = new MyRedisLock2(LOCK_NAME);
 		myRedisLock.setRedisTemplate(redisTemplate);
 
-		// 获取锁最多等待10秒，超时返回false
+		// 获取锁最多等待12秒，超时返回false
 		// 如果获取了锁，过期时间是5秒
-		boolean xwj = myRedisLock.tryLock(5000, 3000, TimeUnit.MILLISECONDS);
-//		System.out.println("xwj------->" + xwj);
+		String s = Thread.currentThread().getName();
+		boolean xwj = myRedisLock.tryLock(27000, 3000, TimeUnit.MILLISECONDS);
+		System.out.println("xwj------->" + xwj);
 		if (xwj) {
 			try {
-				String s = Thread.currentThread().getName();
-				int num = Integer.parseInt((String) redisTemplate.opsForValue().get("num"));
+				int num = Integer.parseInt((String) redisTemplate.opsForValue().get(INIT_NUM));
 				if (num > 0) {
-					System.out.println(s + "排号成功，号码是：" + num);
+					// a、加锁成功，排号成功
+					System.out.println(s + "----排号成功，号码是：" + num);
 					int remind = num - 1;
-					TimeUnit.MILLISECONDS.sleep(2000);
-					redisTemplate.opsForValue().set("num", remind + "");
+					TimeUnit.MILLISECONDS.sleep(4000);
+					redisTemplate.opsForValue().set(INIT_NUM, remind + "");
 				} else {
-					System.out.println(s + "排号失败,号码已经被抢光");
+					// b、加锁成功，号用完了，排号失败
+					System.out.println(s + "----排号失败，号码已经被抢光");
 				}
 			} finally {
 				// 无论如何, 最后都要解锁
 				myRedisLock.unlock();
 			}
+		} else {
+			// c、自旋超时，加锁失败(多线程时，waitTime要尽量设置大一些(默认30秒))
+			System.out.println(s + "----抢票超时，请稍后重试");
 		}
 	}
 
