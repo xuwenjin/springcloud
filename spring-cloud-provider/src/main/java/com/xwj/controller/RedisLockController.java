@@ -179,7 +179,7 @@ public class RedisLockController implements InitializingBean {
 		// 如果获取了锁，过期时间是5秒
 		String s = Thread.currentThread().getName();
 		boolean xwj = myRedisLock.tryLock(27000, 3000, TimeUnit.MILLISECONDS);
-		System.out.println("xwj------->" + xwj);
+//		System.out.println("xwj------->" + xwj);
 		if (xwj) {
 			try {
 				int num = Integer.parseInt((String) redisTemplate.opsForValue().get(INIT_NUM));

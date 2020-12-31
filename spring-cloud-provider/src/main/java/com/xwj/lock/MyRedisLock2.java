@@ -87,6 +87,9 @@ public class MyRedisLock2 {
 		}
 	}
 
+	/**
+	 * 执行加锁脚本(可重入)
+	 */
 	private Long tryAcquire(long leaseTime, TimeUnit unit, long threadId) {
 		lockLeaseTime = unit.toMillis(leaseTime);
 
@@ -119,10 +122,11 @@ public class MyRedisLock2 {
 		ImmutableList<String> keys = ImmutableList.of(name, getChannelName());
 		String lockName = getLockName(threadId);
 
-		// redisTemplate.execute(redisScript, keys, UNLOCK_MESSAGE,
-		// lockLeaseTime, lockName);
-		Long res = redisTemplate.execute(redisScript, keys, UNLOCK_MESSAGE, lockLeaseTime, lockName);
-		System.out.println("unlock.res ----->" + res);
+		// 1、执行解锁脚本
+		redisTemplate.execute(redisScript, keys, UNLOCK_MESSAGE, lockLeaseTime, lockName);
+
+		// 2、取消续命任务
+		cancelExpirationRenewal(threadId);
 	}
 
 	private void scheduleExpirationRenewal(long threadId) {
@@ -139,9 +143,10 @@ public class MyRedisLock2 {
 	}
 
 	/**
-	 * 锁-续命
+	 * 开启续命任务(频率为lockLeaseTime / 3)
 	 */
 	private void renewExpiration() {
+		// 先查询内存中是否有对应的锁，没有直接返回
 		MyExpirationEntry ee = EXPIRATION_RENEWAL_MAP.get(entryName);
 		if (ee == null) {
 			return;
@@ -150,24 +155,30 @@ public class MyRedisLock2 {
 		// 创建一个延时线程
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		executor.schedule(() -> {
+			// 再次查询内存中是否有对应的锁，没有直接返回
 			MyExpirationEntry ent = EXPIRATION_RENEWAL_MAP.get(entryName);
 			if (ent == null) {
 				return;
 			}
+			// get下一个Thread
 			Long threadId = ent.getFirstThreadId();
 			if (threadId == null) {
 				return;
 			}
 
+			// 开启续命
 			Long res = doRenew(threadId);
 			System.out.println("续命结果：" + res);
 			if (res > 0) {
-				// 续命成功，再开启一个续命任务
+				// 续命成功，再次开启一个续命任务
 				renewExpiration();
 			}
 		}, lockLeaseTime / 3, TimeUnit.MILLISECONDS);
 	}
 
+	/**
+	 * 执行续命脚本
+	 */
 	private Long doRenew(long threadId) {
 		String luaScript = buildRenewLuaScript();
 		RedisScript<Long> redisScript = new DefaultRedisScript<>(luaScript, Long.class);
@@ -176,6 +187,28 @@ public class MyRedisLock2 {
 		String lockName = getLockName(threadId);
 
 		return redisTemplate.execute(redisScript, keys, lockLeaseTime, lockName);
+	}
+	
+	/**
+	 * 取消续命任务
+	 */
+	private void cancelExpirationRenewal(Long threadId) {
+		// 先查询内存中是否有对应的锁，没有直接返回
+		MyExpirationEntry ee = EXPIRATION_RENEWAL_MAP.get(entryName);
+		if (ee == null) {
+			return;
+		}
+
+		// 内存中有锁，减少内存中对应线程的上锁次数
+		if (threadId != null) {
+			ee.decrThreadCount(threadId);
+		}
+
+		if (threadId == null || ee.hasNoThreads()) {
+			// 删除内存中该锁
+			System.out.println("取消续命");
+			EXPIRATION_RENEWAL_MAP.remove(entryName);
+		}
 	}
 
 	/**
