@@ -18,7 +18,7 @@ import com.xwj.redis.JsonRedisTemplate;
 /**
  * redis实现分布式锁
  * 
- * 加锁和解锁都使用lua脚本，并且锁支持可重入
+ * 加锁和解锁都使用lua脚本，并且锁支持可重入+超时续命
  */
 public class MyRedisLock2 {
 
