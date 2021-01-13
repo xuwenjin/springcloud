@@ -41,9 +41,6 @@ public class IndexController {
 		return dbPassword;
 	}
 
-	/**
-	 * 测试sentinel流量卫兵
-	 */
 	@GetMapping("/hello")
 	public String testSentinel() {
 		return "hello";

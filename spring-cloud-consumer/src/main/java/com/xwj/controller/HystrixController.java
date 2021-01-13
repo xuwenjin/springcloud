@@ -21,6 +21,8 @@ public class HystrixController {
 	 * 
 	 * 1、调用远程服务超时后，断路器打开，调用getOneFallBack (如果远程服务挂了，会立马调用getOneFallBack，不会使用超时)
 	 * 2、超时时间为1000毫秒(默认1秒)
+	 * 
+	 * 熔断降级策略，详细配置可参考：https://blog.csdn.net/wlddhj/article/details/85243764
 	 */
 	@GetMapping("/getOne/{id}")
 	@HystrixCommand(fallbackMethod = "getOneFallBack", commandProperties = {

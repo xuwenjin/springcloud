@@ -61,7 +61,7 @@ public class SentinelController {
 		System.out.println("SentinelController.initDegradeRules：初始化熔断降级规则");
 		List<DegradeRule> rules = new ArrayList<>();
 
-		// 1、创建流量控制规则
+		// 1、创建熔断降级规则
 		DegradeRule rule = new DegradeRule();
 		rule.setResource(RESOURCE_ANN);// 设置资源名称
 		rule.setGrade(RuleConstant.DEGRADE_GRADE_RT); // 设置熔断策略(主要有三种统计类型：慢调用比例(平均响应时间)、异常比例、异常数策略)
