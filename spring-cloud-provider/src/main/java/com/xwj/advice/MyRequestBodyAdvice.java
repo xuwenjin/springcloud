@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 对request统一参数处理
  * 
- * RequestBodyAdvice仅对使用了@RqestBody注解的生效 , 因为它原理上还是AOP , 所以GET方法是不会操作的
+ * RequestBodyAdvice仅对使用了@RequestBody注解的生效 , 因为它原理上还是AOP , 所以GET方法是不会操作的
  */
 @Slf4j
 @ControllerAdvice
@@ -29,7 +29,7 @@ public class MyRequestBodyAdvice extends RequestBodyAdviceAdapter {
 	@Override
 	public boolean supports(MethodParameter methodParameter, Type targetType,
 			Class<? extends HttpMessageConverter<?>> converterType) {
-		// 仅对使用了@RqestBody注解的生效
+		// 仅对使用了@RequestBody注解的生效
 		return methodParameter.hasParameterAnnotation(RequestBody.class);
 	}
 
