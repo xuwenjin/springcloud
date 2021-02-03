@@ -1,12 +1,15 @@
 package com.xwj.billcode;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
 import com.xwj.billcode.base.IdWorker;
 import com.xwj.util.PatternConsts;
 import com.xwj.util.TimeUtil;
+import com.xwj.utils.CommonUtil;
 
 import lombok.SneakyThrows;
 
@@ -74,6 +77,52 @@ public class SequenceGenerator {
 		StringBuilder numStr = new StringBuilder();
 		IntStream.of(0, digit).forEach(index -> numStr.append(localRandom.nextInt(10)));
 		return numStr.toString();
+	}
+
+	/**
+	 * 生成订单号
+	 * 
+	 * 组成：
+	 * 1、2位年 + 3位天数(不足补0)
+	 * 2、6位时间戳
+	 * 3、4位随机数
+	 * 4、手机号后3位
+	 */
+	public static String genOrderNo(String phone) {
+		LocalDateTime ld = LocalDateTime.now();
+		int year = ld.getYear() % 100; // 2位年
+		String day = String.format("%1$03d", ld.getDayOfYear()); // 3位天数
+
+		long milli = ld.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+		String milliStr = String.valueOf(milli).substring(7); // 6位时间戳
+
+		String randomStr = CommonUtil.generateNumKey(4);
+
+		String phoneSuffix = phone.substring(8);
+
+		return year + day + milliStr + randomStr + phoneSuffix;
+	}
+
+	public static void main(String[] args) throws Exception {
+		// for (int i = 0; i < 100; i++) {
+		// System.out.println(IdWorker.getFlowIdWorkerInstance().nextId());
+		// }
+
+		// System.out.println(ld.getYear());
+		// System.out.println(ld.getDayOfYear());
+		// System.out.println(String.format("%1$03d", ld.getDayOfYear()));
+		//
+		// long milli = ld.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+		// System.out.println(milli);
+		// System.out.println(String.valueOf(milli).substring(7));
+
+		for (int i = 0; i < 20; i++) {
+			LocalDateTime ld = LocalDateTime.now();
+			long milli = ld.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+			String milliStr = String.valueOf(milli).substring(7); // 6位时间戳
+			System.out.println(milliStr);
+		}
+
 	}
 
 }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xwj.billcode.SequenceGenerator;
+import com.xwj.billcode.base.IdWorker;
 import com.xwj.properties.TestConfiguration;
 import com.xwj.service.test.IBaseService;
 
@@ -27,12 +28,34 @@ public class TestController {
 	}
 
 	/**
-	 * 雪花算法-测试生成id(QPS：1200左右)
-	 * @return
+	 * 雪花算法-测试生成id(1000个线程，每秒可处理请求数：1200左右)
 	 */
 	@GetMapping("idWorker")
-	public String idWorker() {
-		return SequenceGenerator.uuid16();
+	public String idWorker() throws Exception {
+		long nextId = IdWorker.getFlowIdWorkerInstance().nextId();
+		// System.out.println("insert into order_info (id) values('" + nextId +
+		// "');");
+		return nextId + "";
+	}
+
+	/**
+	 * 生成订单号(1000个线程，每秒可处理请求数：1000左右)
+	 * 
+	 * 要求：
+	 * 1、全球唯一
+	 * 2、趋势递增
+	 * 3、长度固定
+	 * 4、整形，不是字符串
+	 * 5、高并发
+	 * 6、不能看出订单数量
+	 */
+	@GetMapping("genOrderNo")
+	public String genOrderNo() {
+		String phone = "18207136675";
+		String orderNo = SequenceGenerator.genOrderNo(phone);
+		// System.out.println("insert into order_info (id) values('" + orderNo +
+		// "');");
+		return orderNo;
 	}
 
 	/**

@@ -38,10 +38,10 @@ public class CommonUtil {
 	}
 
 	/**
-	 * 生成指定位数的随机数(只包含1-9)
+	 * 生成指定位数的随机数
 	 */
 	public static String generateNumKey(final int count) {
-		return RandomStringUtils.random(count, "123456789");
+		return RandomStringUtils.random(count, "0123456789");
 	}
 
 	/**
