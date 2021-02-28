@@ -1,4 +1,4 @@
-package com.xwj.dbdef;
+package com.xwj.spring;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -21,6 +21,10 @@ public class ContextUtils implements ApplicationContextAware {
 
 	public static <T> T getBean(String beanName, Class<T> cls) {
 		return applicationContext.getBean(beanName, cls);
+	}
+
+	public static Object getBean(String beanName) {
+		return applicationContext.getBean(beanName);
 	}
 
 	public static <T> T getBean(Class<T> cls) {

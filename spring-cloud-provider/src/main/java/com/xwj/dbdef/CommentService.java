@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.xwj.annotations.ColumnDef;
 import com.xwj.annotations.TableDef;
+import com.xwj.spring.ContextUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

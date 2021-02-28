@@ -3,7 +3,7 @@ package com.xwj.factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.xwj.dbdef.ContextUtils;
+import com.xwj.spring.ContextUtils;
 
 /**
  * 工厂类
