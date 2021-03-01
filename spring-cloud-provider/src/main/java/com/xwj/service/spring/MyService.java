@@ -1,4 +1,4 @@
-package com.xwj.service;
+package com.xwj.service.spring;
 
 public class MyService {
 

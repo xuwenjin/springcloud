@@ -3,7 +3,7 @@ package com.xwj.spring;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.stereotype.Component;
 
-import com.xwj.service.MyService;
+import com.xwj.service.spring.MyService;
 
 /**
  * FactoryBean：工厂类Bean接口
