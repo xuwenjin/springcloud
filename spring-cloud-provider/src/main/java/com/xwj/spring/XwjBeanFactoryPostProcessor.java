@@ -16,7 +16,7 @@ import com.xwj.service.spring.MyService2;
 public class XwjBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 
 	/**
-	 * 
+	 * 将MyService2使用单例模式注册到BeanFactory
 	 */
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
