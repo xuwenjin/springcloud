@@ -110,4 +110,10 @@ public class UserController {
 		return name;
 	}
 
+	@OperLogAnn(value = "使用切面改变返回值", operModule = "人员管理")
+	@GetMapping("/changeRes")
+	public String changeRes() {
+		return "abc";
+	}
+
 }

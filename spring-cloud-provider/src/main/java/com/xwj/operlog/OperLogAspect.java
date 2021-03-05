@@ -6,7 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -76,11 +78,10 @@ public class OperLogAspect {
 		}
 
 		// 获取响应结果
-//		operLog.setResponseResult(JSON.toJSONString(retObj));
+		// operLog.setResponseResult(JSON.toJSONString(retObj));
 
 		// 获取用户ip地址
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-				.getRequest();
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		operLog.setIp(RequestUtil.getRealIpAddr(request));
 		operLog.setPath(request.getRequestURI()); // 请求URI
 
@@ -89,6 +90,18 @@ public class OperLogAspect {
 		} catch (Exception e) {
 			log.error("保存操作日志失败", e);
 		}
+	}
+
+	/**
+	 * 改变方法返回值
+	 */
+	@Around("logPoinCut()")
+	public Object changeResult(ProceedingJoinPoint joinPoint) throws Throwable {
+		System.out.println("beginning----");
+		Object object = joinPoint.proceed(); // 返回值用一个Object类型来接收
+		object = "result have changed"; // 改变返回值
+		System.out.println("ending----");
+		return object;
 	}
 
 }
