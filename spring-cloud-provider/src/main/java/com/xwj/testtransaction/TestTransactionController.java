@@ -8,6 +8,13 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 测试事物传播性
  * 
+ * 事务失效场景：
+ * 
+ * 1、没有被spring管理。比如没有使用@Component或者@Service注解	
+ * 2、@Transactional 只能用于 public 的方法上。所以非 public 方法会失效
+ * 3、在同一个类中的两个方法调用
+ * 4、Propagation.NOT_SUPPORTED： 表示不以事务运行，当前若存在事务则挂起 ------> 都主动不支持以事务方式运行了，那事务生效也是白搭！
+ * 
  * 如果是在同一个类中的方法调用，则不会被方法拦截器拦截到，因此事务不会起作用，必须将方法放入另一个类，并且该类通过spring注入
  * 
  * @author xwj
@@ -31,9 +38,9 @@ public class TestTransactionController {
 	 */
 	@GetMapping("test1")
 	public void test1() {
-//		requiredService.notransaction_exception_required_required();
-//		requiredService.notransaction_required_required_exception();
-		requiredService.notransaction_exception_notransaction();
+		// requiredService.notransaction_exception_required_required();
+		requiredService.notransaction_required_required_exception();
+		// requiredService.notransaction_exception_notransaction();
 	}
 
 	/**
@@ -46,11 +53,11 @@ public class TestTransactionController {
 	 */
 	@GetMapping("test2")
 	public void test2() {
-		requiredService.transaction_exception_required_required();
-//		requiredService.transaction_required_required_exception();
-//		requiredService.transaction_required_required_exception_try();
-//		requiredService.transaction_exception_notransaction();
-//		requiredService.transaction_notransaction_exception();
+		// requiredService.transaction_exception_required_required();
+		// requiredService.transaction_required_required_exception();
+		requiredService.transaction_required_required_exception_try();
+		// requiredService.transaction_exception_notransaction();
+		// requiredService.transaction_notransaction_exception();
 	}
 
 	/**
@@ -60,7 +67,7 @@ public class TestTransactionController {
 	 */
 	@GetMapping("test3")
 	public void test3() {
-//		requiredNewService.notransaction_exception_requiresNew_requiresNew();
+		// requiredNewService.notransaction_exception_requiresNew_requiresNew();
 		requiredNewService.notransaction_requiresNew_requiresNew_exception();
 	}
 
@@ -72,8 +79,8 @@ public class TestTransactionController {
 	 */
 	@GetMapping("test4")
 	public void test4() {
-//		requiredNewService.transaction_exception_required_requiresNew_requiresNew();
-//		requiredNewService.transaction_required_requiresNew_requiresNew_exception();
+		// requiredNewService.transaction_exception_required_requiresNew_requiresNew();
+		// requiredNewService.transaction_required_requiresNew_requiresNew_exception();
 		requiredNewService.transaction_required_requiresNew_requiresNew_exception_try();
 	}
 
@@ -86,6 +93,15 @@ public class TestTransactionController {
 	@GetMapping("test5")
 	public void test5() {
 		requiredNewService.transaction_required_requiresNew_exception_protected();
+	}
+
+	/**
+	 * 测试事务失效
+	 * 
+	 */
+	@GetMapping("test6")
+	public void test6() {
+		requiredService.novalidTransaction();
 	}
 
 }
