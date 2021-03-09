@@ -95,13 +95,4 @@ public class TestTransactionController {
 		requiredNewService.transaction_required_requiresNew_exception_protected();
 	}
 
-	/**
-	 * 测试事务失效
-	 * 
-	 */
-	@GetMapping("test6")
-	public void test6() {
-		requiredService.novalidTransaction();
-	}
-
 }
