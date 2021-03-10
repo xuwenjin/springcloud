@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
@@ -19,27 +21,49 @@ import com.xwj.redis.JsonRedisTemplate;
  * 测试使用redis限流
  */
 @RestController
-@RequestMapping("redisLimit")
-public class RedisLimitController {
+@RequestMapping("limit")
+public class LimitController {
 
 	@Autowired
 	private JsonRedisTemplate redisTemplate;
+
+	ThreadPoolExecutor pool = null;
 
 	/**
 	 * bean实例化的时候执行
 	 */
 	@PostConstruct
 	public void init() {
+		tokenInit();
+		loutongInit();
+	}
+
+	/**
+	 * 令牌桶初始化
+	 */
+	private void tokenInit() {
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		// 建立一个定时任务，每隔1秒执行一次
 		executor.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
-				System.out.println(new Date() + "----->生成一个令牌");
-				// 定时生成令牌，并放入redis中
-				redisTemplate.opsForList().leftPush("tokenLimitKey", UUID.randomUUID().toString());
+				String redisKey = "tokenLimitKey";
+				Long count = redisTemplate.opsForList().size(redisKey);
+				// 桶里只能放10个令牌
+				if (count != null && count < 10) {
+					System.out.println(new Date() + "----->生成一个令牌");
+					// 定时生成令牌，并放入redis中
+					redisTemplate.opsForList().leftPush(redisKey, UUID.randomUUID().toString());
+				}
 			}
 		}, 0, 1L, TimeUnit.SECONDS);
+	}
+
+	/**
+	 * 漏桶初始化
+	 */
+	private void loutongInit() {
+		pool = new ThreadPoolExecutor(0, 10, 5, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 	}
 
 	/**
@@ -113,6 +137,28 @@ public class RedisLimitController {
 			return;
 		}
 		System.out.println(result);
+	}
+
+	/**
+	 * 漏桶算法：无论上面的水流倒入漏斗有多大，也就是无论请求有多少，它都是以均匀的速度慢慢流出的。当上面的水流速度大于下面的流出速度时，漏斗
+	 * 会慢慢变满，当漏斗满了之后就会丢弃新来的请求;当上面的水流速度小于下面流出的速度的话，漏斗永远不会被装满，并且可以一直流出
+	 * 
+	 * 当前时间点，最多只能处理10个请求
+	 */
+	@GetMapping("/loutong")
+	public void loutong() {
+		try {
+			pool.execute(() -> {
+				System.out.println(new Date() + "------>执行任务");
+				try {
+					TimeUnit.MILLISECONDS.sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			});
+		} catch (Exception e) {
+			System.out.println("操作太频繁");
+		}
 	}
 
 }
