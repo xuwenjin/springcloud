@@ -62,6 +62,23 @@ public class LimitController {
 	}
 
 	/**
+	 * 测试redis的increment方法(为下面的计数器实现进行铺垫)
+	 * 
+	 * 结论：increment命令是原子性的，是线程安全的，也就是能保证每次返回的结果不会出现相同的值。
+	 */
+	@GetMapping("/testIncr")
+	public void testIncr() {
+		String redisKey = "testIncr";
+		try {
+			Long count = redisTemplate.boundValueOps(redisKey).increment();
+			System.out.println(count);
+		} catch (Exception e) {
+			// 出现故障时，删除key
+			redisTemplate.delete(redisKey);
+		}
+	}
+
+	/**
 	 * 计数器(过期机制)
 	 * 
 	 * 5秒内，只允许通过10个请求
