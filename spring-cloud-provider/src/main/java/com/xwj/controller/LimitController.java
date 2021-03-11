@@ -2,6 +2,7 @@ package com.xwj.controller;
 
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xwj.redis.JsonRedisTemplate;
 
 /**
- * 测试使用redis限流
+ * 测试各种限流算法
  */
 @RestController
 @RequestMapping("limit")
@@ -27,7 +28,9 @@ public class LimitController {
 	@Autowired
 	private JsonRedisTemplate redisTemplate;
 
-	ThreadPoolExecutor pool = null;
+	private ArrayBlockingQueue<Integer> queue = new ArrayBlockingQueue<>(10);
+
+	private ThreadPoolExecutor pool = new ThreadPoolExecutor(0, 10, 5, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 
 	/**
 	 * bean实例化的时候执行
@@ -35,7 +38,6 @@ public class LimitController {
 	@PostConstruct
 	public void init() {
 		tokenInit();
-		loutongInit();
 	}
 
 	/**
@@ -57,13 +59,6 @@ public class LimitController {
 				}
 			}
 		}, 0, 1L, TimeUnit.SECONDS);
-	}
-
-	/**
-	 * 漏桶初始化
-	 */
-	private void loutongInit() {
-		pool = new ThreadPoolExecutor(0, 10, 5, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 	}
 
 	/**
@@ -140,13 +135,40 @@ public class LimitController {
 	}
 
 	/**
-	 * 漏桶算法：无论上面的水流倒入漏斗有多大，也就是无论请求有多少，它都是以均匀的速度慢慢流出的。当上面的水流速度大于下面的流出速度时，漏斗
-	 * 会慢慢变满，当漏斗满了之后就会丢弃新来的请求;当上面的水流速度小于下面流出的速度的话，漏斗永远不会被装满，并且可以一直流出
+	 * 有界队列实现限流(自己写的，想实现漏桶算法，没有控制流出速度匀速)
 	 * 
 	 * 当前时间点，最多只能处理10个请求
 	 */
 	@GetMapping("/loutong")
 	public void loutong() {
+		try {
+			if (!queue.offer(0)) {
+				System.out.println("操作太频繁");
+				return;
+			}
+			// 建立一个定时任务，每隔1秒执行一次，也就是水流出的速度是固定的：每秒一次
+			System.out.println(queue.size());
+			if (!queue.isEmpty()) {
+				System.out.println(new Date() + "------>执行任务");
+				try {
+					TimeUnit.MILLISECONDS.sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				queue.poll();
+			}
+		} catch (Exception e) {
+			System.out.println("操作太频繁");
+		}
+	}
+
+	/**
+	 * 线程池实现限流(自己写的，想实现漏桶算法，没有控制流出速度匀速)
+	 * 
+	 * 当前时间点，最多只能处理10个请求
+	 */
+	@GetMapping("/thread")
+	public void thread() {
 		try {
 			pool.execute(() -> {
 				System.out.println(new Date() + "------>执行任务");
