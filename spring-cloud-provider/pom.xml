@@ -132,6 +132,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
+		<!-- hazelcast分布式缓存 -->
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast</artifactId>
+			<version>4.2</version>
+		</dependency>
 	</dependencies>
 
 </project>
