@@ -70,7 +70,9 @@ public class LimitController {
 	public void testIncr() {
 		String redisKey = "testIncr";
 		try {
+			System.out.println("-----1---------" + Thread.currentThread().getName());
 			Long count = redisTemplate.boundValueOps(redisKey).increment();
+			System.out.println("-----2---------" + Thread.currentThread().getName());
 			System.out.println(count);
 		} catch (Exception e) {
 			// 出现故障时，删除key
