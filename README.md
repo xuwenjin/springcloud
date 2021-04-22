@@ -15,3 +15,4 @@ spring-cloud-quarts-one: quarts测试, 端口18090
 spring-cloud-quarts-two: quarts测试2, 端口18091
 spring-cloud-websocket: websocket测试, 端口18092
 spring-cloud-shardingjdbc: shardingjdbc测试, 端口18093
+spring-cloud-mongodb: mongodb测试, 端口18094

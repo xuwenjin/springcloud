@@ -44,6 +44,7 @@
 		<module>spring-cloud-seata-order</module>
 		<module>spring-cloud-seata-account</module>
 		<module>spring-cloud-seata-account-api</module>
+		<module>spring-cloud-mongodb</module>
 	</modules>
 
 	<dependencies>

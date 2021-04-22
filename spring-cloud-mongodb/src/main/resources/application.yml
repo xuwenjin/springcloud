@@ -1,0 +1,14 @@
+server:
+  port: 18094
+  
+spring:
+  application:
+    name: service-mongodb
+  data:
+    mongodb:
+      #host: 127.0.0.1
+      #database: mydb
+      #port: 27017   #默认端口
+      uri: mongodb://localhost:27017/mydb  #也可以使用这种方式连接。多个ip用逗号分隔
+
+      
