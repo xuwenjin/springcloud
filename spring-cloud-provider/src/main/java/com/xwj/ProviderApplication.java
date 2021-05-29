@@ -1,15 +1,26 @@
 package com.xwj;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @EnableAsync // 开启异步调用
 @EnableRetry // 开始重试
-@SpringBootApplication
+// @SpringBootApplication
+@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan(basePackages = "com.xwj"
+, excludeFilters = { 
+		@ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.xwj.test\\.*"),
+		@ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.xwj.controller.*")
+		}
+)
 @ServletComponentScan // @ServletComponentScan扫描带@WebFilter、@WebServlet、@WebListener并将帮我们注入bean
 @EnableDiscoveryClient
 public class ProviderApplication {

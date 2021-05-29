@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.assertj.core.util.Arrays;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.xwj.po.Comment;
+import com.xwj.po.SubComment;
 import com.xwj.service.CommentService;
 
 /**
@@ -30,11 +32,19 @@ public class MongodbTest {
 	@Test
 	public void testSaveComment() {
 		Comment comment = new Comment();
-		comment.setUserId("1001");
-		comment.setContent("测试添加的数据");
+		comment.setUserId("100101");
+		comment.setContent("测试添加的数据2");
 		comment.setCreatedatetime(LocalDateTime.now());
-		comment.setNickname("凯撒大帝");
+		comment.setNickname("凯撒大帝2");
 		comment.setLikenum(0);
+		
+		comment.setSubComment(new SubComment("zhangsan", 13));
+		
+		
+		List<SubComment> list = new ArrayList<>();
+		list.add(new SubComment("zhangsan1", 10));
+		list.add(new SubComment("zhangsan2", 12));
+		comment.setCommList(list);
 
 		commentService.saveComment(comment);
 	}
@@ -116,9 +126,12 @@ public class MongodbTest {
 		System.out.println(commentById);
 	}
 
+	/**
+	 * 分页查询
+	 */
 	@Test
 	public void testFindCommentListByUserId() {
-		Page<Comment> page = commentService.findCommentListByUserId("1002", 1, 2);
+		Page<Comment> page = commentService.findCommentListByUserId("100101", 1, 2);
 		System.out.println(page.getTotalElements());
 		System.out.println(page.getContent());
 	}

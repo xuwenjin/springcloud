@@ -1,6 +1,7 @@
 package com.xwj.po;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -35,5 +36,9 @@ public class Comment {
 	private LocalDateTime createdatetime;// 评论的日期时间
 
 	private Integer likenum;// 点赞数
+	
+	private SubComment subComment;
+	
+	private List<SubComment> commList;
 
 }
