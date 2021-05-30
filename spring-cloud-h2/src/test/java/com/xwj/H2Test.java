@@ -26,12 +26,13 @@ public class H2Test {
 	private UserService userService;
 
 	/**
-	 * 测试新增+查询
+	 * 测试查询所有
 	 */
 	@Test
 	public void testFind() {
 		List<XwjUser> list = userService.findAll();
-		System.out.println("list: " + list);
+		System.out.println("查询所有user数据: ");
+		list.stream().forEach(System.out::println);
 	}
 
 	/**
@@ -48,11 +49,11 @@ public class H2Test {
 
 		// 2、通过id查询
 		Long id = newUser.getId();
-		System.out.println("findById: " + userService.findById(id));
+		System.out.println("通过id查询---->" + userService.findById(id));
 
-		// 3、模糊查询(自定义sql)
+		// 3、通过名称模糊查询(自定义sql)
 		String name = "张";
-		System.out.println("findByName: " + userService.findByName(name));
+		System.out.println("通过名称模糊查询---->: " + userService.findByName(name));
 	}
 
 }
