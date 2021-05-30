@@ -46,9 +46,13 @@ public class H2Test {
 		user.setCreateDate(new Date());
 		XwjUser newUser = userService.save(user);
 
-		// 2、查询
+		// 2、通过id查询
 		Long id = newUser.getId();
 		System.out.println("findById: " + userService.findById(id));
+
+		// 3、模糊查询(自定义sql)
+		String name = "张";
+		System.out.println("findByName: " + userService.findByName(name));
 	}
 
 }

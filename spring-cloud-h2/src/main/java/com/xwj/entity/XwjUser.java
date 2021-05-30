@@ -26,8 +26,10 @@ public class XwjUser implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	public String name; // 用户名称
+	/** 名称 */
+	public String name;
 
+	/** 年龄 */
 	private Integer age;
 
 	private Date createDate;
