@@ -38,7 +38,7 @@
 			<!-- fastjson -->
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.60</version>
+			<version>1.2.83</version>
 		</dependency>
 		<dependency>
 			<!-- log4jdbc 方便打印出sql信息，比如SQL参数、执行时间等信息 -->
